@@ -5,8 +5,8 @@ import java.time.LocalTime;
 
 import javax.persistence.*;
 
-@Entity
 @Table(name = "SOLICITED_SCHEDULING")
+@Entity
 public class SolicitedScheduling {
 	
 	@Id
