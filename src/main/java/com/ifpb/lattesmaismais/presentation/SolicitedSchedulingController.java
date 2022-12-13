@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ifpb.lattesmaismais.business.SolicitedSchedulingConverter;
+import com.ifpb.lattesmaismais.business.SolicitedSchedulingConverterService;
 import com.ifpb.lattesmaismais.business.SolicitedSchedulingService;
 import com.ifpb.lattesmaismais.model.SolicitedScheduling;
 
@@ -21,7 +21,7 @@ public class SolicitedSchedulingController {
 	private SolicitedSchedulingService schedulingService;
 
 	@Autowired
-	private SolicitedSchedulingConverter schedulingConverter;
+	private SolicitedSchedulingConverterService schedulingConverter;
 
 	@GetMapping
 	public ResponseEntity findAll() {
@@ -46,15 +46,7 @@ public class SolicitedSchedulingController {
 			@RequestParam(required = false) String time
 	) {
 		try {
-			SolicitedSchedulingDto dto = new SolicitedSchedulingDto();
-			dto.setStatus(status);
-			dto.setValidatorId(validatorId);
-			dto.setRequesterId(requesterId);
-			dto.setDate(date);
-			dto.setAddress(address);
-			dto.setTime(time);
-			
-			SolicitedScheduling filter = schedulingConverter.dtoToScheduling(dto);
+			SolicitedScheduling filter = schedulingConverter.dtoToScheduling(null, null, address, status, requesterId, validatorId, date, time);
 			// O filtro não utiliza ID nem VERSION
 			List<SolicitedScheduling> entityList = schedulingService.findAll(filter);
 			List<SolicitedSchedulingDto> dtoList = schedulingConverter.schedulingToDtoList(entityList);
