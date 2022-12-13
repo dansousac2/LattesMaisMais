@@ -63,4 +63,8 @@ public class SolicitedSchedulingService {
 	public SolicitedScheduling save(SolicitedScheduling entity) {
 		return schedulingRepository.save(entity);
 	}
+
+	public void deleteById(Integer id) {
+		schedulingRepository.deleteById(id);
+	}
 }
