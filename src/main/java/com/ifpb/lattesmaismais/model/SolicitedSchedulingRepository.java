@@ -12,5 +12,6 @@ public interface SolicitedSchedulingRepository extends JpaRepository<SolicitedSc
 	public List<SolicitedScheduling> findAllByDate(LocalDate date);
 	public List<SolicitedScheduling> findAllByAddress(String address);
 	public List<SolicitedScheduling> findAllByValidatorId(Integer id);
+	public List<SolicitedScheduling> findAllByRequesterId(Integer id);
 	public List<SolicitedScheduling> findAllByStatus(StatusScheduling status);
 }

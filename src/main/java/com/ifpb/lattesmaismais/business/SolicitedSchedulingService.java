@@ -46,6 +46,9 @@ public class SolicitedSchedulingService {
 		return schedulingRepository.findAllByValidatorId(id);
 	}
 	
+	public List<SolicitedScheduling> findAllByRequesterId(Integer id){
+		return schedulingRepository.findAllByRequesterId(id);
+	}
 	public List<SolicitedScheduling> findAllByStatus(StatusScheduling status){
 		return schedulingRepository.findAllByStatus(status);
 	}

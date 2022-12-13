@@ -27,9 +27,9 @@ public class SolicitedScheduling implements Serializable {
 	@Column(name = "SCHEDULING_ADDRESS", nullable = false)
 	private String address;
 	
-	@Column(name = "SCHEDULING_VERSION", nullable = false)
+	@Column(name = "SCHEDULING_VERSION", nullable = false, unique = true)
 	private String version;
-	
+	//TODO talvez substituir por um hashMap com ID e NOME, este e requester
 	@ManyToOne
 	@JoinColumn(name = "VALIDATOR_ID")
 	private User validator;
@@ -47,6 +47,10 @@ public class SolicitedScheduling implements Serializable {
 
 	public Integer getId() {
 		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public LocalDate getDate() {
