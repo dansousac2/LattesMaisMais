@@ -3,6 +3,7 @@ package com.ifpb.lattesmaismais.model;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 import jakarta.persistence.*;
 
@@ -29,25 +30,23 @@ public class SolicitedScheduling implements Serializable {
 	@Column(name = "SCHEDULING_VERSION", nullable = false)
 	private String version;
 	
-	//TODO colocar User (validador) aqui
-	@Column(name = "SCHEDULING_VALIDATOR", nullable = false)
-	private String validator;
+	@ManyToOne
+	@JoinColumn(name = "VALIDATOR_ID")
+	private User validator;
+	
+	@ManyToOne
+	@JoinColumn(name = "REQUESTER_ID")
+	private User requester;
 	
 	@Column(name = "SCHEDULING_STATUS", nullable = false)
 	private Status status;
-	
-	public SolicitedScheduling(LocalDate date, LocalTime time, String address, String version, String validator) {
-		super();
-		this.date = date;
-		this.time = time;
-		this.address = address;
-		this.version = version;
-		this.validator = validator;
-		this.status = Status.OPEN;
-	}
-	
+
 	public SolicitedScheduling() {
 		
+	}
+
+	public Integer getId() {
+		return id;
 	}
 
 	public LocalDate getDate() {
@@ -82,12 +81,20 @@ public class SolicitedScheduling implements Serializable {
 		this.version = version;
 	}
 
-	public String getValidator() {
+	public User getValidator() {
 		return validator;
 	}
 
-	public void setValidator(String validator) {
+	public void setValidator(User validator) {
 		this.validator = validator;
+	}
+
+	public User getRequester() {
+		return requester;
+	}
+
+	public void setRequester(User requester) {
+		this.requester = requester;
 	}
 
 	public Status getStatus() {
@@ -96,6 +103,25 @@ public class SolicitedScheduling implements Serializable {
 
 	public void setStatus(Status status) {
 		this.status = status;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(address, date, id, status, time, validator, version);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SolicitedScheduling other = (SolicitedScheduling) obj;
+		return Objects.equals(address, other.address) && Objects.equals(date, other.date)
+				&& Objects.equals(id, other.id) && status == other.status && Objects.equals(time, other.time)
+				&& Objects.equals(validator, other.validator) && Objects.equals(version, other.version);
 	}
 	
 }
