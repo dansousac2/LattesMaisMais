@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.ifpb.lattesmaismais.model.SolicitedScheduling;
 import com.ifpb.lattesmaismais.model.SolicitedSchedulingRepository;
 import com.ifpb.lattesmaismais.model.StatusScheduling;
+import com.ifpb.lattesmaismais.presentation.ObjectNotFoundException;
 
 @Service
 public class SolicitedSchedulingService {
@@ -51,5 +52,15 @@ public class SolicitedSchedulingService {
 	}
 	public List<SolicitedScheduling> findAllByStatus(StatusScheduling status){
 		return schedulingRepository.findAllByStatus(status);
+	}
+	//TODO retonar NULO ao invés de lanãr exceção?
+	public SolicitedScheduling findById(Integer id) throws ObjectNotFoundException {
+		return schedulingRepository.findById(id).orElseThrow(
+					() -> new ObjectNotFoundException("Não foi possível encontrar SolicitedScheduling com id " + id)
+				);
+	}
+
+	public SolicitedScheduling save(SolicitedScheduling entity) {
+		return schedulingRepository.save(entity);
 	}
 }

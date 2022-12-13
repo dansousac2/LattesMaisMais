@@ -3,8 +3,12 @@ package com.ifpb.lattesmaismais.presentation;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,6 +60,39 @@ public class SolicitedSchedulingController {
 		} catch (Exception e) {
 			//TODO talvez ao invés de cod 400, usar 200 incluindo a mensagem de erro
 			// tendo em vista que ao passar uma ID de USER inválida será disparada uma exceção, quando poderia retornar apenas uma lista vazia
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity findById(@PathVariable Integer id) {
+		try {
+			SolicitedScheduling entity = schedulingService.findById(id);
+			SolicitedSchedulingDto dto = schedulingConverter.schedulingToDto(entity);
+
+			return ResponseEntity.ok().body(dto);
+
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	@PostMapping
+	public ResponseEntity save(@RequestBody SolicitedSchedulingDto dto) {
+
+		try {
+			//TODO verificar validações do DTO
+			SolicitedScheduling entity = schedulingConverter.dtoToScheduling(dto.getId(), 
+					dto.getVersion(), dto.getAddress(), dto.getStatus(), dto.getRequesterId(), 
+					dto.getValidatorId(), dto.getDate(), dto.getTime());
+
+			//TODO verificar validações da ENTIDADE
+			entity = schedulingService.save(entity);
+			dto = schedulingConverter.schedulingToDto(entity);
+
+			return new ResponseEntity(dto, HttpStatus.CREATED);
+			
+		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
