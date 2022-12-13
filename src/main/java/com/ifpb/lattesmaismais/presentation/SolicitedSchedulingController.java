@@ -38,12 +38,12 @@ public class SolicitedSchedulingController {
 	
 	@GetMapping("/filter")
 	public ResponseEntity findAllWithFilter(
-			@RequestParam String status,
-			@RequestParam Integer validatorId,
-			@RequestParam Integer requesterId,
-			@RequestParam String date,
-			@RequestParam String address, 
-			@RequestParam String time
+			@RequestParam(required = false) String status,
+			@RequestParam(required = false) Integer validatorId,
+			@RequestParam(required = false) Integer requesterId,
+			@RequestParam(required = false) String date,
+			@RequestParam(required = false) String address, 
+			@RequestParam(required = false) String time
 	) {
 		try {
 			SolicitedSchedulingDto dto = new SolicitedSchedulingDto();
@@ -62,6 +62,8 @@ public class SolicitedSchedulingController {
 			return ResponseEntity.ok().body(dtoList);
 
 		} catch (Exception e) {
+			//TODO talvez ao invés de cod 400, usar 200 incluindo a mensagem de erro
+			// tendo em vista que ao passar uma ID de USER inválida será disparada uma exceção, quando poderia retornar apenas uma lista vazia
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}

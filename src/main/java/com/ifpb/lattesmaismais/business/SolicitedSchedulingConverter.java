@@ -43,7 +43,7 @@ public class SolicitedSchedulingConverter {
 			SolicitedSchedulingDto dto = new SolicitedSchedulingDto();
 			
 			dto.setId(entity.getId());
-			dto.setStatus(entity.getStatus().getText());
+			dto.setStatus(entity.getStatus().toString());
 			dto.setAddress(entity.getAddress());
 			dto.setDate(entity.getDate().toString());
 			dto.setTime(entity.getTime().toString());
