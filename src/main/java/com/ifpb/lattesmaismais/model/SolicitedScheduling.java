@@ -1,43 +1,42 @@
 package com.ifpb.lattesmaismais.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Table(name = "SOLICITED_SCHEDULING")
 @Entity
-public class SolicitedScheduling {
+public class SolicitedScheduling implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "SOLICITED_SCHEDULING_ID")
 	private Integer id;
 
-	@Column(name = "SCHEDULED_DATE", nullable = false)
+	@Column(name = "SCHEDULING_DATE", nullable = false)
 	private LocalDate date;
 	
-	@Column(name = "SCHEDULED_TIME", nullable = false)
+	@Column(name = "SCHEDULING_TIME", nullable = false)
 	private LocalTime time;
 	
-	@Column(name = "SCHEDULED_ADDRESS", nullable = false)
+	@Column(name = "SCHEDULING_ADDRESS", nullable = false)
 	private String address;
 	
-	@Column(name = "SCHEDULED_VERSION", nullable = false)
+	@Column(name = "SCHEDULING_VERSION", nullable = false)
 	private String version;
 	
-	@OneToOne
-	@JoinTable(
-			name = "SOLICITED_VALIDATOR",
-			joinColumns = @JoinColumn(name = "SOLICITED_SCHEDULING_ID"),
-			inverseJoinColumns = @JoinColumn(name = "USER_ID")
-			)
-	private User validator;
+	//TODO colocar User (validador) aqui
+	@Column(name = "SCHEDULING_VALIDATOR", nullable = false)
+	private String validator;
 	
-	@Column(name = "SCHEDULED_STATUS", nullable = false)
+	@Column(name = "SCHEDULING_STATUS", nullable = false)
 	private Status status;
 	
-	public SolicitedScheduling(LocalDate date, LocalTime time, String address, String version, User validator) {
+	public SolicitedScheduling(LocalDate date, LocalTime time, String address, String version, String validator) {
 		super();
 		this.date = date;
 		this.time = time;
@@ -83,11 +82,11 @@ public class SolicitedScheduling {
 		this.version = version;
 	}
 
-	public User getValidator() {
+	public String getValidator() {
 		return validator;
 	}
 
-	public void setValidator(User validator) {
+	public void setValidator(String validator) {
 		this.validator = validator;
 	}
 
