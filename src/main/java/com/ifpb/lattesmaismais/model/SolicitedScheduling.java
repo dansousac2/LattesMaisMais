@@ -39,7 +39,7 @@ public class SolicitedScheduling implements Serializable {
 	private User requester;
 	
 	@Column(name = "SCHEDULING_STATUS", nullable = false)
-	private Status status;
+	private StatusScheduling status;
 
 	public SolicitedScheduling() {
 		
@@ -97,11 +97,11 @@ public class SolicitedScheduling implements Serializable {
 		this.requester = requester;
 	}
 
-	public Status getStatus() {
+	public StatusScheduling getStatus() {
 		return status;
 	}
 
-	public void setStatus(Status status) {
+	public void setStatus(StatusScheduling status) {
 		this.status = status;
 	}
 

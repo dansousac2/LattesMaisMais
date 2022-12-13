@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.ifpb.lattesmaismais.model.SolicitedScheduling;
 import com.ifpb.lattesmaismais.model.SolicitedSchedulingRepository;
-import com.ifpb.lattesmaismais.model.Status;
+import com.ifpb.lattesmaismais.model.StatusScheduling;
 
 @Service
 public class SolicitedSchedulingService {
@@ -42,12 +42,11 @@ public class SolicitedSchedulingService {
 		return schedulingRepository.findAllByAddress(address);
 	}
 	
-	//TODO habilitar quando criar classe User com seu ID
-//	public List<SolicitedScheduling> findAllByValidatorId(Integer id){
-//		return schedulingRepository.findAllByValidatorId(id);
-//	}
+	public List<SolicitedScheduling> findAllByValidatorId(Integer id){
+		return schedulingRepository.findAllByValidatorId(id);
+	}
 	
-	public List<SolicitedScheduling> findAllByStatus(Status status){
+	public List<SolicitedScheduling> findAllByStatus(StatusScheduling status){
 		return schedulingRepository.findAllByStatus(status);
 	}
 }

@@ -1,6 +1,6 @@
 package com.ifpb.lattesmaismais.model;
 
-public enum Status {
+public enum StatusScheduling {
 	OPEN("open"),
 	ACEITED("aceited"),
 	DECLINED("declined"),
@@ -8,11 +8,11 @@ public enum Status {
 	
 	private String text;
 
-	Status(String text) {
+	StatusScheduling(String text) {
 		this.text = text;
 	}
 	
-	private String getText() {
+	public String getText() {
 		return this.text;
 	}
 }
