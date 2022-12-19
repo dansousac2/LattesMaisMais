@@ -53,7 +53,7 @@ public class SolicitedSchedulingService {
 	public List<SolicitedScheduling> findAllByStatus(StatusScheduling status){
 		return schedulingRepository.findAllByStatus(status);
 	}
-	//TODO retonar NULO ao invés de lanãr exceção?
+	//TODO retonar NULO ao invés de lançar exceção?
 	public SolicitedScheduling findById(Integer id) throws ObjectNotFoundException {
 		return schedulingRepository.findById(id).orElseThrow(
 					() -> new ObjectNotFoundException("Não foi possível encontrar SolicitedScheduling com id " + id)
