@@ -9,11 +9,12 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class FileUploadService {
 
-	public void uploadFile(MultipartFile file, Integer userID) throws IllegalStateException, IOException {
+	public void uploadFile(MultipartFile file, String userID) throws IllegalStateException, IOException {
 		//TODO adicionar restrições
 		String projectDirectory = new File("").getAbsolutePath();
 		// vai até a pasta do projeto
 		String path = projectDirectory + "\\src\\main\\resources\\receipts\\user_" + userID;
+
 		// concatena com a pasta destino
 		if(!new File(path).exists()) {
 			new File(path).mkdir();
