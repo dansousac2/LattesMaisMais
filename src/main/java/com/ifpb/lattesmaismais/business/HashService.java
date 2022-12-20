@@ -1,6 +1,6 @@
 package com.ifpb.lattesmaismais.business;
 
-import com.ifpb.lattesmaismais.presentation.HashException;
+import com.ifpb.lattesmaismais.presentation.exception.HashException;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;

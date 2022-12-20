@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.ifpb.lattesmaismais.model.SolicitedScheduling;
 import com.ifpb.lattesmaismais.model.StatusScheduling;
-import com.ifpb.lattesmaismais.presentation.ObjectNotFoundException;
-import com.ifpb.lattesmaismais.presentation.SolicitedSchedulingDto;
+import com.ifpb.lattesmaismais.presentation.exception.ObjectNotFoundException;
+import com.ifpb.lattesmaismais.presentation.dto.SolicitedSchedulingDto;
 
 @Service
 public class SolicitedSchedulingConverterService {

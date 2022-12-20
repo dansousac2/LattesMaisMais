@@ -1,4 +1,4 @@
-package com.ifpb.lattesmaismais.presentation;
+package com.ifpb.lattesmaismais.presentation.exception;
 
 public class HashException extends Exception {
 

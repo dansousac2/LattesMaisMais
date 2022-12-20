@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.ifpb.lattesmaismais.model.User;
 import com.ifpb.lattesmaismais.model.UserRepository;
-import com.ifpb.lattesmaismais.presentation.ObjectNotFoundException;
+import com.ifpb.lattesmaismais.presentation.exception.ObjectNotFoundException;
 
 @Service
 public class UserService {

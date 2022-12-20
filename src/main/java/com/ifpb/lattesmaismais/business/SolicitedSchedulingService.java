@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.ifpb.lattesmaismais.model.SolicitedScheduling;
 import com.ifpb.lattesmaismais.model.SolicitedSchedulingRepository;
 import com.ifpb.lattesmaismais.model.StatusScheduling;
-import com.ifpb.lattesmaismais.presentation.ObjectNotFoundException;
+import com.ifpb.lattesmaismais.presentation.exception.ObjectNotFoundException;
 
 @Service
 public class SolicitedSchedulingService {

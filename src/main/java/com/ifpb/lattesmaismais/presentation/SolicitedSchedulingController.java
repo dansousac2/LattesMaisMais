@@ -2,6 +2,7 @@ package com.ifpb.lattesmaismais.presentation;
 
 import java.util.List;
 
+import com.ifpb.lattesmaismais.presentation.dto.SolicitedSchedulingDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
