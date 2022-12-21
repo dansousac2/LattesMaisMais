@@ -22,11 +22,12 @@ public class FileUploadService {
 
 	public void uploadFile(MultipartFile file, String userID) throws IllegalStateException, IOException, EncryptionException, FileConversionException {
 		//TODO adicionar restrições
-		String projectDirectory = new File("").getAbsolutePath();
 		// vai até a pasta do projeto
-		String path = projectDirectory + "\\src\\main\\resources\\receipts\\user_" + userID;
-
+		String projectDirectory = new File("").getAbsolutePath();
+		
 		// concatena com a pasta destino
+		String path = projectDirectory + "\\src\\main\\resources\\receipts\\user_" + userID;
+		
 		if(!new File(path).exists()) {
 			new File(path).mkdir();
 		}

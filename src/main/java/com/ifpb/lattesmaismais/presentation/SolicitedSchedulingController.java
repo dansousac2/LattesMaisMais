@@ -20,7 +20,7 @@ import com.ifpb.lattesmaismais.business.SolicitedSchedulingService;
 import com.ifpb.lattesmaismais.model.SolicitedScheduling;
 
 @RestController
-@RequestMapping("api/solicitedsheduling")
+@RequestMapping("api/solicitedscheduling")
 public class SolicitedSchedulingController {
 
 	@Autowired
