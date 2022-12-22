@@ -19,8 +19,7 @@ import java.security.spec.KeySpec;
 @Service
 public class FileEncryptionService {
 
-    @Value("file.encryption.password")
-    private String encryptionPassword;
+    private static final String encryptionPassword = "thisisonlyatest";
 
     public byte[] encryptData(byte[] data) throws EncryptionException {
 

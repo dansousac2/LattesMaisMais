@@ -10,7 +10,7 @@ import java.security.NoSuchAlgorithmException;
 
 @Service
 public class HashService {
-	public String hashingSHA256(String text) throws Exception {
+	public String hashingSHA256(String text) throws HashException {
 		try {
 			MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
 
