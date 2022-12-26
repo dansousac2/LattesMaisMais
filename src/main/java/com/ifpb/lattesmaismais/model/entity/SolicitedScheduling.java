@@ -1,10 +1,11 @@
-package com.ifpb.lattesmaismais.model;
+package com.ifpb.lattesmaismais.model.entity;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 
+import com.ifpb.lattesmaismais.model.enums.StatusScheduling;
 import jakarta.persistence.*;
 
 @Table(name = "SOLICITED_SCHEDULING")

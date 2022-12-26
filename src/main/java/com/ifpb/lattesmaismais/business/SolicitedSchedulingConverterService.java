@@ -8,8 +8,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ifpb.lattesmaismais.model.SolicitedScheduling;
-import com.ifpb.lattesmaismais.model.StatusScheduling;
+import com.ifpb.lattesmaismais.model.entity.SolicitedScheduling;
+import com.ifpb.lattesmaismais.model.enums.StatusScheduling;
 import com.ifpb.lattesmaismais.presentation.exception.ObjectNotFoundException;
 import com.ifpb.lattesmaismais.presentation.dto.SolicitedSchedulingDto;
 

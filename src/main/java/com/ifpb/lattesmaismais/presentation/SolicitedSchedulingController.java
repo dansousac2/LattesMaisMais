@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ifpb.lattesmaismais.business.SolicitedSchedulingConverterService;
 import com.ifpb.lattesmaismais.business.SolicitedSchedulingService;
-import com.ifpb.lattesmaismais.model.SolicitedScheduling;
+import com.ifpb.lattesmaismais.model.entity.SolicitedScheduling;
 
 @RestController
 @RequestMapping("api/solicitedscheduling")

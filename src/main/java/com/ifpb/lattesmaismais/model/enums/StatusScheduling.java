@@ -1,4 +1,4 @@
-package com.ifpb.lattesmaismais.model;
+package com.ifpb.lattesmaismais.model.enums;
 
 public enum StatusScheduling {
 	OPEN,

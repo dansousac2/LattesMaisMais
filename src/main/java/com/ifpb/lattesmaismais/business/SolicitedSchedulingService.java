@@ -9,9 +9,9 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.stereotype.Service;
 
-import com.ifpb.lattesmaismais.model.SolicitedScheduling;
-import com.ifpb.lattesmaismais.model.SolicitedSchedulingRepository;
-import com.ifpb.lattesmaismais.model.StatusScheduling;
+import com.ifpb.lattesmaismais.model.entity.SolicitedScheduling;
+import com.ifpb.lattesmaismais.model.repository.SolicitedSchedulingRepository;
+import com.ifpb.lattesmaismais.model.enums.StatusScheduling;
 import com.ifpb.lattesmaismais.presentation.exception.ObjectNotFoundException;
 
 @Service

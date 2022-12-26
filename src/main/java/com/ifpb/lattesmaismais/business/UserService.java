@@ -3,8 +3,8 @@ package com.ifpb.lattesmaismais.business;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ifpb.lattesmaismais.model.User;
-import com.ifpb.lattesmaismais.model.UserRepository;
+import com.ifpb.lattesmaismais.model.entity.User;
+import com.ifpb.lattesmaismais.model.repository.UserRepository;
 import com.ifpb.lattesmaismais.presentation.exception.ObjectNotFoundException;
 
 @Service

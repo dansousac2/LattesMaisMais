@@ -1,8 +1,9 @@
-package com.ifpb.lattesmaismais.model;
+package com.ifpb.lattesmaismais.model.entity;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.ifpb.lattesmaismais.model.enums.AccountStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
