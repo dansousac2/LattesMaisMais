@@ -19,8 +19,10 @@ public class Receipt {
     @Column(name = "RECEIPT_EXTENSION", nullable = false)
     private String extension;
 
-    @ManyToOne
-    @JoinColumn(name = "USER_ID", nullable = false)
+    // Deixei para não salvar no banco pois essa coluna não é o foco da experimentação
+//    @ManyToOne
+//    @JoinColumn(name = "USER_ID", nullable = false)
+    @Transient
     private User owner;
 
     public Receipt() {

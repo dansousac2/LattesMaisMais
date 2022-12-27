@@ -52,8 +52,9 @@ public class SolicitedSchedulingController {
 			@RequestParam(required = false) String time
 	) {
 		try {
-			SolicitedScheduling filter = schedulingConverter.dtoToScheduling(null, null, address, status, requesterId, validatorId, date, time);
 			// O filtro não utiliza ID nem VERSION
+			SolicitedScheduling filter = schedulingConverter.dtoToScheduling(null, null, address, status, requesterId, validatorId, date, time);
+			
 			List<SolicitedScheduling> entityList = schedulingService.findAll(filter);
 			List<SolicitedSchedulingDto> dtoList = schedulingConverter.schedulingToDtoList(entityList);
 			
