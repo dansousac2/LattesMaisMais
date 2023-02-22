@@ -29,7 +29,15 @@ public class Receipt {
 
     }
 
-    public Integer getId() {
+    public Receipt(Integer id, String name, String extension, User owner) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.extension = extension;
+		this.owner = owner;
+	}
+
+	public Integer getId() {
         return id;
     }
 

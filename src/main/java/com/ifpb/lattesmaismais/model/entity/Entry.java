@@ -3,15 +3,50 @@ package com.ifpb.lattesmaismais.model.entity;
 import java.util.List;
 import java.util.Objects;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "ENTRY")
 public class Entry {
 
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ENTRY_ID", nullable = false)
 	private Integer id;
+	
+	@Column(name = "ENTRY_GROUP", nullable = false)
 	private String group;
+	
+	@Column(name = "ENTRY_NAME", nullable = false)
 	private String name;
+	
+	@OneToOne
+	@JoinTable(
+			name = "ENTRY_RECEIPTS",
+			joinColumns = @JoinColumn(name = "ENTRY_ID"),
+			inverseJoinColumns = @JoinColumn(name = "CURRICULUM_ID")
+	)
 	private List<Receipt> receipts;
 	
 	public Entry() {
 		
+	}
+
+	public Entry(Integer id, String group, String name, List<Receipt> receipts) {
+		super();
+		this.id = id;
+		this.group = group;
+		this.name = name;
+		this.receipts = receipts;
 	}
 
 	public Integer getId() {
