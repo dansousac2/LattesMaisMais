@@ -19,22 +19,15 @@ public class Receipt {
     @Column(name = "RECEIPT_EXTENSION", nullable = false)
     private String extension;
 
-    // Deixei para não salvar no banco pois essa coluna não é o foco da experimentação
-//    @ManyToOne
-//    @JoinColumn(name = "USER_ID", nullable = false)
-    @Transient
-    private User owner;
-
     public Receipt() {
 
     }
 
-    public Receipt(Integer id, String name, String extension, User owner) {
+    public Receipt(Integer id, String name, String extension) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.extension = extension;
-		this.owner = owner;
 	}
 
 	public Integer getId() {
@@ -61,29 +54,22 @@ public class Receipt {
         this.extension = extension;
     }
 
-    public User getOwner() {
-        return owner;
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hash(extension, id, name);
+	}
 
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Receipt other = (Receipt) obj;
+		return Objects.equals(extension, other.extension) && Objects.equals(id, other.id)
+				&& Objects.equals(name, other.name);
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Receipt receipt = (Receipt) o;
-
-        if (!Objects.equals(id, receipt.id)) return false;
-        if (!Objects.equals(name, receipt.name)) return false;
-        if (!Objects.equals(extension, receipt.extension)) return false;
-        return Objects.equals(owner, receipt.owner);
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
 }

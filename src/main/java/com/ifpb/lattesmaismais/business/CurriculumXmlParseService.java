@@ -3,7 +3,6 @@ package com.ifpb.lattesmaismais.business;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -266,10 +265,6 @@ public class CurriculumXmlParseService extends DefaultHandler {
 	 * contidas no documento XML (textos contidos entre tags). EX: <tag> texto
 	 * recuperado </tag>
 	 */
-	public void characters(char[] ch, int start, int length) throws SAXException {
-		super.characters(ch, start, length);
-
-	}
 
 	private void academicEducation(Attributes attributes) {
 		filter = "NOME-INSTITUICAO NOME-CURSO STATUS-DO-CURSO ANO-DE-INICIO ANO-DE-CONCLUSAO";
