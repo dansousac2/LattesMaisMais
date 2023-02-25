@@ -12,6 +12,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -21,6 +22,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.ifpb.lattesmaismais.model.entity.Curriculum;
 import com.ifpb.lattesmaismais.model.entity.Entry;
+import com.ifpb.lattesmaismais.presentation.exception.HashException;
 
 import io.jsonwebtoken.lang.Collections;
 /**
@@ -33,10 +35,16 @@ import io.jsonwebtoken.lang.Collections;
 @Service
 public class CurriculumXmlParseService extends DefaultHandler {
 
+	@Value("${directory.file}")
+	private String pathXmlCurriculum;
+	@Autowired
+	private HashService hashService;
+	
 	private Curriculum curriculum;
 	private String owner;
 	private int entryCount = 0;
 	private HashMap<String, List<String>> hashEntry;
+	
 	private String group = "";
 	private String filter;
 	private String identifierEntry;
@@ -72,7 +80,7 @@ public class CurriculumXmlParseService extends DefaultHandler {
 	public void startDocument() throws SAXException {
 		super.startDocument();
 		System.out.println("- - - Início de parse de documento - - -\n");
-		hashEntry = new HashMap<>(); // TODO retirar para testes com API
+		hashEntry = new HashMap<>();
 	}
 
 	public void endDocument() throws SAXException {
@@ -369,19 +377,26 @@ public class CurriculumXmlParseService extends DefaultHandler {
 		return listEntry;
 	}
 
-	public Curriculum xmlToCurriculum(String xmlPath) throws ParserConfigurationException, SAXException, IOException {
-		doParse(xmlPath);
+	public Curriculum xmlToCurriculum(String userId) throws ParserConfigurationException, SAXException, IOException, HashException {
+		
+		hashService = new HashService(); //TODO teste/ retirar quando for usar application.java
+		String hashIdUser = hashService.hashingSHA256(userId);
+		pathXmlCurriculum = "C:\\Users\\Public\\Downloads"; //TODO teste/ retirar ao usar app.java
+		pathXmlCurriculum += String.format("\\%s\\curriculum.xml", hashIdUser);
+		
+		doParse(pathXmlCurriculum);
+		
 		return curriculum;
 	}
 
 	public static void main(String[] args) {
-//		String path = "D:\\01-Documentos\\IF\\7 P\\PJ2\\curriculoXML-v2.xml";
-		String path = "D:\\01-Documentos\\IF\\7 P\\PJ2\\teste.xml"; // para testes
+
 		CurriculumXmlParseService cxps = new CurriculumXmlParseService();
+		
 		try {
-			Curriculum c = cxps.xmlToCurriculum(path);
+			Curriculum c = cxps.xmlToCurriculum("1");
 			
-		} catch (ParserConfigurationException | SAXException | IOException e) {
+		} catch (ParserConfigurationException | SAXException | IOException | HashException e) {
 			e.printStackTrace();
 		}
 	}
