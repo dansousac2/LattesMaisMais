@@ -1,5 +1,6 @@
 package com.ifpb.lattesmaismais.model.entity;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,12 +12,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.SecondaryTable;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "ENTRY")
-public class Entry {
+public class Entry implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,12 +34,12 @@ public class Entry {
 	@Column(name = "ENTRY_NAME", nullable = false)
 	private String name;
 	
-	@OneToOne
 	@JoinTable(
 			name = "ENTRY_RECEIPTS",
 			joinColumns = @JoinColumn(name = "ENTRY_ID"),
-			inverseJoinColumns = @JoinColumn(name = "CURRICULUM_ID")
+			inverseJoinColumns = @JoinColumn(name = "RECEIPT_ID")
 	)
+	@OneToMany
 	private List<Receipt> receipts;
 	
 	public Entry() {

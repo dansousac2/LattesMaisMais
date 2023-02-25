@@ -2,13 +2,16 @@ package com.ifpb.lattesmaismais.model.entity;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-@Table(name = "ENTRY_RECEIPT")
+@Table(name = "RECEIPTS")
 @Entity
-public class Receipt {
+public class Receipt implements Serializable {
 
-    @Id
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "RECEIPT_ID", nullable = false)
     private Integer id;

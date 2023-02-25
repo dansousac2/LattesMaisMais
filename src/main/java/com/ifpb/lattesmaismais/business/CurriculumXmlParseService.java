@@ -33,7 +33,6 @@ import io.jsonwebtoken.lang.Collections;
 @Service
 public class CurriculumXmlParseService extends DefaultHandler {
 
-	@Autowired
 	private Curriculum curriculum;
 	private String owner;
 	private int entryCount = 0;
