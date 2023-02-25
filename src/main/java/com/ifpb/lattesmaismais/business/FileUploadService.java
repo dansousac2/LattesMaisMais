@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class FileUploadService {
 
+	private String path;
+	
 	@Value("${directory.file}")
 	private String directoryFile;
 
@@ -32,15 +34,10 @@ public class FileUploadService {
 	@Autowired
 	private ReceiptConverterService converterService;
 
-	public void uploadFile(MultipartFile file, String userID) throws IllegalStateException, IOException, EncryptionException, FileConversionException {
-		//TODO adicionar restrições
 
-		// concatena com a pasta destino
-		String path = directoryFile + "\\" + userID;
-		
-		if(!new File(path).exists()) {
-			new File(path).mkdir();
-		}
+	public void uploadFile(MultipartFile file, String hashUserId) throws IllegalStateException, IOException, EncryptionException, FileConversionException {
+
+		createDiretory(hashUserId);
 
 		// Convertendo file para array
 		byte[] fileData = file.getBytes();
@@ -56,6 +53,13 @@ public class FileUploadService {
 		byte[] encryptedData = fileEncryptionService.encryptData(fileData);
 
 		fileConverterService.writeFile(path  + "\\" + entity.getId() + entity.getExtension(), encryptedData);
+	}
+
+	public void uploadCurriculum(MultipartFile file, String hashUserId) throws IOException, FileConversionException {
+		
+		createDiretory(hashUserId);
+		byte[] xml = file.getBytes();
+		fileConverterService.writeFile(path  + "\\curriculum.xml", xml);
 	}
 
 	public void readFile(String fileName, String userID) throws FileNotFoundException, FileConversionException, DecryptionException {
@@ -79,5 +83,13 @@ public class FileUploadService {
 		}
 
 		fileConverterService.writeFile(newPath + "\\" + fileName, decryptedData);
+	}
+
+	private void createDiretory(String userID) {
+		path = directoryFile + "\\" + userID;
+		
+		if(!new File(path).exists()) {
+			new File(path).mkdir();
+		}
 	}
 }

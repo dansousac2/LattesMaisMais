@@ -15,6 +15,7 @@ public class FileConverterService {
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
             fileInputStream.read(fileData);
+            fileInputStream.close();
         } catch (Exception e) {
             throw new FileConversionException(e.getMessage());
         }
@@ -26,6 +27,7 @@ public class FileConverterService {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(pathFile);
             fileOutputStream.write(data);
+            fileOutputStream.close();
         } catch (Exception e) {
             throw new FileConversionException(e.getMessage());
         }

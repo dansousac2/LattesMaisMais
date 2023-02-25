@@ -33,6 +33,20 @@ public class FileUploadController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
+	
+	@PostMapping("api/uploadcurriculumxml")
+	public ResponseEntity uploadCurriculum(@RequestParam MultipartFile file, String userId) {
+		try {
+			// Criando hash:
+			String hashUserId = hashService.hashingSHA256(userId);
+			
+			uploadService.uploadCurriculum(file, hashUserId);
+			
+			return new ResponseEntity(null, HttpStatus.CREATED);
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 
 	@GetMapping("api/readfile")
 	public ResponseEntity readFile(@RequestParam String fileName, String userId) {
