@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,12 +35,12 @@ public class Entry implements Serializable {
 	@Column(name = "ENTRY_NAME", nullable = false)
 	private String name;
 	
+	@OneToMany(cascade = CascadeType.PERSIST)
 	@JoinTable(
 			name = "ENTRY_RECEIPTS",
 			joinColumns = @JoinColumn(name = "ENTRY_ID"),
 			inverseJoinColumns = @JoinColumn(name = "RECEIPT_ID")
 	)
-	@OneToMany
 	private List<Receipt> receipts;
 	
 	public Entry() {

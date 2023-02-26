@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,8 +12,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -26,13 +27,10 @@ public class Curriculum implements Serializable {
     @Column(name = "CURRICULUM_ID", nullable = false)
 	private Integer id;
 	
-	@Column(name = "CURRICULUM_OWNER", nullable = false)
-	private String ownerName;
-	
 	@Column(name = "CURRICULUM_ENTRY_QTD")
 	private int entryCount;
 	
-	@ManyToMany
+	@OneToMany(cascade = CascadeType.PERSIST)
 	@JoinTable(
 			name = "CURRICULUM_ENTRIES",
 			joinColumns = @JoinColumn(name = "CURRICULUM_ID"),
@@ -48,9 +46,8 @@ public class Curriculum implements Serializable {
 		
 	}
 
-	public Curriculum(Integer id, String ownerName, int entryCount, List<Entry> entries, User owner) {
+	public Curriculum(Integer id, int entryCount, List<Entry> entries, User owner) {
 		this.id = id;
-		this.ownerName = ownerName;
 		this.entryCount = entryCount;
 		this.entries = entries;
 		this.owner = owner;
@@ -72,14 +69,6 @@ public class Curriculum implements Serializable {
 		this.id = id;
 	}
 
-	public String getOwnerName() {
-		return ownerName;
-	}
-
-	public void setOwnerName(String owner) {
-		this.ownerName = owner;
-	}
-
 	public int getEntryCount() {
 		return entryCount;
 	}
@@ -98,7 +87,7 @@ public class Curriculum implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(entries, entryCount, id, ownerName);
+		return Objects.hash(entries, entryCount, id, owner);
 	}
 
 	@Override
@@ -111,7 +100,7 @@ public class Curriculum implements Serializable {
 			return false;
 		Curriculum other = (Curriculum) obj;
 		return Objects.equals(entries, other.entries) && entryCount == other.entryCount && Objects.equals(id, other.id)
-				&& Objects.equals(ownerName, other.ownerName);
+				&& Objects.equals(owner, other.owner);
 	}
-	
+
 }

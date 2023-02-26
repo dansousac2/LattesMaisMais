@@ -23,6 +23,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.ifpb.lattesmaismais.model.entity.Curriculum;
 import com.ifpb.lattesmaismais.model.entity.Entry;
 import com.ifpb.lattesmaismais.presentation.exception.HashException;
+import com.ifpb.lattesmaismais.presentation.exception.ObjectNotFoundException;
 
 import io.jsonwebtoken.lang.Collections;
 /**
@@ -40,10 +41,15 @@ public class CurriculumXmlParseService extends DefaultHandler {
 	@Autowired
 	private HashService hashService;
 	
+	@Autowired
+	private UserService userService;
 	private Curriculum curriculum;
-	private String owner;
+	private int ownerId;
 	private int entryCount = 0;
 	private HashMap<String, List<String>> hashEntry;
+	
+	@Autowired
+	private CurriculumService curriculumService;
 	
 	private String group = "";
 	private String filter;
@@ -86,7 +92,11 @@ public class CurriculumXmlParseService extends DefaultHandler {
 	public void endDocument() throws SAXException {
 		super.endDocument();
 		// preparando currículo
-		buildCurriculum();
+		try {
+			buildCurriculum();
+		} catch (ObjectNotFoundException e) {
+			throw new SAXException("Erro API SAX - id de usuário não encontrado: " + e.getMessage());
+		}
 		System.out.println("\n- - - Fim de parse de documento! - - -");
 	}
 
@@ -100,7 +110,7 @@ public class CurriculumXmlParseService extends DefaultHandler {
 
 		switch (localName) {
 		case "DADOS-GERAIS":
-			owner = attributes.getValue(0);
+			System.out.println("Currículo pertencente a: " + attributes.getValue(0));
 			break;
 			
 		case "FORMACAO-ACADEMICA-TITULACAO":
@@ -353,12 +363,12 @@ public class CurriculumXmlParseService extends DefaultHandler {
 		this.identifierEntry = identifierEntry;
 	}
 
-	private void buildCurriculum() {
+	private void buildCurriculum() throws ObjectNotFoundException {
 		curriculum = new Curriculum();
-		curriculum.setOwnerName(owner);
 		curriculum.setEntryCount(entryCount);
 		// setar entradas do currículo
 		curriculum.setEntries(hashStringsToListEntries(hashEntry));
+		curriculum.setOwner(userService.findById(ownerId));
 	}
 
 	private List<Entry> hashStringsToListEntries(HashMap<String, List<String>> hashmap) {
@@ -379,25 +389,13 @@ public class CurriculumXmlParseService extends DefaultHandler {
 
 	public Curriculum xmlToCurriculum(String userId) throws ParserConfigurationException, SAXException, IOException, HashException {
 		
-		hashService = new HashService(); //TODO teste/ retirar quando for usar application.java
+		ownerId = Integer.parseInt(userId);
 		String hashIdUser = hashService.hashingSHA256(userId);
-		pathXmlCurriculum = "C:\\Users\\Public\\Downloads"; //TODO teste/ retirar ao usar app.java
 		pathXmlCurriculum += String.format("\\%s\\curriculum.xml", hashIdUser);
 		
 		doParse(pathXmlCurriculum);
 		
-		return curriculum;
+		return curriculumService.save(curriculum);
 	}
 
-	public static void main(String[] args) {
-
-		CurriculumXmlParseService cxps = new CurriculumXmlParseService();
-		
-		try {
-			Curriculum c = cxps.xmlToCurriculum("1");
-			
-		} catch (ParserConfigurationException | SAXException | IOException | HashException e) {
-			e.printStackTrace();
-		}
-	}
 }

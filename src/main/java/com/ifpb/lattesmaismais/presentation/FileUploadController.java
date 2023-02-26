@@ -1,9 +1,12 @@
 package com.ifpb.lattesmaismais.presentation;
 
 import com.ifpb.lattesmaismais.business.*;
+import com.ifpb.lattesmaismais.model.entity.Curriculum;
+import com.ifpb.lattesmaismais.presentation.dto.CurriculumDto;
 import com.ifpb.lattesmaismais.presentation.exception.EncryptionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +23,12 @@ public class FileUploadController {
 	@Autowired
 	private HashService hashService;
 
+	@Autowired
+	private CurriculumXmlParseService cXmlParseService;
+	
+	@Autowired
+	private CurriculumConverterService curriculumConverterService;
+
 	@PostMapping("api/fileupload")
 	public ResponseEntity uploadFile(@RequestParam MultipartFile file, String userId) {
 		try {
@@ -27,22 +36,26 @@ public class FileUploadController {
 			String hashUserId = hashService.hashingSHA256(userId);
 
 			uploadService.uploadFile(file, hashUserId);
-			
+
 			return new ResponseEntity(null, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
-	
+
 	@PostMapping("api/uploadcurriculumxml")
 	public ResponseEntity uploadCurriculum(@RequestParam MultipartFile file, String userId) {
 		try {
 			// Criando hash:
 			String hashUserId = hashService.hashingSHA256(userId);
-			
+
 			uploadService.uploadCurriculum(file, hashUserId);
 			
-			return new ResponseEntity(null, HttpStatus.CREATED);
+			Curriculum curriculum = cXmlParseService.xmlToCurriculum(userId);
+			
+			CurriculumDto curriculumDto = curriculumConverterService.curriculumToDto(curriculum);
+			
+			return new ResponseEntity(curriculumDto, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -54,7 +67,7 @@ public class FileUploadController {
 			String hashUserId = hashService.hashingSHA256(userId);
 
 			uploadService.readFile(fileName, hashUserId);
-			
+
 			return ResponseEntity.ok(null);
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
