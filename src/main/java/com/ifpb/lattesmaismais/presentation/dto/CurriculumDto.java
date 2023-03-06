@@ -4,12 +4,24 @@ import java.util.List;
 
 import com.ifpb.lattesmaismais.model.entity.Entry;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+
 public class CurriculumDto {
 
 	private int id;
-	private String ownerName; 
+	
+	@NotBlank(message = "Nome de usuário não pode ser nulo!")
+	private String ownerName;
+	
+	@Positive(message = "O ID de proprietário deve ser um valor positivo!")
 	private int ownerId;
+	
+	@Positive(message = "O entryCount de proprietário deve ser um valor positivo!")
 	private int entryCount;
+	
+	@Size(min = 1, message = "O currículo deve conter ao menos uma entrada identificada!")
 	private List<Entry> entryList;
 	
 	public CurriculumDto() {
