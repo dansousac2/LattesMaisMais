@@ -94,6 +94,8 @@ public class CurriculumXmlParseService extends DefaultHandler {
 		// preparando currículo
 		try {
 			buildCurriculum();
+			entryCount = 0;
+			filter = null;
 		} catch (ObjectNotFoundException e) {
 			throw new SAXException("Erro API SAX - id de usuário não encontrado: " + e.getMessage());
 		}
@@ -141,46 +143,45 @@ public class CurriculumXmlParseService extends DefaultHandler {
 			withinProjects(attributes);
 			break;
 
+		// para trabalhos em eventos, as próximas 3 tags formarão 1 entrada no currículo 
 		case "TRABALHOS-EM-EVENTOS":
 			createAndSetGroup("Trabalho em eventos");
 			break;
-		
 		case "DADOS-BASICOS-DO-TRABALHO":
 			workInEvents(attributes);
 			break;
-			
 		case "DETALHAMENTO-DO-TRABALHO":
 			workInEvents(attributes);
 			break;
-			
+		
+		// para produção técnica / 3 tags abaixo = 1 entrada
 		case "PRODUCAO-TECNICA":
 			createAndSetGroup("Produção Técnica");
 			break;
-			
 		case "DADOS-BASICOS-DA-ORGANIZACAO-DE-EVENTO":
 			tecnicalProduction(attributes);
 			break;
-			
 		case "DETALHAMENTO-DA-ORGANIZACAO-DE-EVENTO":
 			tecnicalProduction(attributes);
 			break;
-			
+		
+		// formação complementar / 3 tags abaixo 
 		case "FORMACAO-COMPLEMENTAR":
 			createAndSetGroup("Formação Complementar");
 			break;
-			
 		case "FORMACAO-COMPLEMENTAR-DE-EXTENSAO-UNIVERSITARIA":
 			complemFormation(attributes);
 			break;
-			
 		case "FORMACAO-COMPLEMENTAR-CURSO-DE-CURTA-DURACAO":
 			complemFormation(attributes);
 			break;
-			
+		
+		// participação em eventos e congressos / multiplas entradas formadas a partir deste grupo 
 		case "PARTICIPACAO-EM-EVENTOS-CONGRESSOS":
 			createAndSetGroup("Participação em Eventos e Congressos");
 			break;
-			
+
+		// participação em seminário / 2 abaixo
 		case "DADOS-BASICOS-DA-PARTICIPACAO-EM-SEMINARIO":
 			participationEventsConferences(attributes);
 			break;
@@ -188,27 +189,32 @@ public class CurriculumXmlParseService extends DefaultHandler {
 			participationEventsConferences(attributes);
 			break;
 			
+		// participação em oficinas / 2 abaixo
 		case "DADOS-BASICOS-DA-PARTICIPACAO-EM-OFICINA":
 			participationEventsConferences(attributes);
 			break;
 		case "DETALHAMENTO-DA-PARTICIPACAO-EM-OFICINA":
 			participationEventsConferences(attributes);
 			break;
-			
+		
+		// participação em encontro / 2 abaixo
 		case "DADOS-BASICOS-DA-PARTICIPACAO-EM-ENCONTRO":
 			participationEventsConferences(attributes);
 			break;
 		case "DETALHAMENTO-DA-PARTICIPACAO-EM-ENCONTRO":
 			participationEventsConferences(attributes);
 			break;
-			
+
+		// participação em exposição / 2 abaixo
 		case "DADOS-BASICOS-DA-PARTICIPACAO-EM-EXPOSICAO":
 			participationEventsConferences(attributes);
 			break;
 		case "DETALHAMENTO-DA-PARTICIPACAO-EM-EXPOSICAO":
 			participationEventsConferences(attributes);
 			break;
-			
+		
+		
+		// participação em outras participações / 2 abaixo
 		case "DADOS-BASICOS-DE-OUTRAS-PARTICIPACOES-EM-EVENTOS-CONGRESSOS":
 			participationEventsConferences(attributes);
 			break;
@@ -216,15 +222,11 @@ public class CurriculumXmlParseService extends DefaultHandler {
 			participationEventsConferences(attributes);
 			break;
 			
-		case "1":
+		case "+1":
 			break;
-		case "2":
+		case "+2":
 			break;
-		case "3":
-			break;
-		case "40":
-			break;
-		case "50":
+		case "+3":
 			break;
 		default:
 			break;
@@ -247,19 +249,17 @@ public class CurriculumXmlParseService extends DefaultHandler {
 		case "ATUACAO-PROFISSIONAL":
 			baseToConcat = null;
 			break;
-			
+		
 		case "TRABALHOS-EM-EVENTOS":
 			group = null;
 			break;
-			
 		case "DETALHAMENTO-DO-TRABALHO":
 			baseToConcat = null;
 			break;
-			
+
 		case "PRODUCAO-TECNICA":
 			group = null;
 			break;
-			
 		case "DETALHAMENTO-DA-ORGANIZACAO-DE-EVENTO":
 			baseToConcat = null;
 			break;
@@ -271,7 +271,22 @@ public class CurriculumXmlParseService extends DefaultHandler {
 		case "PARTICIPACAO-EM-EVENTOS-CONGRESSOS":
 			group = null;
 			break;
-			
+		case "DETALHAMENTO-DA-PARTICIPACAO-EM-SEMINARIO":
+			baseToConcat = null;
+			break;
+		case "DETALHAMENTO-DA-PARTICIPACAO-EM-OFICINA":
+			baseToConcat = null;
+			break;
+		case "DETALHAMENTO-DA-PARTICIPACAO-EM-ENCONTRO":
+			baseToConcat = null;
+			break;
+		case "DETALHAMENTO-DA-PARTICIPACAO-EM-EXPOSICAO":
+			baseToConcat = null;
+			break;
+		case "DETALHAMENTO-DE-OUTRAS-PARTICIPACOES-EM-EVENTOS-CONGRESSOS":
+			baseToConcat = null;
+			break;
+		
 		default:
 			break;
 		}
@@ -325,32 +340,18 @@ public class CurriculumXmlParseService extends DefaultHandler {
 		concatTags(attributes, indexLocalNameAttribute, localNameAttribute);
 	}
 
-	private void concatTags(Attributes attributes, int index, String tagName) {
-		if (attributes.getLocalName(index).equals(tagName)) {
-			// para que assim seja possível passar adiante para a próxima tag
-			baseToConcat = identifierEntry;
-		} else {
-			hashEntry.get(group).add(identifierEntry);
-			entryCount++;
-			System.out.println(String.format("Entrada %d adicionada ao grupo %s", entryCount, group)); // teste(?)
-		}
-	}
-
-	private void createAndSetGroup(String group) {
-		if (!hashEntry.containsKey(group)) {
-			hashEntry.put(group, new ArrayList<>());
-		}
-		this.group = group;
-	}
-
+	/*
+	 * cria o identificador da entrada, podendo este ser parcial ou completo, referendo-se a lista de filtros/palavras-chave
+	 * que foi dada
+	 */
 	private void extractAttributes(Attributes attributes) {
 		String identifierEntry = "";
 		if (baseToConcat != null) {
 			identifierEntry = baseToConcat;
 		}
-		// com a String contendo os termos, criamos um array para verificação da palavra
-		// por inteiro
+		// com a String contendo os termos, criamos um array para verificação da palavra por inteiro
 		List<String> arrayList = Collections.arrayToList(filter.split(" "));
+		
 		// cada atributo da tag é analisada com base no filtro em array
 		for (int i = 0; attributes.getLocalName(i) != null; i++) {
 			String prop = attributes.getLocalName(i);
@@ -361,6 +362,32 @@ public class CurriculumXmlParseService extends DefaultHandler {
 		}
 
 		this.identifierEntry = identifierEntry;
+	}
+
+	/*
+	 * verifica se a tag da vez, que gerou o identificador de entrada (identifierEntry), deve ser concatenada
+	 * com a próxima tag ou se deve ser adicionada ao hashmap
+	 */
+	private void concatTags(Attributes attributes, int index, String tagName) {
+		if (attributes.getLocalName(index).equals(tagName)) {
+			/* caso positivo para concatenação / ainda não salva nos grupos do hashmap
+			 * deixa o valor do identificador de entrada para a variável de concatenação
+			 */
+			baseToConcat = identifierEntry;
+		} else {
+			// caso negativo para concatenação / o nome da entrada está completo / salva no hashmap
+			hashEntry.get(group).add(identifierEntry);
+			entryCount++;
+			System.out.println(String.format("Entrada %d adicionada ao grupo %s", entryCount, group)); // teste(?)
+			System.out.println("tamanho no nome da entrada: " + identifierEntry.length() + "\n" + identifierEntry + "\n\n"); // teste(?)
+		}
+	}
+
+	private void createAndSetGroup(String group) {
+		if (!hashEntry.containsKey(group)) {
+			hashEntry.put(group, new ArrayList<>());
+		}
+		this.group = group;
 	}
 
 	private void buildCurriculum() throws ObjectNotFoundException {
@@ -391,9 +418,8 @@ public class CurriculumXmlParseService extends DefaultHandler {
 		
 		ownerId = Integer.parseInt(userId);
 		String hashIdUser = hashService.hashingSHA256(userId);
-		pathXmlCurriculum += String.format("\\%s\\curriculum.xml", hashIdUser);
 		
-		doParse(pathXmlCurriculum);
+		doParse(pathXmlCurriculum + String.format("\\%s\\curriculum.xml", hashIdUser));
 		
 		return curriculumService.save(curriculum);
 	}

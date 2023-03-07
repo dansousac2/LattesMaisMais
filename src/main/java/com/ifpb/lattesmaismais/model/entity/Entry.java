@@ -32,7 +32,7 @@ public class Entry implements Serializable {
 	@Column(name = "ENTRY_GROUP", nullable = false)
 	private String group;
 	
-	@Column(name = "ENTRY_NAME", nullable = false)
+	@Column(name = "ENTRY_NAME", nullable = false, length = 300)
 	private String name;
 	
 	@OneToMany(cascade = CascadeType.PERSIST)
