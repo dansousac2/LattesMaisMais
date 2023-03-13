@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
+import com.ifpb.lattesmaismais.model.enums.CurriculumStatus;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,6 +44,9 @@ public class Curriculum implements Serializable {
 	@JoinColumn(name = "USER_ID")
 	private User owner;
 	
+	@Column(name = "STATUS_CURRICULUM", nullable = false)
+	private CurriculumStatus status;
+	
 	public Curriculum() {
 		
 	}
@@ -51,6 +56,14 @@ public class Curriculum implements Serializable {
 		this.entryCount = entryCount;
 		this.entries = entries;
 		this.owner = owner;
+	}
+
+	public CurriculumStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(CurriculumStatus status) {
+		this.status = status;
 	}
 
 	public User getOwner() {

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
+import com.ifpb.lattesmaismais.model.enums.EntryStatus;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,10 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.SecondaryTable;
 import jakarta.persistence.Table;
 
 @Entity
@@ -43,16 +42,28 @@ public class Entry implements Serializable {
 	)
 	private List<Receipt> receipts;
 	
+	@Column(name = "STATUS_SNTRY", nullable = false)
+	private EntryStatus status;
+	
 	public Entry() {
 		
 	}
 
-	public Entry(Integer id, String group, String name, List<Receipt> receipts) {
+	public Entry(Integer id, String group, String name, List<Receipt> receipts, EntryStatus status) {
 		super();
 		this.id = id;
 		this.group = group;
 		this.name = name;
 		this.receipts = receipts;
+		this.status = status;
+	}
+
+	public EntryStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(EntryStatus status) {
+		this.status = status;
 	}
 
 	public Integer getId() {

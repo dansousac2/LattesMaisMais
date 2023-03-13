@@ -17,6 +17,7 @@ public class CurriculumConverterService {
 			dto.setOwnerId(entity.getOwner().getId());
 			dto.setOwnerName(entity.getOwner().getName());
 			dto.setEntryList(entity.getEntries());
+			dto.setStatus(entity.getStatus().name());
 			
 			return dto;
 			

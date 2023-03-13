@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ifpb.lattesmaismais.model.entity.SolicitedScheduling;
-import com.ifpb.lattesmaismais.model.enums.StatusScheduling;
+import com.ifpb.lattesmaismais.model.enums.SchedulingStatus;
 import com.ifpb.lattesmaismais.presentation.exception.ObjectNotFoundException;
 import com.ifpb.lattesmaismais.presentation.dto.SolicitedSchedulingDto;
 
@@ -67,7 +67,7 @@ public class SolicitedSchedulingConverterService {
 		entity.setAddress(address);
 
 		if (status != null) {
-			entity.setStatus(StatusScheduling.valueOf(status));
+			entity.setStatus(SchedulingStatus.valueOf(status));
 		}
 		if (requesterId != null) {
 			entity.setRequester(userService.findById(requesterId));

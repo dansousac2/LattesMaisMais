@@ -24,10 +24,21 @@ public class CurriculumDto {
 	@Size(min = 1, message = "O currículo deve conter ao menos uma entrada identificada!")
 	private List<Entry> entryList;
 	
+	@NotBlank(message = "Status do currículo não pode ser nulo!")
+	private String status;
+	
 	public CurriculumDto() {
 		
 	}
 	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	public List<Entry> getEntryList() {
 		return entryList;
 	}

@@ -1,6 +1,6 @@
 package com.ifpb.lattesmaismais.model.enums;
 
-public enum StatusScheduling {
+public enum SchedulingStatus {
 	OPEN,
 	ACCEPTED,
 	DECLINED,

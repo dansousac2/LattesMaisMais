@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.ifpb.lattesmaismais.model.entity.SolicitedScheduling;
 import com.ifpb.lattesmaismais.model.repository.SolicitedSchedulingRepository;
-import com.ifpb.lattesmaismais.model.enums.StatusScheduling;
+import com.ifpb.lattesmaismais.model.enums.SchedulingStatus;
 import com.ifpb.lattesmaismais.presentation.exception.ObjectNotFoundException;
 
 @Service
@@ -50,7 +50,7 @@ public class SolicitedSchedulingService {
 	public List<SolicitedScheduling> findAllByRequesterId(Integer id){
 		return schedulingRepository.findAllByRequesterId(id);
 	}
-	public List<SolicitedScheduling> findAllByStatus(StatusScheduling status){
+	public List<SolicitedScheduling> findAllByStatus(SchedulingStatus status){
 		return schedulingRepository.findAllByStatus(status);
 	}
 	//TODO retonar NULO ao invés de lançar exceção?

@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 
-import com.ifpb.lattesmaismais.model.enums.StatusScheduling;
+import com.ifpb.lattesmaismais.model.enums.SchedulingStatus;
 import jakarta.persistence.*;
 
 @Table(name = "SOLICITED_SCHEDULING")
@@ -40,7 +40,7 @@ public class SolicitedScheduling implements Serializable {
 	private User requester;
 	
 	@Column(name = "SCHEDULING_STATUS", nullable = false)
-	private StatusScheduling status;
+	private SchedulingStatus status;
 
 	public SolicitedScheduling() {
 		
@@ -102,11 +102,11 @@ public class SolicitedScheduling implements Serializable {
 		this.requester = requester;
 	}
 
-	public StatusScheduling getStatus() {
+	public SchedulingStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(StatusScheduling status) {
+	public void setStatus(SchedulingStatus status) {
 		this.status = status;
 	}
 

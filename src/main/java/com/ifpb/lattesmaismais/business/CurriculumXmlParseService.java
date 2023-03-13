@@ -22,6 +22,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.ifpb.lattesmaismais.model.entity.Curriculum;
 import com.ifpb.lattesmaismais.model.entity.Entry;
+import com.ifpb.lattesmaismais.model.enums.CurriculumStatus;
 import com.ifpb.lattesmaismais.presentation.exception.HashException;
 import com.ifpb.lattesmaismais.presentation.exception.ObjectNotFoundException;
 
@@ -396,6 +397,7 @@ public class CurriculumXmlParseService extends DefaultHandler {
 		// setar entradas do currículo
 		curriculum.setEntries(hashStringsToListEntries(hashEntry));
 		curriculum.setOwner(userService.findById(ownerId));
+		curriculum.setStatus(CurriculumStatus.UNCHECKED);
 	}
 
 	private List<Entry> hashStringsToListEntries(HashMap<String, List<String>> hashmap) {
