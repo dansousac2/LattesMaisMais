@@ -23,6 +23,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.ifpb.lattesmaismais.model.entity.Curriculum;
 import com.ifpb.lattesmaismais.model.entity.Entry;
 import com.ifpb.lattesmaismais.model.enums.CurriculumStatus;
+import com.ifpb.lattesmaismais.model.enums.EntryStatus;
 import com.ifpb.lattesmaismais.presentation.exception.HashException;
 import com.ifpb.lattesmaismais.presentation.exception.ObjectNotFoundException;
 
@@ -409,6 +410,8 @@ public class CurriculumXmlParseService extends DefaultHandler {
 				Entry entry = new Entry();
 				entry.setGroup(pair.getKey());
 				entry.setName(s);
+				entry.setStatus(EntryStatus.WITHOUT_RECEIPT);
+				
 				listEntry.add(entry);
 			}
 		}
