@@ -33,7 +33,7 @@ import io.jsonwebtoken.lang.Collections;
  * Passa um currículo XML do Lattes importado pelo usuário para Classe
  * Curriculum
  * 
- * @version 2.0
+ * @version 2.2
  * @since 02/2023
  * @author Danilo
  *
@@ -148,6 +148,14 @@ public class CurriculumXmlParseService extends DefaultHandler {
 			filter = "NOME-INSTITUICAO NOME-CURSO STATUS-DO-CURSO ANO-DE-INICIO ANO-DE-CONCLUSAO";
 			extractAttAndConcatTags(attributes, false);
 			break;
+		case "DOUTORADO":
+			filter = "NOME-INSTITUICAO NOME-CURSO STATUS-DO-CURSO ANO-DE-INICIO ANO-DE-CONCLUSAO";
+			extractAttAndConcatTags(attributes, false);
+			break;
+		case "POS-DOUTORADO":
+			filter = "NOME-INSTITUICAO NOME-CURSO STATUS-DO-CURSO ANO-DE-INICIO ANO-DE-CONCLUSAO TITULO-DO-TRABALHO";
+			extractAttAndConcatTags(attributes, false);
+			break;
 		case "ENSINO-MEDIO-SEGUNDO-GRAU":
 			filter = "NOME-INSTITUICAO NOME-CURSO STATUS-DO-CURSO ANO-DE-INICIO ANO-DE-CONCLUSAO";
 			extractAttAndConcatTags(attributes, false);
@@ -167,13 +175,24 @@ public class CurriculumXmlParseService extends DefaultHandler {
 			filter = "ANO-INICIO ANO-FIM NOME-DO-PROJETO SITUACAO NATUREZA";
 			extractAttAndConcatTags(attributes, false);
 			break;
+		
+		//GRUPO prêmios e títulos
+		case "PREMIOS-TITULOS":
+			createAndSetGroup("Prêmios e títulos");
+			break;
+		case "PREMIO-TITULO":
+			filter = "NOME-DO-PREMIO-OU-TITULO NOME-DA-ENTIDADE-PROMOTORA ANO-DA-PREMIACAO";
+			extractAttAndConcatTags(attributes, false);
+			break;
+		
+		//GRUPO atividades de direção e adm.
 		case "DIRECAO-E-ADMINISTRACAO":
 			createAndSetGroup("Atividade de direção e adm.");
 			filter = "ANO-INICIO ANO-FIM NOME-ORGAO CARGO-OU-FUNCAO";
 			extractAttAndConcatTags(attributes, false);
 			break;
 
-		// para trabalhos em eventos, as próximas 3 tags formarão 1 entrada no currículo
+		// GRUPO trabalhos em eventos
 		case "TRABALHOS-EM-EVENTOS":
 			createAndSetGroup("Trabalho em eventos");
 			break;
@@ -186,20 +205,55 @@ public class CurriculumXmlParseService extends DefaultHandler {
 			extractAttAndConcatTags(attributes, false);
 			break;
 
-		// 3 tags -> 1 entrada
-		case "CAPITULOS-DE-LIVROS-PUBLICADOS":
-			createAndSetGroup("Capítulos de livros publicados");
+		// GRUPO artigos publicados
+		case "ARTIGOS-PUBLICADOS":
+			createAndSetGroup("Artigos Publicados");
 			break;
+		case "DADOS-BASICOS-DO-ARTIGO":
+			filter = "TITULO-DO-ARTIGO ANO-DO-ARTIGO HOME-PAGE-DO-TRABALHO";
+			extractAttAndConcatTags(attributes, true);
+			break;
+		case "DETALHAMENTO-DO-ARTIGO":
+			filter = "TITULO-DO-PERIODICO-OU-REVISTA VOLUME PAGINA-INICIAL PAGINA-FINAL";
+			extractAttAndConcatTags(attributes, false);
+			break;
+			
+		//GRUPO livros publicados ou organizados
+		case "LIVROS-PUBLICADOS-OU-ORGANIZADOS":
+			createAndSetGroup("Livros publicados ou organizados");
+			break;
+		case "DADOS-BASICOS-DO-LIVRO":
+			filter = "TIPO TITULO-DO-LIVRO ANO MEIO-DE-DIVULGACAO";
+			extractAttAndConcatTags(attributes, true);
+			break;
+		case "DETALHAMENTO-DO-LIVRO":
+			filter = "NOME-DA-EDITORA";
+			extractAttAndConcatTags(attributes, false);
+			break;
+		// livros publicados ou organizados
 		case "DADOS-BASICOS-DO-CAPITULO":
-			filter = "TITULO-DO-CAPITULO-DO-LIVRO ANO PAIS-DE-PUBLICACAO HOME-PAGE-DO-TRABALHO";
+			filter = "TIPO TITULO-DO-CAPITULO-DO-LIVRO ANO PAIS-DE-PUBLICACAO HOME-PAGE-DO-TRABALHO";
 			extractAttAndConcatTags(attributes, true);
 			break;
 		case "DETALHAMENTO-DO-CAPITULO":
 			filter = "TITULO-DO-LIVRO PAGINA-INICIAL PAGINA-FINAL NOME-DA-EDITORA";
 			extractAttAndConcatTags(attributes, false);
 			break;
-
-		// para produção técnica
+			
+		//GRUPO textos em jornais ou revistas
+		case "TEXTOS-EM-JORNAIS-OU-REVISTAS":
+			createAndSetGroup("Textos em jornais ou revistas");
+			break;
+		case "DADOS-BASICOS-DO-TEXTO":
+			filter = "NATUREZA TITULO-DO-TEXTO ANO-DO-TEXTO HOME-PAGE-DO-TRABALHO";
+			extractAttAndConcatTags(attributes, true);
+			break;
+		case "DETALHAMENTO-DO-TEXTO":
+			filter = "TITULO-DO-JORNAL-OU-REVISTA DATA-DE-PUBLICACAO VOLUME PAGINA-INICIAL PAGINA-FINAL";
+			extractAttAndConcatTags(attributes, false);
+			break;
+		
+		// GRUPO produção técnica
 		case "PRODUCAO-TECNICA":
 			createAndSetGroup("Produção Técnica");
 			break;
@@ -231,6 +285,14 @@ public class CurriculumXmlParseService extends DefaultHandler {
 			extractAttAndConcatTags(attributes, false);
 			break;
 		// grupo produção técnica
+		case "PATENTE":
+			baseToConcat = "< patente";
+			break;
+		case "DADOS-BASICOS-DA-PATENTE":
+			filter = "TITULO ANO-DESENVOLVIMENTO PAIS";
+			extractAttAndConcatTags(attributes, false);
+			break;
+		// grupo produção técnica
 		case "APRESENTACAO-DE-TRABALHO":
 			baseToConcat = "> apresentação de trabalho";
 			break;
@@ -249,6 +311,18 @@ public class CurriculumXmlParseService extends DefaultHandler {
 			break;
 		case "DETALHAMENTO-DA-ORGANIZACAO-DE-EVENTO":
 			filter = "INSTITUICAO-PROMOTORA CIDADE";
+			extractAttAndConcatTags(attributes, false);
+			break;
+		// grupo produção técnica
+		case "CURSO-DE-CURTA-DURACAO-MINISTRADO":
+			baseToConcat = "> curso ministrado";
+			break;
+		case "DADOS-BASICOS-DE-CURSOS-CURTA-DURACAO-MINISTRADO":
+			filter = "NIVEL-DO-CURSO TITULO ANO";
+			extractAttAndConcatTags(attributes, true);
+			break;
+		case "DETALHAMENTO-DE-CURSOS-CURTA-DURACAO-MINISTRADO":
+			filter = "INSTITUICAO-PROMOTORA-DO-CURSO CIDADE DURACAO UNIDADE";
 			extractAttAndConcatTags(attributes, false);
 			break;
 		// grupo produção técnica
@@ -400,20 +474,41 @@ public class CurriculumXmlParseService extends DefaultHandler {
 			group = null;
 			break;
 
+		case "PREMIOS-TITULOS":
+			group = null;
+			break;
+		case "PREMIO-TITULO":
+			baseToConcat = null;
+			break;
+			
 		case "TRABALHOS-EM-EVENTOS":
 			group = null;
 			break;
 		case "DETALHAMENTO-DO-TRABALHO":
 			baseToConcat = null;
 			break;
-
-		case "CAPITULOS-DE-LIVROS-PUBLICADOS":
+			
+		case "ARTIGOS-PUBLICADOS":
 			group = null;
+			break;
+		case "DETALHAMENTO-DO-ARTIGO":
+			baseToConcat = null;
+			break;
+			
+		case "DETALHAMENTO-DO-LIVRO":
+			baseToConcat = null;
 			break;
 		case "DETALHAMENTO-DO-CAPITULO":
 			baseToConcat = null;
 			break;
 
+		case "TEXTOS-EM-JORNAIS-OU-REVISTAS":
+			group = null;
+			break;
+		case "DETALHAMENTO-DO-TEXTO":
+			baseToConcat = null;
+			break;
+			
 		case "PRODUCAO-TECNICA":
 			group = null;
 			break;
@@ -426,12 +521,19 @@ public class CurriculumXmlParseService extends DefaultHandler {
 		case "TRABALHO-TECNICO":
 			baseToConcat = null;
 			break;
+		case "PATENTE":
+			baseToConcat = null;
+			break;
 		case "DETALHAMENTO-DA-APRESENTACAO-DE-TRABALHO":
 			baseToConcat = null;
 			break;
 		case "DETALHAMENTO-DA-ORGANIZACAO-DE-EVENTO":
 			baseToConcat = null;
 			break;
+		case "DETALHAMENTO-DE-CURSOS-CURTA-DURACAO-MINISTRADO":
+			baseToConcat = null;
+			break;
+			//TODO
 		case "DETALHAMENTO-DE-OUTRA-PRODUCAO-TECNICA":
 			baseToConcat = null;
 			break;
@@ -594,7 +696,7 @@ public class CurriculumXmlParseService extends DefaultHandler {
 	/**
 	 * Método invocado pelo service para realizar o parse das entradas idntificadas para objeto Curriculum
 	 * @param userId
-	 * @return
+	 * @return Curriculum
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 * @throws IOException
