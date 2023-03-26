@@ -33,7 +33,7 @@ import io.jsonwebtoken.lang.Collections;
  * Passa um currículo XML do Lattes importado pelo usuário para Classe
  * Curriculum
  * 
- * @version 2.2
+ * @version 2.3
  * @since 02/2023
  * @author Danilo
  *
@@ -293,6 +293,15 @@ public class CurriculumXmlParseService extends DefaultHandler {
 			extractAttAndConcatTags(attributes, false);
 			break;
 		// grupo produção técnica
+		case "DADOS-BASICOS-DO-PRODUTO-TECNOLOGICO":
+			filter = "TIPO-PRODUTO NATUREZA TITULO-DO-PRODUTO ANO HOME-PAGE-DO-TRABALHO";
+			extractAttAndConcatTags(attributes, true);
+			break;
+		case "DETALHAMENTO-DO-PRODUTO-TECNOLOGICO":
+			filter = "DISPONIBILIDADE CIDADE-DO-PRODUTO";
+			extractAttAndConcatTags(attributes, false);
+			break;
+		// grupo produção técnica
 		case "APRESENTACAO-DE-TRABALHO":
 			baseToConcat = "> apresentação de trabalho";
 			break;
@@ -425,6 +434,15 @@ public class CurriculumXmlParseService extends DefaultHandler {
 			filter = "NATUREZA TITULO ANO PAIS HOME-PAGE-DO-TRABALHO FORMA-PARTICIPACAO";
 			extractAttAndConcatTags(attributes, true);
 			break;
+		case "DADOS-BASICOS-DA-PARTICIPACAO-EM-OLIMPIADA":
+			filter = "NATUREZA ANO PAIS FORMA-PARTICIPACAO";
+			extractAttAndConcatTags(attributes, true);
+			break;
+		case "DETALHAMENTO-DA-PARTICIPACAO-EM-OLIMPIADA":
+			filter = "NOME-DO-EVENTO CIDADE-DO-EVENTO";
+			extractAttAndConcatTags(attributes, false);
+			break;
+			//TODO
 		case "DETALHAMENTO-DA-PARTICIPACAO-EM-ENCONTRO":
 			filter = "NOME-DO-EVENTO NOME-INSTITUICAO CIDADE-DO-EVENTO";
 			extractAttAndConcatTags(attributes, false);
@@ -524,6 +542,9 @@ public class CurriculumXmlParseService extends DefaultHandler {
 		case "PATENTE":
 			baseToConcat = null;
 			break;
+		case "DETALHAMENTO-DO-PRODUTO-TECNOLOGICO":
+			baseToConcat = null;
+			break;
 		case "DETALHAMENTO-DA-APRESENTACAO-DE-TRABALHO":
 			baseToConcat = null;
 			break;
@@ -533,7 +554,6 @@ public class CurriculumXmlParseService extends DefaultHandler {
 		case "DETALHAMENTO-DE-CURSOS-CURTA-DURACAO-MINISTRADO":
 			baseToConcat = null;
 			break;
-			//TODO
 		case "DETALHAMENTO-DE-OUTRA-PRODUCAO-TECNICA":
 			baseToConcat = null;
 			break;
@@ -580,6 +600,10 @@ public class CurriculumXmlParseService extends DefaultHandler {
 		case "DETALHAMENTO-DA-PARTICIPACAO-EM-ENCONTRO":
 			baseToConcat = null;
 			break;
+		case "DETALHAMENTO-DA-PARTICIPACAO-EM-OLIMPIADA":
+			baseToConcat = null;
+			break;
+			//TODO
 		case "DETALHAMENTO-DA-PARTICIPACAO-EM-OFICINA":
 			baseToConcat = null;
 			break;
