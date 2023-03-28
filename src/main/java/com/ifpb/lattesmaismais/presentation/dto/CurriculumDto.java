@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Size;
 
 public class CurriculumDto {
 
-	private int id;
+	private Integer id;
 	
 	@NotBlank(message = "Nome de usuário não pode ser nulo!")
 	private String ownerName;
@@ -47,11 +47,11 @@ public class CurriculumDto {
 		this.entryList = entryList;
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 	
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	
@@ -78,6 +78,7 @@ public class CurriculumDto {
 	public void setEntryCount(int entryCount) {
 		this.entryCount = entryCount;
 	}
-	
+
+
 	
 }
