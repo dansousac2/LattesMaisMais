@@ -9,7 +9,7 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FileConverterServiceTest {
+class FileConverterServiceTest {
 
     private static final String pathReadFile = "C:\\Users\\Public\\Documents\\testRead.txt";
 
