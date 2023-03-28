@@ -33,7 +33,7 @@ import io.jsonwebtoken.lang.Collections;
  * Passa um currículo XML do Lattes importado pelo usuário para Classe
  * Curriculum
  * 
- * @version 2.3
+ * @version 3.0
  * @since 02/2023
  * @author Danilo
  *
@@ -60,7 +60,6 @@ public class CurriculumXmlParseService extends DefaultHandler {
 	private String filter;
 	private String identifierEntry;
 	private String baseToConcat;
-
 	public CurriculumXmlParseService() {
 
 	}
@@ -100,7 +99,7 @@ public class CurriculumXmlParseService extends DefaultHandler {
 	 */
 	public void startDocument() throws SAXException {
 		super.startDocument();
-		System.out.println("- - - Início de parse de documento - - -\n");
+		System.out.println("- - - Início de parse de documento - - -");
 		hashEntry = new HashMap<>();
 	}
 
@@ -117,7 +116,7 @@ public class CurriculumXmlParseService extends DefaultHandler {
 		} catch (ObjectNotFoundException e) {
 			throw new SAXException("Erro API SAX - id de usuário não encontrado: " + e.getMessage());
 		}
-		System.out.println("\n- - - Fim de parse de documento! - - -");
+		System.out.println("- - - Fim de parse de documento! - - -");
 	}
 
 	/**
@@ -130,7 +129,7 @@ public class CurriculumXmlParseService extends DefaultHandler {
 
 		switch (localName) {
 		case "DADOS-GERAIS":
-			System.out.println("Currículo pertencente a: " + attributes.getValue(0));
+			System.out.println("Currículo pertencente a: " + attributes.getValue(0) + "\n");
 			break;
 
 		case "FORMACAO-ACADEMICA-TITULACAO":
@@ -161,22 +160,43 @@ public class CurriculumXmlParseService extends DefaultHandler {
 			extractAttAndConcatTags(attributes, false);
 			break;
 
+		//GRUPO atuação profissional
 		case "ATUACAO-PROFISSIONAL":
 			createAndSetGroup("Atuação Profissional");
 			filter = "NOME-INSTITUICAO";
 			extractAttAndConcatTags(attributes, true);
 			break;
 		case "VINCULOS":
-			filter = "ANO-INICIO ANO-FIM OUTRO-ENQUADRAMENTO-FUNCIONAL-INFORMADO";
+			filter = "ANO-INICIO ANO-FIM OUTRAS-INFORMACOES OUTRO-ENQUADRAMENTO-FUNCIONAL-INFORMADO";
 			extractAttAndConcatTags(attributes, false);
 			break;
+		
+		//GRUPO participação em projetos, usa NOME-INSTITUICAO de GRUPO atuação profissional
 		case "PROJETO-DE-PESQUISA":
 			createAndSetGroup("Participação em projetos");
 			filter = "ANO-INICIO ANO-FIM NOME-DO-PROJETO SITUACAO NATUREZA";
 			extractAttAndConcatTags(attributes, false);
 			break;
 		
-		//GRUPO prêmios e títulos
+			//GRUPO atividades de direção e adm., usa NOME-INSTITUICAO de GRUPO atuação profissional
+		case "DIRECAO-E-ADMINISTRACAO":
+			createAndSetGroup("Atividade de direção e adm.");
+			filter = "ANO-INICIO ANO-FIM NOME-ORGAO CARGO-OU-FUNCAO";
+			extractAttAndConcatTags(attributes, false);
+			break;
+			
+			
+		//GRUPO atividades de ensino, usa NOME-INSTITUICAO de GRUPO atuação profissional
+		case "ATIVIDADES-DE-ENSINO":
+			createAndSetGroup("Atividades de ensino");
+			break;
+		case "ENSINO":
+			filter = "TIPO-ENSINO ANO-INICIO ANO-FIM NOME-CURSO";
+			extractAttAndConcatTags(attributes, true);
+			break;
+			//TODO
+			
+			//GRUPO prêmios e títulos
 		case "PREMIOS-TITULOS":
 			createAndSetGroup("Prêmios e títulos");
 			break;
@@ -184,14 +204,7 @@ public class CurriculumXmlParseService extends DefaultHandler {
 			filter = "NOME-DO-PREMIO-OU-TITULO NOME-DA-ENTIDADE-PROMOTORA ANO-DA-PREMIACAO";
 			extractAttAndConcatTags(attributes, false);
 			break;
-		
-		//GRUPO atividades de direção e adm.
-		case "DIRECAO-E-ADMINISTRACAO":
-			createAndSetGroup("Atividade de direção e adm.");
-			filter = "ANO-INICIO ANO-FIM NOME-ORGAO CARGO-OU-FUNCAO";
-			extractAttAndConcatTags(attributes, false);
-			break;
-
+			
 		// GRUPO trabalhos em eventos
 		case "TRABALHOS-EM-EVENTOS":
 			createAndSetGroup("Trabalho em eventos");
@@ -442,7 +455,6 @@ public class CurriculumXmlParseService extends DefaultHandler {
 			filter = "NOME-DO-EVENTO CIDADE-DO-EVENTO";
 			extractAttAndConcatTags(attributes, false);
 			break;
-			//TODO
 		case "DETALHAMENTO-DA-PARTICIPACAO-EM-ENCONTRO":
 			filter = "NOME-DO-EVENTO NOME-INSTITUICAO CIDADE-DO-EVENTO";
 			extractAttAndConcatTags(attributes, false);
@@ -476,6 +488,28 @@ public class CurriculumXmlParseService extends DefaultHandler {
 	}
 
 	/**
+	 * Sempre que houverem caracteres entre tags, esse método é chamado capturando esses caracteres.
+	 * Essa captura é usada para finalizar a tag concatenada e assim criar uma nova entrada de currículo.
+	 * Tal característica aparece apenas em uma minoria das tags mapeadas.
+	 */
+	@Override
+	public void characters(char[] ch, int start, int length) throws SAXException {
+		super.characters(ch, start, length);
+		
+		String s = new String(ch, start, length);
+		
+		if(!s.isBlank()) {
+
+			switch (group) {
+			case "Atividades de ensino":
+				addCharsAddOnGroup(s);
+				break;
+				//TODO
+			}
+		}
+	}
+
+	/**
 	 * Método disparado quando o processador SAX identifica o fechamento de uma tag.
 	 */
 	public void endElement(String uri, String localName, String qName) throws SAXException {
@@ -491,13 +525,19 @@ public class CurriculumXmlParseService extends DefaultHandler {
 			baseToConcat = null;
 			group = null;
 			break;
-
+			
 		case "PREMIOS-TITULOS":
 			group = null;
 			break;
-		case "PREMIO-TITULO":
-			baseToConcat = null;
+			
+		case "ATIVIDADES-DE-ENSINO":
+			group = null;
 			break;
+		case "ENSINO":
+			// Ensino concatenou 2x em cima de baseToConcat. Aqui estamos retornando baseToConcat ao valor inicial em contexto.
+			baseToConcat = baseToConcat.substring(0, baseToConcat.indexOf(">", 1));
+			break;
+			//TODO
 			
 		case "TRABALHOS-EM-EVENTOS":
 			group = null;
@@ -603,7 +643,6 @@ public class CurriculumXmlParseService extends DefaultHandler {
 		case "DETALHAMENTO-DA-PARTICIPACAO-EM-OLIMPIADA":
 			baseToConcat = null;
 			break;
-			//TODO
 		case "DETALHAMENTO-DA-PARTICIPACAO-EM-OFICINA":
 			baseToConcat = null;
 			break;
@@ -629,7 +668,7 @@ public class CurriculumXmlParseService extends DefaultHandler {
 
 	private void extractAttAndConcatTags(Attributes attributes, boolean concat) {
 		extractAttributes(attributes);
-		concatTags(attributes, concat);
+		concatTagOrAddOnGroup(concat);
 	}
 
 	/**
@@ -661,10 +700,9 @@ public class CurriculumXmlParseService extends DefaultHandler {
 	/**
 	 * Verifica se a entrada deve ser salva no DB ou se os dados serão usados posteriormente, em outra tag,
 	 * realizandoassim uma concatenação dos dados.
-	 * @param attributes
 	 * @param concat
 	 */
-	private void concatTags(Attributes attributes, boolean concat) {
+	private void concatTagOrAddOnGroup(boolean concat) {
 		if (concat) {
 			/*
 			 * caso positivo para concatenação / ainda não salva nos grupos do hashmap deixa
@@ -679,6 +717,19 @@ public class CurriculumXmlParseService extends DefaultHandler {
 			System.out.println(String.format("Entrada %d adicionada ao grupo %s", entryCount, group)); // teste(?)
 			System.out.println("tamanho no nome da entrada: " + identifierEntry.length() + "\n" + identifierEntry + "\n\n"); // teste(?)
 		}
+	}
+
+	/**
+	 * Entradas que usam este método, estão concatenando 3 valores. 
+	 * Deixa a identifierEntry com valores da baseToConcat + valor da primeira concatenação.
+	 * Preparando assim a variável identifierEntry para a última concatenação com a próxima tag.
+	 * @param s
+	 */
+	private void addCharsAddOnGroup(String s) {
+		String aux = identifierEntry;
+		identifierEntry += "> " + s;
+		concatTagOrAddOnGroup(false);
+		identifierEntry = aux;
 	}
 
 	/**
