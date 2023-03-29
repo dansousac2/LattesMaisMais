@@ -33,7 +33,7 @@ import io.jsonwebtoken.lang.Collections;
  * Passa um currículo XML do Lattes importado pelo usuário para Classe
  * Curriculum
  * 
- * @version 3.0
+ * @version 3.1
  * @since 02/2023
  * @author Danilo
  *
@@ -194,8 +194,15 @@ public class CurriculumXmlParseService extends DefaultHandler {
 			filter = "TIPO-ENSINO ANO-INICIO ANO-FIM NOME-CURSO";
 			extractAttAndConcatTags(attributes, true);
 			break;
-			//TODO
-			
+		
+		case "ATIVIDADES-DE-CONSELHO-COMISSAO-E-CONSULTORIA":
+			createAndSetGroup("Atividades de conselho/comissão/consultoria");
+			break;
+		case "CONSELHO-COMISSAO-E-CONSULTORIA":
+			filter = "FLAG-PERIODO ANO-INICIO ANO-FIM NOME-ORGAO ESPECIFICACAO";
+			extractAttAndConcatTags(attributes, false);
+			break;
+		
 			//GRUPO prêmios e títulos
 		case "PREMIOS-TITULOS":
 			createAndSetGroup("Prêmios e títulos");
@@ -536,6 +543,10 @@ public class CurriculumXmlParseService extends DefaultHandler {
 		case "ENSINO":
 			// Ensino concatenou 2x em cima de baseToConcat. Aqui estamos retornando baseToConcat ao valor inicial em contexto.
 			baseToConcat = baseToConcat.substring(0, baseToConcat.indexOf(">", 1));
+			break;
+			
+		case "ATIVIDADES-DE-CONSELHO-COMISSAO-E-CONSULTORIA":
+			group = null;
 			break;
 			//TODO
 			
