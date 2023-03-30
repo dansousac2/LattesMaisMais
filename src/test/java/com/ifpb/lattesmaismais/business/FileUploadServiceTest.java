@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class FileUploadServiceTest {
+class FileUploadServiceTest {
 
     private static final String path = "C:\\Users\\Public\\Documents";
     private static final String pathReadFile = path + "\\teste.jpg";
