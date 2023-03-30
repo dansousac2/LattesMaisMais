@@ -9,6 +9,7 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class FileConverterServiceTest {
 
     private static final String pathReadFile = "C:\\Users\\Public\\Documents\\testRead.txt";

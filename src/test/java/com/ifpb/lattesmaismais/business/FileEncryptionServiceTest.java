@@ -2,15 +2,14 @@ package com.ifpb.lattesmaismais.business;
 
 import com.ifpb.lattesmaismais.presentation.exception.DecryptionException;
 import com.ifpb.lattesmaismais.presentation.exception.EncryptionException;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class FileEncryptionServiceTest {
 
     private static FileEncryptionService encryptionService;

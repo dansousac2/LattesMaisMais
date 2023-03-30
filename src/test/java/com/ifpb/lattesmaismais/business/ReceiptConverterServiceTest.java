@@ -3,14 +3,13 @@ package com.ifpb.lattesmaismais.business;
 import com.ifpb.lattesmaismais.model.entity.Receipt;
 import com.ifpb.lattesmaismais.presentation.exception.FileConversionException;
 import com.ifpb.lattesmaismais.presentation.exception.FileWithoutNameException;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ReceiptConverterServiceTest {
 
     private static ReceiptConverterService converterService;
