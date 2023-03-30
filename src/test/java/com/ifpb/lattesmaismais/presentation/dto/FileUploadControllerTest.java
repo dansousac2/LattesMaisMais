@@ -19,6 +19,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -149,22 +150,95 @@ class FileUploadControllerTest {
 
     @Test
     public void testUploadCurriculumConversionException() {
+        try {
+            when(hashService.hashingSHA256(anyString())).thenCallRealMethod();
+            doThrow(FileConversionException.class).when(uploadService).uploadCurriculum(any(), any());
+            when(curriculumXmlParseService.xmlToCurriculum(anyString())).thenReturn(curriculum);
+            doCallRealMethod().when(curriculumConverterService).curriculumToDto(any(Curriculum.class));
 
+            ResponseEntity response = uploadController.uploadCurriculum(multipartFile, "teste");
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+            verify(hashService).hashingSHA256(anyString());
+            verify(uploadService).uploadCurriculum(any(), any());
+            verify(curriculumXmlParseService, times(0)).xmlToCurriculum(anyString());
+            verify(curriculumConverterService, times(0)).curriculumToDto(any(Curriculum.class));
+        } catch (Exception e) {
+            fail();
+        }
     }
 
     @Test
     public void testUploadCurriculumIllegalArgumentException() {
+        try {
+            when(hashService.hashingSHA256(anyString())).thenCallRealMethod();
+            doNothing().when(uploadService).uploadCurriculum(any(), any());
+            when(curriculumXmlParseService.xmlToCurriculum(anyString())).thenReturn(null);
+            doCallRealMethod().when(curriculumConverterService).curriculumToDto(any());
 
+            ResponseEntity response = uploadController.uploadCurriculum(null, "teste");
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+            assertTrue(response.getBody().toString().startsWith("Erro na conversão Curr -> Dto / Pode ser que algum dos Atributos seja nulo:"));
+
+            verify(hashService).hashingSHA256(anyString());
+            verify(uploadService).uploadCurriculum(any(), any());
+            verify(curriculumXmlParseService).xmlToCurriculum(anyString());
+            verify(curriculumConverterService).curriculumToDto(any());
+        } catch (Exception e) {
+            fail();
+        }
     }
 
     @Test
     public void testReadFileOk() {
+        try {
+            when(hashService.hashingSHA256(anyString())).thenCallRealMethod();
+            doNothing().when(uploadService).readFile(any(), any());
 
+            assertDoesNotThrow(() -> uploadController.readFile(multipartFile.getOriginalFilename(), "teste"));
+
+            ResponseEntity response = uploadController.readFile(multipartFile.getOriginalFilename(), "teste");
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+
+            verify(hashService, times(2)).hashingSHA256(anyString());
+            verify(uploadService, times(2)).readFile(any(), any());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testReadFileNotFoundException() {
+        try {
+            when(hashService.hashingSHA256(anyString())).thenCallRealMethod();
+            doCallRealMethod().when(uploadService).readFile(any(), any());
+
+            assertThrows(FileNotFoundException.class, () -> uploadService.readFile(any(), any()));
+
+            ResponseEntity response = uploadController.readFile("arquivoinexistente.jpg", "teste");
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+            verify(hashService).hashingSHA256(anyString());
+            verify(uploadService, times(2)).readFile(any(), any());
+        } catch (Exception e) {
+            fail();
+        }
     }
 
     @Test
     public void testReadFileConversionException() {
+        try {
+            when(hashService.hashingSHA256(anyString())).thenCallRealMethod();
+            doThrow(FileConversionException.class).when(uploadService).readFile(any(), any());
 
+            ResponseEntity response = uploadController.readFile(multipartFile.getOriginalFilename(), "teste");
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+            verify(hashService).hashingSHA256(anyString());
+            verify(uploadService).readFile(any(), any());
+        } catch (Exception e) {
+            fail();
+        }
     }
 
 }
