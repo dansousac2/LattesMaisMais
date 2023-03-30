@@ -1,52 +1,45 @@
 package com.ifpb.lattesmaismais.business;
 
-import com.ifpb.lattesmaismais.model.entity.Curriculum;
-import com.ifpb.lattesmaismais.model.entity.User;
-import com.ifpb.lattesmaismais.model.enums.CurriculumStatus;
-import com.ifpb.lattesmaismais.model.repository.CurriculumRepository;
+import com.ifpb.lattesmaismais.model.entity.Receipt;
+import com.ifpb.lattesmaismais.model.repository.ReceiptRepository;
 import com.ifpb.lattesmaismais.presentation.exception.ObjectNotFoundException;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
 
-class CurriculumServiceTest {
+class ReceiptServiceTest {
 
     @Mock
-    private CurriculumRepository repository;
+    private ReceiptRepository repository;
 
     @InjectMocks
     @Spy
-    private CurriculumService service;
+    private ReceiptService service;
 
-    private static Curriculum entity;
+    private static Receipt entity;
 
     @BeforeAll
     public static void setUp() {
-        User owner = new User();
-        owner.setId(1);
-        owner.setName("Keilla");
+        entity = new Receipt();
 
-        entity = new Curriculum();
         entity.setId(1);
-        entity.setEntries(new ArrayList<>());
-        entity.setEntryCount(0);
-        entity.setOwner(owner);
-        entity.setStatus(CurriculumStatus.UNCHECKED);
+        entity.setName("teste");
+        entity.setExtension(".pdf");
     }
 
     @BeforeEach
-    public  void beforeEach() {
+    public void beforeEach() {
         MockitoAnnotations.openMocks(this);
-        ReflectionTestUtils.setField(service, "curriculumRepository", repository);
+        ReflectionTestUtils.setField(service, "receiptRepository", repository);
     }
 
     @Test
@@ -65,7 +58,7 @@ class CurriculumServiceTest {
         when(repository.existsById(anyInt())).thenReturn(false);
 
         Throwable exception = assertThrows(ObjectNotFoundException.class, () -> service.findById(1));
-        assertEquals("Currículo com id 1 não encontrado!", exception.getMessage());
+        assertEquals("Não foi possível encontrar comprovante com id 1", exception.getMessage());
 
         verify(repository).existsById(anyInt());
         verify(repository, times(0)).findById(anyInt());
@@ -73,7 +66,7 @@ class CurriculumServiceTest {
 
     @Test
     public void testSaveOk() {
-        when(repository.save(any(Curriculum.class))).thenReturn(entity);
+        when(repository.save(any(Receipt.class))).thenReturn(entity);
 
         assertDoesNotThrow(() -> service.save(entity));
     }
@@ -93,7 +86,7 @@ class CurriculumServiceTest {
         when(repository.existsById(anyInt())).thenReturn(false);
 
         Throwable exception = assertThrows(ObjectNotFoundException.class, () -> service.deleteById(1));
-        assertEquals("Currículo com id 1 não encontrado!", exception.getMessage());
+        assertEquals("Não foi possível encontrar comprovante com id 1", exception.getMessage());
 
         verify(repository).existsById(anyInt());
         verify(repository, times(0)).deleteById(anyInt());

@@ -20,6 +20,14 @@ class FileConverterServiceTest {
     @BeforeAll
     public static void setUp() {
         converterService = new FileConverterService();
+
+        try {
+            if (!Files.exists(Path.of(pathReadFile))) {
+                Files.createFile(Path.of(pathReadFile));
+            }
+        } catch (IOException e) {
+            fail();
+        }
     }
 
     @Test
