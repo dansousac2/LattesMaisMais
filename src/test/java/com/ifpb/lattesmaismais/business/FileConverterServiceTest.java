@@ -6,6 +6,7 @@ import org.junit.jupiter.api.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -67,7 +68,8 @@ class FileConverterServiceTest {
 
             assertAll("Asserting file content",
                 () -> assertNotNull(writedData),
-                () -> assertTrue(Files.exists(Path.of(pathWriteFile)))
+                () -> assertTrue(Files.exists(Path.of(pathWriteFile))),
+                () -> assertTrue(Arrays.equals(fileData, writedData))
             );
 
         } catch (FileConversionException e) {

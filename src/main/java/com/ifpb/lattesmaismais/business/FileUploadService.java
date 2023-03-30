@@ -82,7 +82,7 @@ public class FileUploadService {
 		fileConverterService.writeFile(newPath + "\\" + fileName, decryptedData);
 	}
 
-	private void createDiretory(String userID) {
+	public void createDiretory(String userID) {
 		path = directoryFile + "\\" + userID;
 		
 		if(!new File(path).exists()) {
