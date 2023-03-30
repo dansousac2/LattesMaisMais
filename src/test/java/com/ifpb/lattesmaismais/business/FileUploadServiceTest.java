@@ -32,6 +32,7 @@ class FileUploadServiceTest {
     private static final String pathReadFile = path + "\\teste.jpg";
 
     private static MultipartFile multipartFile;
+
     private static Receipt receipt;
 
     @Mock
