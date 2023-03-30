@@ -6,7 +6,6 @@ import org.junit.jupiter.api.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -69,7 +68,7 @@ class FileConverterServiceTest {
             assertAll("Asserting file content",
                 () -> assertNotNull(writedData),
                 () -> assertTrue(Files.exists(Path.of(pathWriteFile))),
-                () -> assertTrue(Arrays.equals(fileData, writedData))
+                () -> assertArrayEquals(fileData, writedData)
             );
 
         } catch (FileConversionException e) {
@@ -98,10 +97,8 @@ class FileConverterServiceTest {
     @AfterAll
     public static void tearDown() {
         try {
-            if (Files.exists(Path.of(pathWriteFile))) {
-                System.out.println("Deleting created files");
-                Files.delete(Path.of(pathWriteFile));
-            }
+            System.out.println("Deleting created files");
+            Files.deleteIfExists(Path.of(pathWriteFile));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
