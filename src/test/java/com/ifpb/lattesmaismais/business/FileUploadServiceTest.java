@@ -29,9 +29,12 @@ import static org.mockito.Mockito.*;
 class FileUploadServiceTest {
 
     private static final String path = "C:\\Users\\Public\\Documents";
-    private static final String pathReadFile = path + "\\teste.jpg";
+    private static final String pathReadFile = System.getProperty("user.dir") + "\\src\\test\\java\\com\\ifpb\\lattesmaismais\\util\\teste.jpg";
+    private static final String pathReadCurriculum = System.getProperty("user.dir") + "\\src\\test\\java\\com\\ifpb\\lattesmaismais\\util\\teste.xml";
 
     private static MultipartFile multipartFile;
+
+    private static MultipartFile multipartCurriculum;
 
     private static Receipt receipt;
 
@@ -56,13 +59,11 @@ class FileUploadServiceTest {
    @BeforeAll
    public static void setUp() {
        try {
-           Path path = Path.of(pathReadFile);
-           if (!Files.exists(path)) {
-               Files.createFile(path);
-           }
-
            byte[] fileData = setupFileConverter.readFile(pathReadFile);
            multipartFile = new MockMultipartFile("teste", "teste.jpg", ".jpg", fileData);
+
+           byte[] curriculumData = setupFileConverter.readFile(pathReadCurriculum);
+           multipartCurriculum = new MockMultipartFile("teste", "teste.xml", ".xml", curriculumData);
 
            receipt = new Receipt();
            receipt.setId(1);
@@ -178,7 +179,7 @@ class FileUploadServiceTest {
         try {
             doCallRealMethod().when(fileConverterService).writeFile(any(), any());
 
-            assertDoesNotThrow(() -> uploadService.uploadCurriculum(multipartFile, "teste"));
+            assertDoesNotThrow(() -> uploadService.uploadCurriculum(multipartCurriculum, "teste"));
 
             verify(fileConverterService).writeFile(any(), any());
             verify(uploadService).createDiretory(anyString());
@@ -193,7 +194,7 @@ class FileUploadServiceTest {
         try {
             doThrow(FileConversionException.class).when(fileConverterService).writeFile(any(), any());
 
-            assertThrows(FileConversionException.class, () -> uploadService.uploadCurriculum(multipartFile, "teste"));
+            assertThrows(FileConversionException.class, () -> uploadService.uploadCurriculum(multipartCurriculum, "teste"));
 
             verify(fileConverterService).writeFile(any(), any());
             verify(uploadService).createDiretory(anyString());
@@ -211,7 +212,6 @@ class FileUploadServiceTest {
             doCallRealMethod().when(fileConverterService).writeFile(any(), any());
 
             assertDoesNotThrow(() -> uploadService.readFile(receipt.getId() + receipt.getExtension(), "teste"));
-
 
             verify(encryptionService).decryptData(any());
             verify(fileConverterService).writeFile(any(), any());
@@ -282,8 +282,6 @@ class FileUploadServiceTest {
        Path pathToDelete = Path.of(path + "\\teste");
         try {
             System.out.println("Deleting created files and directories");
-
-            Files.deleteIfExists(Path.of(pathReadFile));
             Files.deleteIfExists(Path.of(pathToDelete + "\\" + receipt.getId() + receipt.getExtension()));
             Files.deleteIfExists(Path.of(pathToDelete + "\\curriculum.xml"));
             Files.deleteIfExists(Path.of(pathToDelete + "_decrypted" + "\\" + receipt.getId() + receipt.getExtension()));

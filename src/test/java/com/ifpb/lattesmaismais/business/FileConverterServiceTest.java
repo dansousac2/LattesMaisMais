@@ -3,7 +3,6 @@ package com.ifpb.lattesmaismais.business;
 import com.ifpb.lattesmaismais.presentation.exception.FileConversionException;
 import org.junit.jupiter.api.*;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -12,23 +11,15 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class FileConverterServiceTest {
 
-    private static final Path pathReadFile = Path.of("C:\\Users\\Public\\Documents\\testRead.txt");
+    private static final Path pathReadFile = Path.of(System.getProperty("user.dir") + "\\src\\test\\java\\com\\ifpb\\lattesmaismais\\util\\teste.jpg");
 
-    private static final Path pathWriteFile = Path.of("C:\\Users\\Public\\Documents\\testWrite.txt");
+    private static final Path pathWriteFile = Path.of("C:\\Users\\Public\\Documents\\testWrite.jpg");
 
     private static FileConverterService converterService;
 
     @BeforeAll
     public static void setUp() {
         converterService = new FileConverterService();
-
-        try {
-            if (!Files.exists(pathReadFile)) {
-                Files.createFile(pathReadFile);
-            }
-        } catch (IOException e) {
-            fail();
-        }
     }
 
     @Test
@@ -80,28 +71,20 @@ class FileConverterServiceTest {
     @Test
     @Order(4)
     public void testWriteFileException() {
-        // Testing with no data
-        assertThrows(FileConversionException.class, () -> converterService.writeFile(pathReadFile.toString(), null));
-
-        // Testing with no path
         try {
+            // Testing with no data
+            assertThrows(FileConversionException.class, () -> converterService.writeFile(pathWriteFile.toString(), null));
+
+            // Testing with no path
             byte[] fileData = converterService.readFile(pathReadFile.toString());
             assertThrows(FileConversionException.class, () -> converterService.writeFile("", fileData));
+
+            // Testing with no path and data
+            assertThrows(FileConversionException.class, () -> converterService.writeFile("", null));
+
+            // Reajustando arquivo
+            converterService.writeFile(pathWriteFile.toString(), fileData);
         } catch (FileConversionException e) {
-            fail();
-        }
-
-        // Testing with no path and data
-        assertThrows(FileConversionException.class, () -> converterService.writeFile("", null));
-    }
-
-    @AfterAll
-    public static void tearDown() {
-        try {
-            System.out.println("Deleting created files");
-//            Files.deleteIfExists(pathReadFile);
-            Files.deleteIfExists(pathWriteFile);
-        } catch (IOException e) {
             fail();
         }
     }

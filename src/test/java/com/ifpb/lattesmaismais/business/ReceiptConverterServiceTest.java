@@ -7,10 +7,6 @@ import org.junit.jupiter.api.*;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -18,7 +14,7 @@ class ReceiptConverterServiceTest {
 
     private static ReceiptConverterService converterService;
 
-    private static final String pathReadFile = "C:\\Users\\Public\\Documents\\teste.txt";
+    private static final String pathReadFile = System.getProperty("user.dir") + "\\src\\test\\java\\com\\ifpb\\lattesmaismais\\util\\teste.jpg";
 
     private static FileConverterService fileConverterService;
 
@@ -30,14 +26,8 @@ class ReceiptConverterServiceTest {
         fileConverterService = new FileConverterService();
 
         try {
-            Path path = Path.of(pathReadFile);
-            if (!Files.exists(path)) {
-                Files.createFile(path);
-                Files.write(path, "Isso é um teste".getBytes());
-            }
-
             byte[] fileData = fileConverterService.readFile(pathReadFile);
-            multipartFile = new MockMultipartFile("teste", "teste.txt", ".txt", fileData);
+            multipartFile = new MockMultipartFile("teste", "teste.jpg", ".jpg", fileData);
 
         } catch (Exception e) {
             fail();
@@ -72,15 +62,5 @@ class ReceiptConverterServiceTest {
 
         Throwable exception = assertThrows(FileWithoutNameException.class, () -> converterService.fileToEntity(multipartFileFail));
         assertEquals("O arquivo enviado não possui nome!", exception.getMessage());
-    }
-
-    @AfterAll
-    public static void tearDown() {
-        try {
-            System.out.println("Deleting created files");
-            Files.deleteIfExists(Path.of(pathReadFile));
-        } catch (IOException e) {
-            fail();
-        }
     }
 }

@@ -4,9 +4,8 @@ import com.ifpb.lattesmaismais.business.*;
 import com.ifpb.lattesmaismais.model.entity.Curriculum;
 import com.ifpb.lattesmaismais.model.entity.User;
 import com.ifpb.lattesmaismais.model.enums.CurriculumStatus;
-import com.ifpb.lattesmaismais.presentation.FileUploadController;
 import com.ifpb.lattesmaismais.presentation.exception.FileConversionException;
-import org.junit.jupiter.api.AfterAll;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,9 +20,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,9 +29,9 @@ import static org.mockito.Mockito.*;
 
 class FileUploadControllerTest {
 
-    private static final String pathReadFile = "C:\\Users\\Public\\Documents\\teste.txt";
+    private static final String pathReadFile = System.getProperty("user.dir") + "\\src\\test\\java\\com\\ifpb\\lattesmaismais\\util\\teste.jpg";
 
-    private static final String pathReadCurriculum = "C:\\Users\\Public\\Documents\\teste.xml";
+    private static final String pathReadCurriculum = System.getProperty("user.dir") + "\\src\\test\\java\\com\\ifpb\\lattesmaismais\\util\\teste.xml";
 
     private static MultipartFile multipartFile;
 
@@ -64,18 +60,6 @@ class FileUploadControllerTest {
     @BeforeAll
     public static void setUp() {
         try {
-            Path pathFile = Path.of(pathReadFile);
-            Path pathCurriculum = Path.of(pathReadCurriculum);
-
-            if (!Files.exists(pathFile)) {
-                Files.createFile(pathFile);
-                Files.write(pathFile, "Isso é um teste".getBytes());
-            }
-
-            if (!Files.exists(pathCurriculum)) {
-                Files.createFile(pathCurriculum);
-            }
-
             byte[] fileData = setupFileConverter.readFile(pathReadFile);
             multipartFile = new MockMultipartFile("teste", "teste.jpg", ".jpg", fileData);
 
@@ -253,17 +237,6 @@ class FileUploadControllerTest {
             verify(hashService).hashingSHA256(anyString());
             verify(uploadService).readFile(any(), any());
         } catch (Exception e) {
-            fail();
-        }
-    }
-
-    @AfterAll
-    public static void tearDown() {
-        try {
-            System.out.println("Deleting created files");
-            Files.deleteIfExists(Path.of(pathReadFile));
-            Files.deleteIfExists(Path.of(pathReadCurriculum));
-        } catch (IOException e) {
             fail();
         }
     }

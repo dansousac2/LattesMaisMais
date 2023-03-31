@@ -17,7 +17,9 @@ class FileEncryptionServiceTest {
 
     private static FileEncryptionService encryptionService;
 
-    private static final String pathReadFile = "C:\\Users\\Public\\Documents\\teste.txt";
+    private static final String path = "C:\\Users\\Public\\Documents\\teste.jpg";
+
+    private static final String pathReadFile = System.getProperty("user.dir") + "\\src\\test\\java\\com\\ifpb\\lattesmaismais\\util\\teste.jpg";
 
     private static FileConverterService fileConverterService;
 
@@ -28,11 +30,11 @@ class FileEncryptionServiceTest {
         fileConverterService = new FileConverterService();
 
         try {
-            if (!Files.exists(Path.of(pathReadFile))) {
-                Files.createFile(Path.of(pathReadFile));
-                Files.write(Path.of(pathReadFile), "Isso é um teste".getBytes());
+            byte[] fileData = fileConverterService.readFile(pathReadFile);
+            if (!Files.exists(Path.of(path))) {
+                fileConverterService.writeFile(path, fileData);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             fail();
         }
     }
@@ -41,15 +43,15 @@ class FileEncryptionServiceTest {
     @Order(1)
     public void testEncryptDataOk() {
         try {
-            byte[] fileData = fileConverterService.readFile(pathReadFile);
+            byte[] fileData = fileConverterService.readFile(path);
 
             assertDoesNotThrow(() -> encryptionService.encryptData(fileData));
 
             byte[] encryptedData = encryptionService.encryptData(fileData);
 
             assertFalse(Arrays.equals(fileData, encryptedData));
-
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             fail();
         }
     }
@@ -67,7 +69,7 @@ class FileEncryptionServiceTest {
     @Order(3)
     public void testDecryptDataOk() {
         try {
-            byte[] fileData = fileConverterService.readFile(pathReadFile);
+            byte[] fileData = fileConverterService.readFile(path);
             byte[] encryptedData = encryptionService.encryptData(fileData);
 
             assertDoesNotThrow(() -> encryptionService.decryptData(encryptedData));
@@ -93,7 +95,7 @@ class FileEncryptionServiceTest {
     public static void tearDown() {
         try {
             System.out.println("Deleting created files");
-            Files.deleteIfExists(Path.of(pathReadFile));
+            Files.deleteIfExists(Path.of(path));
         } catch (IOException e) {
             fail();
         }
