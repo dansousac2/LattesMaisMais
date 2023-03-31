@@ -2,7 +2,6 @@ package com.ifpb.lattesmaismais.business;
 
 import com.ifpb.lattesmaismais.presentation.exception.DecryptionException;
 import com.ifpb.lattesmaismais.presentation.exception.EncryptionException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.*;
@@ -24,6 +23,10 @@ public class FileEncryptionService {
     public byte[] encryptData(byte[] data) throws EncryptionException {
 
         try {
+            if (data.length == 0) {
+                throw new EncryptionException("Empty data!");
+            }
+
             // Gerando o iv:
             byte[] iv = generateIV();
 
@@ -49,41 +52,44 @@ public class FileEncryptionService {
         } catch (Exception e) {
             throw new EncryptionException(e.getMessage());
         }
-
     }
 
     public byte[] decryptData(byte[] encryptedData) throws DecryptionException, IllegalArgumentException {
-        ByteBuffer byteBuffer = ByteBuffer.wrap(encryptedData);
+        if (encryptedData != null && encryptedData.length > 0) {
+            ByteBuffer byteBuffer = ByteBuffer.wrap(encryptedData);
 
-        // Validando se os dados estão criptografados em AES:
-        int ivSize = byteBuffer.getInt();
-        if (ivSize != 12) {
-            throw new IllegalArgumentException("Tamanho de IV incorreto, verifique se os dados estão criptografados em AES/GCM");
+            // Validando se os dados estão criptografados em AES:
+            int ivSize = byteBuffer.getInt();
+            if (ivSize != 12) {
+                throw new IllegalArgumentException("Tamanho de IV incorreto, verifique se os dados estão criptografados em AES/GCM");
+            }
+
+            // Recuperando o valor do iv:
+            byte[] iv = new byte[ivSize];
+            byteBuffer.get(iv);
+
+            try {
+                // Gerando a secret key (senha + iv):
+                SecretKey secretKey = getSecretKey(encryptionPassword, iv);
+
+                // Recuperando o restante dos dados:
+                byte[] remainingData = new byte[byteBuffer.remaining()];
+                byteBuffer.get(remainingData);
+
+                Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+                GCMParameterSpec parameterSpec = new GCMParameterSpec(128, iv);
+
+                // Descriptografando os dados:
+                cipher.init(Cipher.DECRYPT_MODE, secretKey, parameterSpec);
+
+                return cipher.doFinal(remainingData);
+
+            } catch (Exception e) {
+                throw new DecryptionException(e.getMessage());
+            }
         }
 
-        // Recuperando o valor do iv:
-        byte[] iv = new byte[ivSize];
-        byteBuffer.get(iv);
-
-        try {
-            // Gerando a secret key (senha + iv):
-            SecretKey secretKey = getSecretKey(encryptionPassword, iv);
-
-            // Recuperando o restante dos dados:
-            byte[] remainingData = new byte[byteBuffer.remaining()];
-            byteBuffer.get(remainingData);
-
-            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-            GCMParameterSpec parameterSpec = new GCMParameterSpec(128, iv);
-
-            // Descriptografando os dados:
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, parameterSpec);
-
-            return cipher.doFinal(remainingData);
-
-        } catch (Exception e) {
-            throw new DecryptionException(e.getMessage());
-        }
+        throw new DecryptionException("Empty data!");
     }
 
     public SecretKey getSecretKey(String password, byte [] iv) throws NoSuchAlgorithmException, InvalidKeySpecException {
