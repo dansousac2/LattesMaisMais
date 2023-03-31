@@ -4,6 +4,9 @@ import com.ifpb.lattesmaismais.presentation.exception.DecryptionException;
 import com.ifpb.lattesmaismais.presentation.exception.EncryptionException;
 import org.junit.jupiter.api.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,7 +17,7 @@ class FileEncryptionServiceTest {
 
     private static FileEncryptionService encryptionService;
 
-    private static final String pathReadFile = "C:\\Users\\Public\\Documents\\teste.jpg";
+    private static final String pathReadFile = "C:\\Users\\Public\\Documents\\teste.txt";
 
     private static FileConverterService fileConverterService;
 
@@ -23,6 +26,15 @@ class FileEncryptionServiceTest {
     public static void setUp() {
         encryptionService = new FileEncryptionService();
         fileConverterService = new FileConverterService();
+
+        try {
+            if (!Files.exists(Path.of(pathReadFile))) {
+                Files.createFile(Path.of(pathReadFile));
+                Files.write(Path.of(pathReadFile), "Isso é um teste".getBytes());
+            }
+        } catch (IOException e) {
+            fail();
+        }
     }
 
     @Test
@@ -75,5 +87,15 @@ class FileEncryptionServiceTest {
 
         assertThrows(DecryptionException.class, () -> encryptionService.decryptData(null));
         assertThrows(DecryptionException.class, () -> encryptionService.decryptData(emptyData));
+    }
+
+    @AfterAll
+    public static void tearDown() {
+        try {
+            System.out.println("Deleting created files");
+            Files.deleteIfExists(Path.of(pathReadFile));
+        } catch (IOException e) {
+            fail();
+        }
     }
 }

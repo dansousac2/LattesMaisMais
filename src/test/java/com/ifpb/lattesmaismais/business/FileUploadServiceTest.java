@@ -56,6 +56,11 @@ class FileUploadServiceTest {
    @BeforeAll
    public static void setUp() {
        try {
+           Path path = Path.of(pathReadFile);
+           if (!Files.exists(path)) {
+               Files.createFile(path);
+           }
+
            byte[] fileData = setupFileConverter.readFile(pathReadFile);
            multipartFile = new MockMultipartFile("teste", "teste.jpg", ".jpg", fileData);
 
@@ -64,7 +69,7 @@ class FileUploadServiceTest {
            receipt.setName(multipartFile.getName());
            receipt.setExtension(multipartFile.getContentType());
 
-       } catch (FileConversionException e) {
+       } catch (Exception e) {
            fail();
        }
    }
@@ -278,6 +283,7 @@ class FileUploadServiceTest {
         try {
             System.out.println("Deleting created files and directories");
 
+            Files.deleteIfExists(Path.of(pathReadFile));
             Files.deleteIfExists(Path.of(pathToDelete + "\\" + receipt.getId() + receipt.getExtension()));
             Files.deleteIfExists(Path.of(pathToDelete + "\\curriculum.xml"));
             Files.deleteIfExists(Path.of(pathToDelete + "_decrypted" + "\\" + receipt.getId() + receipt.getExtension()));
