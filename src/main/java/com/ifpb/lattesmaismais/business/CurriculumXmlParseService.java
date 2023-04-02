@@ -788,11 +788,11 @@ public class CurriculumXmlParseService extends DefaultHandler {
 	 * @throws IOException
 	 * @throws HashException
 	 */
-	public Curriculum xmlToCurriculum(String userId)
+	public Curriculum xmlToCurriculum(Integer userId)
 			throws ParserConfigurationException, SAXException, IOException, HashException {
 
-		ownerId = Integer.parseInt(userId);
-		String hashIdUser = hashService.hashingSHA256(userId);
+		ownerId = userId;
+		String hashIdUser = hashService.hashingSHA256(userId.toString());
 
 		doParse(pathXmlCurriculum + String.format("\\%s\\curriculum.xml", hashIdUser));
 

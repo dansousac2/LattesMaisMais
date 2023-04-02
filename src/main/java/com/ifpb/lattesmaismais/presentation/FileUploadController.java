@@ -44,10 +44,10 @@ public class FileUploadController {
 	}
 
 	@PostMapping("api/uploadcurriculumxml")
-	public ResponseEntity uploadCurriculum(@RequestParam MultipartFile file, String userId) {
+	public ResponseEntity uploadCurriculum(@RequestParam MultipartFile file, Integer userId) {
 		try {
 			// Criando hash:
-			String hashUserId = hashService.hashingSHA256(userId);
+			String hashUserId = hashService.hashingSHA256(userId.toString());
 
 			uploadService.uploadCurriculum(file, hashUserId);
 			
