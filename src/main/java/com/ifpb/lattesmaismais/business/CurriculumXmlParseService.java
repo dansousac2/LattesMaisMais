@@ -811,9 +811,9 @@ public class CurriculumXmlParseService extends DefaultHandler {
 
 		doParse(pathXmlCurriculum + String.format("\\%s\\curriculum.xml", hashIdUser));
 		//TODO retirar testes
-//		return curriculumService.save(curriculum);
-		curriculum.setId(1); // teste
-		return curriculum; // teste
+		return curriculumService.save(curriculum);
+//		curriculum.setId(1); // teste
+//		return curriculum; // teste
 	}
 
 }
