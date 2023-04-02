@@ -2,6 +2,9 @@ package com.ifpb.lattesmaismais.business;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -511,7 +514,6 @@ public class CurriculumXmlParseService extends DefaultHandler {
 			case "Atividades de ensino":
 				addCharsAddOnGroup(s);
 				break;
-				//TODO
 			}
 		}
 	}
@@ -548,7 +550,6 @@ public class CurriculumXmlParseService extends DefaultHandler {
 		case "ATIVIDADES-DE-CONSELHO-COMISSAO-E-CONSULTORIA":
 			group = null;
 			break;
-			//TODO
 			
 		case "TRABALHOS-EM-EVENTOS":
 			group = null;
@@ -754,6 +755,20 @@ public class CurriculumXmlParseService extends DefaultHandler {
 		curriculum.setEntries(hashStringsToListEntries(hashEntry));
 		curriculum.setOwner(userService.findById(ownerId));
 		curriculum.setStatus(CurriculumStatus.UNCHECKED);
+		curriculum.setDescription("versão sem comprovantes");
+		curriculum.setVersion(createVersionName());
+	}
+
+	/**
+	 * Retorna o nome da versão criada usando padrão V_diaMêsAno_horaMinutosSegundos
+	 * @return String name version's
+	 */
+	private String createVersionName() {
+
+		LocalDateTime date = LocalDateTime.now();
+		String dateString = date.format(DateTimeFormatter.ofPattern("ddMMyyyy_HHmmss"));
+		
+		return "V_" + dateString;
 	}
 
 	/**
@@ -795,7 +810,7 @@ public class CurriculumXmlParseService extends DefaultHandler {
 		String hashIdUser = hashService.hashingSHA256(userId.toString());
 
 		doParse(pathXmlCurriculum + String.format("\\%s\\curriculum.xml", hashIdUser));
-
+		//TODO retirar testes
 //		return curriculumService.save(curriculum);
 		curriculum.setId(1); // teste
 		return curriculum; // teste

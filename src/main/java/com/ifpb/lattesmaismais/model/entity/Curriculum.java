@@ -19,7 +19,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "CURRICULUM_LMM")
+@Table(name = "CURRICULUM")
 public class Curriculum implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -47,15 +47,38 @@ public class Curriculum implements Serializable {
 	@Column(name = "STATUS_CURRICULUM", nullable = false)
 	private CurriculumStatus status;
 	
+	@Column(name = "DESCRIPTION_CURRICULUM", nullable = false)
+	private String description;
+	
+	@Column(name= "VERSION_CURRICULUM", nullable = false)
+	private String version;
+	
 	public Curriculum() {
 		
 	}
 
-	public Curriculum(Integer id, int entryCount, List<Entry> entries, User owner) {
+	public Curriculum(Integer id, int entryCount, List<Entry> entries, User owner, String description) {
 		this.id = id;
 		this.entryCount = entryCount;
 		this.entries = entries;
 		this.owner = owner;
+		this.description = description;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public CurriculumStatus getStatus() {
