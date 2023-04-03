@@ -92,7 +92,7 @@ class CurriculumXmlParseServiceTest {
             doCallRealMethod().when(hashService).hashingSHA256(any());
             when(userService.findById(any())).thenReturn(owner);
 
-            assertDoesNotThrow(() -> parseService.xmlToCurriculum(String.valueOf(owner.getId())));
+            assertDoesNotThrow(() -> parseService.xmlToCurriculum(owner.getId()));
         } catch (Exception e) {
             fail();
         }
@@ -105,7 +105,7 @@ class CurriculumXmlParseServiceTest {
             when(userService.findById(any())).thenReturn(owner);
 
             // Passando id inválido:
-            assertThrows(FileNotFoundException.class, () -> parseService.xmlToCurriculum(String.valueOf(owner.getId() + 100)));
+            assertThrows(FileNotFoundException.class, () -> parseService.xmlToCurriculum(owner.getId() + 100));
 
         } catch (Exception e) {
             fail();
