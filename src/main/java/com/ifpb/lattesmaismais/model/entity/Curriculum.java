@@ -19,7 +19,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "CURRICULUM_LMM")
+@Table(name = "CURRICULUM")
 public class Curriculum implements Serializable {
 
 	private static final long serialVersionUID = 1L;

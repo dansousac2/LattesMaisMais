@@ -1,17 +1,26 @@
 package com.ifpb.lattesmaismais.model.entity;
 
-import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.ifpb.lattesmaismais.model.enums.AccountStatus;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 
 @Entity
-public class User implements Serializable {
+public class User implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 
@@ -23,9 +32,6 @@ public class User implements Serializable {
 	@Column(name = "USER_NAME")
 	private String name;
 	
-	@Column(name = "IS_VALIDATOR")
-	private boolean validator = false;
-	
 	@Column(name = "USER_EMAIL")
 	private String email;
 	
@@ -34,6 +40,14 @@ public class User implements Serializable {
 
 	@Column(name = "ACCOUNT_STATUS")
 	private AccountStatus status;
+	
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(
+			name = "USER_ROLES",
+			joinColumns = @JoinColumn(name = "USER_ID"),
+			inverseJoinColumns = @JoinColumn(name = "ROLE_ID")
+	)
+	private List<Role> roles;
 	
 	public User() {
 		
@@ -55,14 +69,6 @@ public class User implements Serializable {
 		this.name = name;
 	}
 
-	public boolean isValidator() {
-		return validator;
-	}
-
-	public void setValidator(boolean validator) {
-		this.validator = validator;
-	}
-
 	public String getEmail() {
 		return email;
 	}
@@ -71,21 +77,13 @@ public class User implements Serializable {
 		this.email = email;
 	}
 
-	public String getPassword() {
-		return password;
-	}
-
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
 	@Override
 	public int hashCode() {
-		return Objects.hash(email, id, name, password, validator);
+		return Objects.hash(email, id, name, password, roles, status);
 	}
 
 	@Override
@@ -98,7 +96,43 @@ public class User implements Serializable {
 			return false;
 		User other = (User) obj;
 		return Objects.equals(email, other.email) && Objects.equals(id, other.id) && Objects.equals(name, other.name)
-				&& Objects.equals(password, other.password) && validator == other.validator;
+				&& Objects.equals(password, other.password) && Objects.equals(roles, other.roles)
+				&& status == other.status;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return roles;
+	}
+
+	@Override
+	public String getPassword() {
+		return password;
+	}
+
+	@Override
+	public String getUsername() {
+		return name;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
 	}
 	
 }
