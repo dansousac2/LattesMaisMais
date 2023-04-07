@@ -54,6 +54,10 @@
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+		</dependency>
 		<!-- parte da segurança. Habilitar quando for usar 
 		<dependency> <groupId>org.springframework.boot</groupId> 
 			<artifactId>spring-boot-starter-security</artifactId> 
