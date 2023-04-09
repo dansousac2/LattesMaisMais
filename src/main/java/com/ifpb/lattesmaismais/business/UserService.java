@@ -1,6 +1,9 @@
 package com.ifpb.lattesmaismais.business;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.ifpb.lattesmaismais.model.entity.User;
@@ -8,7 +11,7 @@ import com.ifpb.lattesmaismais.model.repository.UserRepository;
 import com.ifpb.lattesmaismais.presentation.exception.ObjectNotFoundException;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
 	@Autowired
 	private UserRepository repository;
@@ -23,5 +26,17 @@ public class UserService {
 		return repository.findByEmail(email).orElseThrow(
 				() -> new ObjectNotFoundException("Usuário com não encontrado/ email: " + email)
 			);
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+		try {
+			
+			return findByEmail(username);
+			
+		} catch (Exception e) {
+			throw new UsernameNotFoundException(e.getMessage());
+		}
 	}
 }
