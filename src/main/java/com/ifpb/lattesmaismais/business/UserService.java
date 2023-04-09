@@ -11,11 +11,17 @@ import com.ifpb.lattesmaismais.presentation.exception.ObjectNotFoundException;
 public class UserService {
 
 	@Autowired
-	private UserRepository userRepository;
+	private UserRepository repository;
 	
 	public User findById(Integer id) throws ObjectNotFoundException {
-		return userRepository.findById(id).orElseThrow(
-					() -> new ObjectNotFoundException(String.format("Usuário com id %d não encontrado!", id))
+		return repository.findById(id).orElseThrow(
+					() -> new ObjectNotFoundException("Usuário com não encontrado/ id: " + id)
 				);
+	}
+	
+	public User findByEmail(String email) throws ObjectNotFoundException {
+		return repository.findByEmail(email).orElseThrow(
+				() -> new ObjectNotFoundException("Usuário com não encontrado/ email: " + email)
+			);
 	}
 }

@@ -40,10 +40,18 @@ public class CurriculumController {
 		return "<h1>Testando acesso PÚBLICO ao endpoint!!!</h1>";
 	}
 	
-	//TODO remover endpiont de teste 
+	//TODO remover endpiont de teste
 	@GetMapping("/private")
 	public String testePrivado() {
 		return "<h1>Testando acesso PRIVADO ao endpoint!!!</h1>";
 	}
+	
+	//TODO remover endpiont de teste
+	@GetMapping("/validator")
+	public String testeRoleValidator() {
+		return "<h1>Testando acesso CREDENCIADO VALIDATOR ao endpoint!!!</h1>";
+	}
+	
+	
 	//TODO criar demais métodos de CurriculumController
 }

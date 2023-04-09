@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.ifpb.lattesmaismais.business.interfaces.RoleService;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -19,6 +21,7 @@ public class SecurityConfig {
 			.authorizeHttpRequests(auth -> {
 				auth.requestMatchers("/api/curriculum").permitAll();
 				auth.requestMatchers("/logout").permitAll();
+				auth.requestMatchers("/api/curriculum/validator").hasRole(RoleService.AVALIABLE_ROLES.VALIDATOR.name());
 				auth.anyRequest().authenticated();
 			})
 			.formLogin(Customizer.withDefaults());
