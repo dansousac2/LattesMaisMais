@@ -2,6 +2,7 @@ package com.ifpb.lattesmaismais.presentation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,13 +44,13 @@ public class CurriculumController {
 	//TODO remover endpiont de teste
 	@GetMapping("/private")
 	public String testePrivado() {
-		return "<h1>Testando acesso PRIVADO ao endpoint!!!</h1>";
+		return "<h1>Testando acesso AUTENTICADO ao endpoint!!!</h1>";
 	}
 	
 	//TODO remover endpiont de teste
 	@GetMapping("/validator")
 	public String testeRoleValidator() {
-		return "<h1>Testando acesso CREDENCIADO VALIDATOR ao endpoint!!!</h1>";
+		return "<h1>Testando acesso privado VALIDATOR ao endpoint!!!</h1>";
 	}
 	
 	
