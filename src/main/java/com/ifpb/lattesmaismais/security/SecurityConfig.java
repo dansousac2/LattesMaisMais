@@ -30,10 +30,10 @@ public class SecurityConfig {
 				auth.requestMatchers("/api/curriculum").permitAll();
 				auth.requestMatchers("/logout").permitAll();
 				auth.requestMatchers(HttpMethod.POST, "/api/login").permitAll();
+				auth.requestMatchers(HttpMethod.POST, "/api/login/verifytoken").permitAll();
 				auth.requestMatchers("/api/curriculum/validator").hasRole(RoleService.AVALIABLE_ROLES.VALIDATOR.name());
 				auth.anyRequest().authenticated();
 			});
-//			.formLogin(Customizer.withDefaults());
 			
 		return http.build();
 	}
