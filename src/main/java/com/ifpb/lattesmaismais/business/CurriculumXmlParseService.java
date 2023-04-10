@@ -580,7 +580,17 @@ public class CurriculumXmlParseService extends DefaultHandler {
 		return listEntry;
 	}
 
-	public Curriculum xmlToCurriculum(String userId)
+	/**
+	 * Realiza o mapeamento do currículo Lattes em XML para objeto,
+	 * salvando uma versão (Curriculum) no DB com comentário padrão 
+	 * @param userId
+	 * @return The ID of curriculum's owner
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws HashException
+	 */
+	public Integer xmlToCurriculum(String userId)
 			throws ParserConfigurationException, SAXException, IOException, HashException {
 
 		ownerId = Integer.parseInt(userId);
@@ -588,9 +598,9 @@ public class CurriculumXmlParseService extends DefaultHandler {
 
 		doParse(pathXmlCurriculum + String.format("\\%s\\curriculum.xml", hashIdUser));
 
-//		return curriculumService.save(curriculum);
-		curriculum.setId(1); // teste
-		return curriculum; // teste
+		Curriculum user = curriculumService.save(curriculum);
+		
+		return user.getId();
 	}
 
 }
