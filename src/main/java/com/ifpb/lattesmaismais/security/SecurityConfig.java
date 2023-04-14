@@ -45,6 +45,10 @@ public class SecurityConfig {
 				auth.requestMatchers("/logout").permitAll();
 				auth.requestMatchers(HttpMethod.POST, "/api/login").permitAll();
 				auth.requestMatchers(HttpMethod.POST, "/api/login/verifytoken").permitAll();
+				//TODO remover abaixo - teste
+				auth.requestMatchers(HttpMethod.POST, "/api/uploadcurriculumxml").permitAll();
+				//TODO remover abaixo - teste
+				auth.requestMatchers("/api/curriculum/{id}").permitAll();
 				auth.requestMatchers(HttpMethod.POST, "/api/curriculum/validator").hasRole(AVALIABLE_ROLES.VALIDATOR.name());
 				auth.anyRequest().authenticated();
 			})

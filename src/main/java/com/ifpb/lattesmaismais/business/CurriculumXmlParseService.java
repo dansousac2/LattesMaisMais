@@ -560,6 +560,8 @@ public class CurriculumXmlParseService extends DefaultHandler {
 		curriculum.setEntries(hashStringsToListEntries(hashEntry));
 		curriculum.setOwner(userService.findById(ownerId));
 		curriculum.setStatus(CurriculumStatus.UNCHECKED);
+		curriculum.setDescription("Primeira versão criada");
+		curriculum.setVersion(GenericsCurriculumService.createVersionName());
 	}
 
 	private List<Entry> hashStringsToListEntries(HashMap<String, List<String>> hashmap) {
@@ -598,9 +600,9 @@ public class CurriculumXmlParseService extends DefaultHandler {
 
 		doParse(pathXmlCurriculum + String.format("\\%s\\curriculum.xml", hashIdUser));
 
-		Curriculum user = curriculumService.save(curriculum);
+		curriculumService.save(curriculum);
 		
-		return user.getId();
+		return ownerId;
 	}
 
 }

@@ -12,25 +12,47 @@ public class CurriculumDto {
 
 	private int id;
 	
-	@NotBlank(message = "Nome de usuário não pode ser nulo!")
-	private String ownerName;
-	
+	@Positive(message = "O entryCount de proprietário deve ser um valor positivo!")
+	private int entryCount;
+
+	@NotBlank(message = "Status do currículo não pode ser nulo!")
+	private String status;
+
+	@NotBlank(message = "Versão não pode ser nula!")
+	private String version;
+
+	@NotBlank(message = "Descrição não pode ser nula!")
+	private String description;
+
 	@Positive(message = "O ID de proprietário deve ser um valor positivo!")
 	private int ownerId;
 	
-	@Positive(message = "O entryCount de proprietário deve ser um valor positivo!")
-	private int entryCount;
+	@NotBlank(message = "Nome de usuário não pode ser nulo!")
+	private String ownerName;
 	
 	@Size(min = 1, message = "O currículo deve conter ao menos uma entrada identificada!")
 	private List<Entry> entryList;
-	
-	@NotBlank(message = "Status do currículo não pode ser nulo!")
-	private String status;
 	
 	public CurriculumDto() {
 		
 	}
 	
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public String getStatus() {
 		return status;
 	}

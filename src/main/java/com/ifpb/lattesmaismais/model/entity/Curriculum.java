@@ -29,8 +29,21 @@ public class Curriculum implements Serializable {
     @Column(name = "CURRICULUM_ID", nullable = false)
 	private Integer id;
 	
-	@Column(name = "CURRICULUM_ENTRY_QTD")
+	@Column(name = "CURRICULUM_ENTRY_QTD", nullable = false)
 	private int entryCount;
+	
+	@Column(name = "STATUS_CURRICULUM", nullable = false)
+	private CurriculumStatus status;
+
+	@Column(name = "VERSION_CURRICULUM", nullable = false, unique = true)
+	private String version;
+
+	@Column(name = "DESCRIPTION_CURRICULUM", nullable = false)
+	private String description;
+
+	@ManyToOne
+	@JoinColumn(name = "OWNER_ID", nullable = false)
+	private User owner;
 	
 	@OneToMany(cascade = CascadeType.PERSIST)
 	@JoinTable(
@@ -39,14 +52,7 @@ public class Curriculum implements Serializable {
 			inverseJoinColumns = @JoinColumn(name = "ENTRY_ID")
 	)
 	private List<Entry> entries;
-	
-	@ManyToOne
-	@JoinColumn(name = "USER_ID")
-	private User owner;
-	
-	@Column(name = "STATUS_CURRICULUM", nullable = false)
-	private CurriculumStatus status;
-	
+
 	public Curriculum() {
 		
 	}
@@ -56,6 +62,22 @@ public class Curriculum implements Serializable {
 		this.entryCount = entryCount;
 		this.entries = entries;
 		this.owner = owner;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
 	}
 
 	public CurriculumStatus getStatus() {
