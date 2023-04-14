@@ -586,7 +586,7 @@ public class CurriculumXmlParseService extends DefaultHandler {
 	 * Realiza o mapeamento do currículo Lattes em XML para objeto,
 	 * salvando uma versão (Curriculum) no DB com comentário padrão 
 	 * @param userId
-	 * @return The ID of curriculum's owner
+	 * @return The ID of curriculum saved in DB
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 * @throws IOException
@@ -600,9 +600,9 @@ public class CurriculumXmlParseService extends DefaultHandler {
 
 		doParse(pathXmlCurriculum + String.format("\\%s\\curriculum.xml", hashIdUser));
 
-		curriculumService.save(curriculum);
+		Curriculum curriculumSaved = curriculumService.save(curriculum);
 		
-		return ownerId;
+		return curriculumSaved.getId();
 	}
 
 }

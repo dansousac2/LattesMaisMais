@@ -1,10 +1,14 @@
 package com.ifpb.lattesmaismais.security;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +23,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsUtils;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import com.ifpb.lattesmaismais.business.interfaces.RoleService.AVALIABLE_ROLES;
 
@@ -41,8 +49,9 @@ public class SecurityConfig {
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
 			.authorizeHttpRequests(auth -> {
+				auth.requestMatchers(CorsUtils::isPreFlightRequest).permitAll();
 				auth.requestMatchers("/api/curriculum").permitAll();
-				auth.requestMatchers("/logout").permitAll();
+				auth.requestMatchers("/api/logout").permitAll();
 				auth.requestMatchers(HttpMethod.POST, "/api/login").permitAll();
 				auth.requestMatchers(HttpMethod.POST, "/api/login/verifytoken").permitAll();
 				//TODO remover abaixo - teste
@@ -80,5 +89,27 @@ public class SecurityConfig {
 	@Bean
 	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+	
+	// CORS - resolve problema de policiamento de rotas credenciadas no navegador
+	@Bean
+	public FilterRegistrationBean<CorsFilter> corsFilter() {
+		List<String> all = Arrays.asList("*");
+		
+		CorsConfiguration corsConf = new CorsConfiguration();
+		corsConf.setAllowedMethods(all);
+		corsConf.setAllowedOriginPatterns(all);
+		corsConf.setAllowedHeaders(all);
+		corsConf.setAllowCredentials(true);
+		
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", corsConf);
+		
+		CorsFilter corsFilter = new CorsFilter(source);
+		
+		FilterRegistrationBean<CorsFilter> filter =	new FilterRegistrationBean<CorsFilter>(corsFilter);
+		filter.setOrder(Ordered.HIGHEST_PRECEDENCE);
+		
+		return filter;
 	}
 }
