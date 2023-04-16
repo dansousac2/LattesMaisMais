@@ -1,7 +1,9 @@
 package com.ifpb.lattesmaismais.business;
 
+import com.ifpb.lattesmaismais.model.entity.Curriculum;
 import com.ifpb.lattesmaismais.model.entity.User;
 
+import com.ifpb.lattesmaismais.model.enums.CurriculumStatus;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +19,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -45,6 +48,7 @@ class CurriculumXmlParseServiceTest {
 
     private static User owner;
 
+    private static Curriculum entity;
 
     private static final String path = "C:\\Users\\Public\\Documents";
 
@@ -57,6 +61,13 @@ class CurriculumXmlParseServiceTest {
         owner = new User();
         owner.setId(1);
         owner.setName("Keilla");
+
+        entity = new Curriculum();
+        entity.setId(1);
+        entity.setEntries(new ArrayList<>());
+        entity.setEntryCount(0);
+        entity.setOwner(owner);
+        entity.setStatus(CurriculumStatus.UNCHECKED);
 
         // Salvando arquivo xml para teste
         try {
@@ -91,8 +102,9 @@ class CurriculumXmlParseServiceTest {
         try {
             doCallRealMethod().when(hashService).hashingSHA256(any());
             when(userService.findById(any())).thenReturn(owner);
+            when(curriculumService.save(any())).thenReturn(entity);
 
-            assertDoesNotThrow(() -> parseService.xmlToCurriculum(owner.getId()));
+            assertDoesNotThrow(() -> parseService.xmlToCurriculum(String.valueOf(owner.getId())));
         } catch (Exception e) {
             fail();
         }
@@ -103,9 +115,10 @@ class CurriculumXmlParseServiceTest {
         try {
             doCallRealMethod().when(hashService).hashingSHA256(any());
             when(userService.findById(any())).thenReturn(owner);
+            when(curriculumService.save(any())).thenReturn(entity);
 
             // Passando id inválido:
-            assertThrows(FileNotFoundException.class, () -> parseService.xmlToCurriculum(owner.getId() + 100));
+            assertThrows(FileNotFoundException.class, () -> parseService.xmlToCurriculum(String.valueOf(owner.getId() + 100)));
 
         } catch (Exception e) {
             fail();

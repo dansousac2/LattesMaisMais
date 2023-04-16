@@ -55,16 +55,22 @@ public class SolicitedSchedulingService {
 	}
 	//TODO retonar NULO ao invés de lançar exceção?
 	public SolicitedScheduling findById(Integer id) throws ObjectNotFoundException {
-		return schedulingRepository.findById(id).orElseThrow(
-					() -> new ObjectNotFoundException("Não foi possível encontrar SolicitedScheduling com id " + id)
-				);
+		if (!schedulingRepository.existsById(id)) {
+			throw new ObjectNotFoundException("Não foi possível encontrar SolicitedScheduling com id " + id);
+		}
+
+		return schedulingRepository.findById(id).get();
 	}
 
 	public SolicitedScheduling save(SolicitedScheduling entity) {
 		return schedulingRepository.save(entity);
 	}
 
-	public void deleteById(Integer id) {
+	public void deleteById(Integer id) throws ObjectNotFoundException {
+		if (!schedulingRepository.existsById(id)) {
+			throw new ObjectNotFoundException("Não foi possível encontrar SolicitedScheduling com id " + id);
+		}
+
 		schedulingRepository.deleteById(id);
 	}
 }

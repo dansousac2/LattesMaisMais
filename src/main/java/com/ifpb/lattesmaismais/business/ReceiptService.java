@@ -6,8 +6,6 @@ import com.ifpb.lattesmaismais.presentation.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class ReceiptService {
 
@@ -15,16 +13,22 @@ public class ReceiptService {
     private ReceiptRepository receiptRepository;
 
     public Receipt findById(Integer id) throws ObjectNotFoundException {
-        return receiptRepository.findById(id).orElseThrow(
-                () -> new ObjectNotFoundException("Não foi possível encontrar comprovante com id " + id)
-        );
+        if (!receiptRepository.existsById(id)) {
+            throw new ObjectNotFoundException("Não foi possível encontrar comprovante com id " + id);
+        }
+
+        return receiptRepository.findById(id).get();
     }
 
     public Receipt save(Receipt receipt) {
         return receiptRepository.save(receipt);
     }
 
-    public void deleteById(Integer id) {
+    public void deleteById(Integer id) throws ObjectNotFoundException {
+        if (!receiptRepository.existsById(id)) {
+            throw new ObjectNotFoundException("Não foi possível encontrar comprovante com id " + id);
+        }
+
         receiptRepository.deleteById(id);
     }
 

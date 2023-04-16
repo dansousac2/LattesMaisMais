@@ -5,10 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import com.ifpb.lattesmaismais.model.entity.Receipt;
-import com.ifpb.lattesmaismais.presentation.exception.DecryptionException;
-import com.ifpb.lattesmaismais.presentation.exception.EncryptionException;
-import com.ifpb.lattesmaismais.presentation.exception.FileConversionException;
-import com.ifpb.lattesmaismais.presentation.exception.HashException;
+import com.ifpb.lattesmaismais.presentation.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,7 +32,7 @@ public class FileUploadService {
 	private ReceiptConverterService converterService;
 
 
-	public void uploadFile(MultipartFile file, String hashUserId) throws IllegalStateException, IOException, EncryptionException, FileConversionException {
+	public void uploadFile(MultipartFile file, String hashUserId) throws IllegalStateException, IOException, EncryptionException, FileConversionException, FileWithoutNameException {
 
 		createDiretory(hashUserId);
 
@@ -85,7 +82,8 @@ public class FileUploadService {
 		fileConverterService.writeFile(newPath + "\\" + fileName, decryptedData);
 	}
 
-	private void createDiretory(String userID) {
+	// Deixei o método público para utilizar nos testes
+	public void createDiretory(String userID) {
 		path = directoryFile + "\\" + userID;
 		
 		if(!new File(path).exists()) {
