@@ -55,7 +55,7 @@ class SolicitedSchedulingServiceTest {
         entity.setDate(LocalDate.now());
         entity.setTime(LocalTime.now());
         entity.setAddress("Rua das batatas");
-        entity.setVersion("202304072000");
+        entity.setVersion("V_202304072000");
         entity.setRequester(requester);
         entity.setValidator(validator);
         entity.setStatus(SchedulingStatus.OPEN);
