@@ -77,7 +77,10 @@ public class CurriculumCRUDFrontTests {
     public void listEntries() {
         driver.get("http://localhost:3000/updateVersions/2");
 
-
+        assertEquals(getElementById("nameCurriculumOwner").getText(), "Keilla");
+        assertEquals(getElementById("countEntry").getText(), "(Entradas identificadas: 45)");
+        assertEquals(getElementById("versionCurriculum").getText(), "V_17042023_033147");
+        assertEquals(getElementById("descriptionCurriculum").getText(), "Primeira versão criada");
     }
 
     @AfterAll
