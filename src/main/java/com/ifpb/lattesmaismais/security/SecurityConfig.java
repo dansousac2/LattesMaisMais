@@ -51,6 +51,7 @@ public class SecurityConfig {
 			.authorizeHttpRequests(auth -> {
 				auth.requestMatchers(CorsUtils::isPreFlightRequest).permitAll();
 				auth.requestMatchers("/api/curriculum").permitAll();
+				auth.requestMatchers("/api/user").permitAll();
 				auth.requestMatchers("/api/logout").permitAll();
 				auth.requestMatchers(HttpMethod.POST, "/api/login").permitAll();
 				auth.requestMatchers(HttpMethod.POST, "/api/login/verifytoken").permitAll();
@@ -93,7 +94,7 @@ public class SecurityConfig {
 	
 	// CORS - resolve problema de policiamento de rotas credenciadas no navegador
 	@Bean
-	public FilterRegistrationBean<CorsFilter> corsFilter() {
+	FilterRegistrationBean<CorsFilter> corsFilter() {
 		List<String> all = Arrays.asList("*");
 		
 		CorsConfiguration corsConf = new CorsConfiguration();

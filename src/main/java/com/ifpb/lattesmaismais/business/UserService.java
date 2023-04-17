@@ -27,6 +27,14 @@ public class UserService implements UserDetailsService {
 				() -> new ObjectNotFoundException("Usuário com não encontrado/ email: " + email)
 			);
 	}
+	
+	public boolean existsEmail(String email) {
+		return repository.existsByEmail(email);
+	}
+	
+	public User save(User user) {
+		return repository.save(user);
+	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

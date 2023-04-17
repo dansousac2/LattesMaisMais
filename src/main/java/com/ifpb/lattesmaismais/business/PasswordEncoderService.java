@@ -1,13 +1,13 @@
 package com.ifpb.lattesmaismais.business;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
-import com.ifpb.lattesmaismais.business.interfaces.PasswordEncoderService;
 import com.ifpb.lattesmaismais.model.entity.User;
 
-public class PasswordEncoderServiceImpl extends BCryptPasswordEncoder implements PasswordEncoderService{
+@Service
+public class PasswordEncoderService extends BCryptPasswordEncoder {
 
-	@Override
 	public void encryptPassword(User user) {
 		if(user.getId() != null) {
 			String passEncrypted = encode(user.getPassword());

@@ -21,7 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public class TokenServiceImpl implements TokenService {
 
 	public static final String CLAIM_USER_ID = "userid";
-	public static final String CLAIM_USER_NAME = "username";
+	public static final String CLAIM_USER_EMAIL = "useremail";
 	
 	@Value("${jwt.expiration}")
 	private String expiration;
@@ -41,7 +41,7 @@ public class TokenServiceImpl implements TokenService {
 						.setExpiration(expiDate)
 						.setSubject(user.getId().toString())
 						.claim(CLAIM_USER_ID, user.getId())
-						.claim(CLAIM_USER_NAME, user.getName())
+						.claim(CLAIM_USER_EMAIL, user.getEmail())
 						.signWith(SignatureAlgorithm.HS512, secret)
 						.compact();
 		
@@ -75,7 +75,7 @@ public class TokenServiceImpl implements TokenService {
 
 	@Override
 	public String getUserName(String token) {
-		return (String) getClaims(token).get(CLAIM_USER_NAME);
+		return (String) getClaims(token).get(CLAIM_USER_EMAIL);
 	}
 
 	@Override

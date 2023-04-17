@@ -122,7 +122,7 @@ public class Curriculum implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(entries, entryCount, id, owner);
+		return Objects.hash(description, entries, entryCount, id, owner, status, version);
 	}
 
 	@Override
@@ -134,8 +134,9 @@ public class Curriculum implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Curriculum other = (Curriculum) obj;
-		return Objects.equals(entries, other.entries) && entryCount == other.entryCount && Objects.equals(id, other.id)
-				&& Objects.equals(owner, other.owner);
+		return Objects.equals(description, other.description) && Objects.equals(entries, other.entries)
+				&& entryCount == other.entryCount && Objects.equals(id, other.id) && Objects.equals(owner, other.owner)
+				&& status == other.status && Objects.equals(version, other.version);
 	}
 
 }
