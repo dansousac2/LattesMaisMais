@@ -8,7 +8,6 @@ import com.ifpb.lattesmaismais.model.entity.User;
 import com.ifpb.lattesmaismais.model.enums.SchedulingStatus;
 import com.ifpb.lattesmaismais.model.repository.SolicitedSchedulingRepository;
 import com.ifpb.lattesmaismais.presentation.dto.SolicitedSchedulingDto;
-import com.ifpb.lattesmaismais.presentation.exception.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 
-// TODO: Ajustar e finalizar testes
 public class SolicitedSchedulingControllerTest {
 
     @Spy
@@ -105,21 +103,21 @@ public class SolicitedSchedulingControllerTest {
         }
     }
 
-    // TODO: Ajustar depois
+    @Test
+    public void testFindByIdException() {
+        try {
+            doCallRealMethod().when(service).findById(any());
 
-//    @Test
-//    public void testFindByIdException() {
-//        try {
-//            doThrow(ObjectNotFoundException.class).when(service).findById(any());
-//
-//            Throwable exception = assertThrows(ObjectNotFoundException.class, () -> controller.findById(1));
-////            assertTrue(exception.getMessage().contains("Não foi possível encontrar SolicitedScheduling com id"));
-//
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//            fail();
-//        }
-//    }
+            ResponseEntity response = controller.findById(1);
+
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+            assertEquals("Não foi possível encontrar SolicitedScheduling com id 1", response.getBody().toString());
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            fail();
+        }
+    }
 
     @Test
     public void testSaveOk() {
@@ -140,14 +138,41 @@ public class SolicitedSchedulingControllerTest {
     public void testSaveException() {
         try {
             doReturn(entity).when(service).save(any());
-            when(userService.findById(any())).thenThrow(ObjectNotFoundException.class);
+            doCallRealMethod().when(userService).findById(any());
 
+            entity.setId(999);
             SolicitedSchedulingDto dto = converterService.schedulingToDto(entity);
 
-            Throwable exception = assertThrows(ObjectNotFoundException.class, () -> controller.save(dto));
-            assertTrue(exception.getMessage().startsWith("Usuário com não encontrado/ id: "));
+            ResponseEntity response = controller.save(dto);
+
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
         } catch (Exception e) {
             fail();
         }
+    }
+
+    @Test
+    public void testDeleteOk() {
+        try {
+            doNothing().when(service).deleteById(any());
+        } catch (Exception e) {
+            fail();
+        }
+
+        ResponseEntity response = assertDoesNotThrow(() -> controller.delete(1));
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
+
+    @Test
+    public void testDeleteException() {
+        try {
+            doCallRealMethod().when(service).deleteById(any());
+        } catch (Exception e) {
+            fail();
+        }
+
+        ResponseEntity response = controller.delete(1);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 }
