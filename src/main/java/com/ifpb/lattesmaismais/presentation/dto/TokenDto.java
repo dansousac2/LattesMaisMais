@@ -6,6 +6,10 @@ public class TokenDto {
 	
 	private UserDtoFront user;
 	
+	public TokenDto() {
+		
+	}
+	
 	public TokenDto(String token, UserDtoFront user) {
 		this.token = token;
 		this.user = user;
