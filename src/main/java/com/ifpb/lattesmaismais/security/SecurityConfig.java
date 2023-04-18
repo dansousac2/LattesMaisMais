@@ -11,9 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -40,6 +38,17 @@ public class SecurityConfig {
 	
 	@Autowired
 	private TokenFilter tokenFilter;
+	
+	@Bean
+	AuthenticationManager authenticationManager(AuthenticationConfiguration authConf) throws Exception{
+		return authConf.getAuthenticationManager();
+	}
+	
+	// Ao retirar esse Bean o erro "There is no PasswordEncoder mapped for the id 'null'" foi resolvido (???)
+//	@Bean
+//	PasswordEncoder passwordEncoder() {
+//		return new BCryptPasswordEncoder();
+//	}
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -80,16 +89,6 @@ public class SecurityConfig {
 			});
 		
 		return http.build();
-	}
-	
-	@Bean
-	AuthenticationManager authenticationManager(AuthenticationConfiguration authConf) throws Exception{
-		return authConf.getAuthenticationManager();
-	}
-	
-	@Bean
-	PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
 	}
 	
 	// CORS - resolve problema de policiamento de rotas credenciadas no navegador
