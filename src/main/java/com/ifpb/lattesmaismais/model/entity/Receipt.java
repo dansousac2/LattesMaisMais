@@ -21,16 +21,28 @@ public class Receipt implements Serializable {
 
     @Column(name = "RECEIPT_EXTENSION", nullable = false)
     private String extension;
+    
+    @Column(name = "RECEIPT_COMENTARY")
+    private String commentary;
 
     public Receipt() {
 
     }
 
-    public Receipt(Integer id, String name, String extension) {
+    public Receipt(Integer id, String name, String extension, String commentary) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.extension = extension;
+		this.commentary = commentary;
+	}
+
+	public String getCommentary() {
+		return commentary;
+	}
+
+	public void setCommentary(String commentary) {
+		this.commentary = commentary;
 	}
 
 	public Integer getId() {

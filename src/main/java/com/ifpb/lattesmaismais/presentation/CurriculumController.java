@@ -35,24 +35,6 @@ public class CurriculumController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
-	//TODO remover endpiont de teste 
-	@GetMapping
-	public String testePublico() {
-		return "<h1>Testando acesso PÚBLICO ao endpoint!!!</h1>";
-	}
-	
-	//TODO remover endpiont de teste
-	@GetMapping("/private")
-	public String testePrivado() {
-		return "<h1>Testando acesso AUTENTICADO ao endpoint!!!</h1>";
-	}
-	
-	//TODO remover endpiont de teste
-	@GetMapping("/validator")
-	public String testeRoleValidator() {
-		return "<h1>Testando acesso privado VALIDATOR ao endpoint!!!</h1>";
-	}
-	
 	
 	//TODO criar demais métodos de CurriculumController
 }

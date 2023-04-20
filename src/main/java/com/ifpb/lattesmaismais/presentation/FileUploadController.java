@@ -1,18 +1,19 @@
 package com.ifpb.lattesmaismais.presentation;
 
-import com.ifpb.lattesmaismais.business.*;
-import com.ifpb.lattesmaismais.model.entity.Curriculum;
-import com.ifpb.lattesmaismais.presentation.dto.CurriculumDto;
-import com.ifpb.lattesmaismais.presentation.exception.EncryptionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.ifpb.lattesmaismais.business.CurriculumConverterService;
+import com.ifpb.lattesmaismais.business.CurriculumXmlParseService;
+import com.ifpb.lattesmaismais.business.FileUploadService;
+import com.ifpb.lattesmaismais.business.HashService;
+import com.ifpb.lattesmaismais.presentation.dto.FileUploadDto;
 
 @RestController
 public class FileUploadController {
@@ -30,12 +31,12 @@ public class FileUploadController {
 	private CurriculumConverterService curriculumConverterService;
 
 	@PostMapping("api/fileupload")
-	public ResponseEntity uploadFile(@RequestParam MultipartFile file, String userId) {
+	public ResponseEntity uploadFile(@RequestParam MultipartFile file, FileUploadDto dto) {
 		try {
 			// Criando hash:
-			String hashUserId = hashService.hashingSHA256(userId);
+			String hashUserId = hashService.hashingSHA256(dto.getUserId());
 
-			uploadService.uploadFile(file, hashUserId);
+			uploadService.uploadFile(file, hashUserId, dto.getUserCommentary());
 
 			return new ResponseEntity(null, HttpStatus.CREATED);
 		} catch (Exception e) {
