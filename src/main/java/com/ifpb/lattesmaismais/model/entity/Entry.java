@@ -34,7 +34,7 @@ public class Entry implements Serializable {
 	@Column(name = "ENTRY_NAME", nullable = false, length = 400)
 	private String name;
 	
-	@OneToMany(cascade = CascadeType.PERSIST)
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(
 			name = "ENTRY_RECEIPTS",
 			joinColumns = @JoinColumn(name = "ENTRY_ID"),

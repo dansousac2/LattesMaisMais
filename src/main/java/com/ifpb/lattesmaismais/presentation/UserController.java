@@ -50,10 +50,9 @@ public class UserController {
 			}
 			User user = userConverter.dtoBackToUser(dto);
 			passEncoder.encryptPassword(user);
+			user = service.save(user);
 			
-			User saved = service.save(user);
-			
-			UserDtoFront dtoToReturn = userConverter.userToDtoFront(saved);
+			UserDtoFront dtoToReturn = userConverter.userToDtoFront(user);
 			
 			return new ResponseEntity(dtoToReturn, HttpStatus.CREATED);
 		} catch (Exception e) {

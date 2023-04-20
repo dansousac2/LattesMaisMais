@@ -57,7 +57,7 @@ public class LoginController {
 		try {
 			boolean isValid = tokenService.isValid(token.getToken());
 			
-			return ResponseEntity.ok(isValid ? "Token válido" : "Token inválido");
+			return ResponseEntity.ok(isValid);
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}

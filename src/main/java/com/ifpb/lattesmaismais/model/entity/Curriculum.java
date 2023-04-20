@@ -45,7 +45,7 @@ public class Curriculum implements Serializable {
 	@JoinColumn(name = "OWNER_ID", nullable = false)
 	private User owner;
 	
-	@OneToMany(cascade = CascadeType.PERSIST)
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(
 			name = "CURRICULUM_ENTRIES",
 			joinColumns = @JoinColumn(name = "CURRICULUM_ID"),
