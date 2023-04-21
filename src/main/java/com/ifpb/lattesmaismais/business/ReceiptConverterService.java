@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class ReceiptConverterService {
 
-    public Receipt fileToEntity(MultipartFile file, String commentary) throws FileWithoutNameException {
+    public Receipt fileToEntity(MultipartFile file, String commentary, String url) throws FileWithoutNameException {
         Receipt entity = new Receipt();
 
         if (file.getOriginalFilename().isBlank() || file.getOriginalFilename().isEmpty()) {
@@ -21,6 +21,7 @@ public class ReceiptConverterService {
         entity.setName(fileName.substring(0, extensionIndex));
         entity.setExtension(fileName.substring(extensionIndex));
         entity.setCommentary(commentary);
+        entity.setUrl(url);
 
         return entity;
     }

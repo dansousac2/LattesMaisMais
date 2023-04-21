@@ -16,11 +16,14 @@ public class Receipt implements Serializable {
     @Column(name = "RECEIPT_ID", nullable = false)
     private Integer id;
 
-    @Column(name = "RECEIPT_NAME", nullable = false)
+    @Column(name = "RECEIPT_NAME")
     private String name;
 
-    @Column(name = "RECEIPT_EXTENSION", nullable = false)
+    @Column(name = "RECEIPT_EXTENSION")
     private String extension;
+    
+    @Column(name = "RECEIPT_URL")
+    private String url;
     
     @Column(name = "RECEIPT_COMENTARY")
     private String commentary;
@@ -29,12 +32,12 @@ public class Receipt implements Serializable {
 
     }
 
-    public Receipt(Integer id, String name, String extension, String commentary) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.extension = extension;
-		this.commentary = commentary;
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 	public String getCommentary() {

@@ -36,7 +36,7 @@ public class FileUploadController {
 			// Criando hash:
 			String hashUserId = hashService.hashingSHA256(dto.getUserId());
 
-			uploadService.uploadFile(file, hashUserId, dto.getUserCommentary());
+			uploadService.uploadFile(file, hashUserId, dto.getUserCommentary(), dto.getUrl());
 
 			return new ResponseEntity(null, HttpStatus.CREATED);
 		} catch (Exception e) {

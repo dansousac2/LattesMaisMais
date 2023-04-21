@@ -32,7 +32,7 @@ public class FileUploadService {
 	private ReceiptConverterService converterService;
 
 
-	public void uploadFile(MultipartFile file, String hashUserId, String commentary) throws IllegalStateException, IOException, EncryptionException, FileConversionException, FileWithoutNameException {
+	public void uploadFile(MultipartFile file, String hashUserId, String commentary, String url) throws IllegalStateException, IOException, EncryptionException, FileConversionException, FileWithoutNameException {
 
 		createDiretory(hashUserId);
 
@@ -40,7 +40,7 @@ public class FileUploadService {
 		byte[] fileData = file.getBytes();
 
 		// Convertendo arquivo para entidade e salvando no banco:
-		Receipt entity = converterService.fileToEntity(file, commentary);
+		Receipt entity = converterService.fileToEntity(file, commentary, url);
 		entity = receiptService.save(entity);
 
 //		// Gerando hash com conteúdo do arquivo:
