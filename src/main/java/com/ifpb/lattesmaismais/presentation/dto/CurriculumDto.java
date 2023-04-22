@@ -5,11 +5,13 @@ import java.util.List;
 import com.ifpb.lattesmaismais.model.entity.Entry;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 public class CurriculumDto {
 
+	@Positive(message = "O id do currículo deve ser um valor positivo!")
 	private int id;
 	
 	@Positive(message = "O entryCount de proprietário deve ser um valor positivo!")
@@ -30,6 +32,10 @@ public class CurriculumDto {
 	@NotBlank(message = "Nome de usuário não pode ser nulo!")
 	private String ownerName;
 	
+	// dd/MM/yyyy - HH:mm:ss
+	@Pattern(regexp = "^\\d\\d\\/\\d\\d\\/\\d{4}\\s-\\s\\d\\d:\\d\\d:\\d\\d$", message = "Data de modificação em formato errado!")
+	private String lastModification;
+	
 	@Size(min = 1, message = "O currículo deve conter ao menos uma entrada identificada!")
 	private List<Entry> entryList;
 	
@@ -37,6 +43,14 @@ public class CurriculumDto {
 		
 	}
 	
+	public String getLastModification() {
+		return lastModification;
+	}
+
+	public void setLastModification(String lastModification) {
+		this.lastModification = lastModification;
+	}
+
 	public String getVersion() {
 		return version;
 	}

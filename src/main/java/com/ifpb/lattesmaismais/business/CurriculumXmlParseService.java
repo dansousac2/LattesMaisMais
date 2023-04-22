@@ -2,6 +2,7 @@ package com.ifpb.lattesmaismais.business;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +24,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.ifpb.lattesmaismais.model.entity.Curriculum;
 import com.ifpb.lattesmaismais.model.entity.Entry;
 import com.ifpb.lattesmaismais.model.enums.CurriculumStatus;
-import com.ifpb.lattesmaismais.model.enums.EntryStatus;
+import com.ifpb.lattesmaismais.model.enums.ReceiptStatus;
 import com.ifpb.lattesmaismais.presentation.exception.HashException;
 import com.ifpb.lattesmaismais.presentation.exception.ObjectNotFoundException;
 
@@ -45,9 +46,11 @@ public class CurriculumXmlParseService extends DefaultHandler {
 	private String pathXmlCurriculum;
 	@Autowired
 	private HashService hashService;
-
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private GenericsCurriculumService genCurriculumService;
+	
 	private Curriculum curriculum;
 	private int ownerId;
 	private int entryCount = 0;
@@ -556,12 +559,12 @@ public class CurriculumXmlParseService extends DefaultHandler {
 	private void buildCurriculum() throws ObjectNotFoundException {
 		curriculum = new Curriculum();
 		curriculum.setEntryCount(entryCount);
-		// setar entradas do currículo
 		curriculum.setEntries(hashStringsToListEntries(hashEntry));
 		curriculum.setOwner(userService.findById(ownerId));
 		curriculum.setStatus(CurriculumStatus.UNCHECKED);
 		curriculum.setDescription("Primeira versão criada");
-		curriculum.setVersion(GenericsCurriculumService.createVersionName());
+		curriculum.setVersion(genCurriculumService.createVersionName());
+		curriculum.setLastModification(LocalDateTime.now());
 	}
 
 	private List<Entry> hashStringsToListEntries(HashMap<String, List<String>> hashmap) {
@@ -573,7 +576,7 @@ public class CurriculumXmlParseService extends DefaultHandler {
 				Entry entry = new Entry();
 				entry.setGroup(pair.getKey());
 				entry.setName(s);
-				entry.setStatus(EntryStatus.WITHOUT_RECEIPT);
+				entry.setStatus(ReceiptStatus.WITHOUT_RECEIPT);
 
 				listEntry.add(entry);
 			}

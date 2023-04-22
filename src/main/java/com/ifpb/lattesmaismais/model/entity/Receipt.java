@@ -1,9 +1,16 @@
 package com.ifpb.lattesmaismais.model.entity;
 
-import jakarta.persistence.*;
-
 import java.io.Serializable;
 import java.util.Objects;
+
+import com.ifpb.lattesmaismais.model.enums.ReceiptStatus;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Table(name = "RECEIPTS")
 @Entity
@@ -27,10 +34,32 @@ public class Receipt implements Serializable {
     
     @Column(name = "RECEIPT_COMENTARY")
     private String commentary;
+    
+    @Column(name = "RECEIPT_HERITAGE")
+    private String heritage;
+    
+    @Column(name = "RECEIPT_STATUS")
+    private ReceiptStatus status;
 
     public Receipt() {
-
+    	this.status = ReceiptStatus.WAITING_VALIDATION;
     }
+
+	public ReceiptStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(ReceiptStatus status) {
+		this.status = status;
+	}
+
+	public String getHeritage() {
+		return heritage;
+	}
+
+	public void setHeritage(String heritage) {
+		this.heritage = heritage;
+	}
 
 	public String getUrl() {
 		return url;

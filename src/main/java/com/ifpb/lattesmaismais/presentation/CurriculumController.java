@@ -1,33 +1,42 @@
 package com.ifpb.lattesmaismais.presentation;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ifpb.lattesmaismais.business.CurriculumConverterService;
 import com.ifpb.lattesmaismais.business.CurriculumService;
+import com.ifpb.lattesmaismais.business.GenericsCurriculumService;
 import com.ifpb.lattesmaismais.model.entity.Curriculum;
+import com.ifpb.lattesmaismais.model.entity.User;
 import com.ifpb.lattesmaismais.presentation.dto.CurriculumDto;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("api/curriculum")
 public class CurriculumController {
 
 	@Autowired
-	private CurriculumService curriculumService;
+	private CurriculumService service;
 	
 	@Autowired
 	private CurriculumConverterService converterService;
 	
+	@Autowired
+	private GenericsCurriculumService genCurriculumService;
+	
 	@GetMapping("/{id}")
 	public ResponseEntity findById(@PathVariable Integer id) {
 		try {
-			Curriculum entity = curriculumService.findById(id);
-			CurriculumDto dto = converterService.curriculumToDto(entity);
+			Curriculum entity = service.findById(id);
+			CurriculumDto dto = converterService.curriculumToDto(entity, this.genCurriculumService);
 			
 			return ResponseEntity.ok(dto);
 			
@@ -36,5 +45,22 @@ public class CurriculumController {
 		}
 	}
 	
-	//TODO criar demais métodos de CurriculumController
+	@PostMapping
+	public ResponseEntity save(@RequestBody @Valid CurriculumDtoBack dto) {
+		try {
+			// lança exceção em caso de incompatiblidade de informações
+			User owner = genCurriculumService.verifyCurriculumDto(dto, this.service);
+			
+			Curriculum entity = converterService.dtoBackToCurriculum(dto, owner, this.genCurriculumService);
+			
+			entity = service.save(entity);
+			
+			CurriculumDto dtoToReturn = converterService.curriculumToDto(entity, this.genCurriculumService);
+			
+			return new ResponseEntity(dtoToReturn, HttpStatus.CREATED);
+			
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 }

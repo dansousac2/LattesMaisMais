@@ -39,17 +39,16 @@ public class FileUploadService {
 		// Convertendo file para array
 		byte[] fileData = file.getBytes();
 
-		// Convertendo arquivo para entidade e salvando no banco:
-		Receipt entity = converterService.fileToEntity(file, commentary, url);
-		entity = receiptService.save(entity);
-
-//		// Gerando hash com conteúdo do arquivo:
-//		String hashData = hashService.hashingSHA256(fileData);
-
 		// Criptografar dados e gerar novo file para upload
 		byte[] encryptedData = fileEncryptionService.encryptData(fileData);
-
-		fileConverterService.writeFile(path  + "\\" + entity.getId() + entity.getExtension(), encryptedData);
+		
+		// Convertendo arquivo para entidade e salvando no DB
+		Receipt entity = converterService.fileToEntity(file, commentary, url);
+		entity = receiptService.save(entity);
+		
+		String nameOnDB = entity.getId() + entity.getExtension();
+		fileConverterService.writeFile(path  + "\\" + nameOnDB, encryptedData);
+		
 	}
 
 	public void uploadCurriculum(MultipartFile file, String hashUserId) throws IOException, FileConversionException {

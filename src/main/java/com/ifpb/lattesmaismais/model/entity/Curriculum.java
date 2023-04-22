@@ -1,6 +1,7 @@
 package com.ifpb.lattesmaismais.model.entity;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,6 +41,9 @@ public class Curriculum implements Serializable {
 
 	@Column(name = "DESCRIPTION_CURRICULUM", nullable = false)
 	private String description;
+	
+	@Column(name = "LAST_MODIFICATION", nullable = false)
+	private LocalDateTime lastModification;
 
 	@ManyToOne
 	@JoinColumn(name = "OWNER_ID", nullable = false)
@@ -57,11 +61,13 @@ public class Curriculum implements Serializable {
 		
 	}
 
-	public Curriculum(Integer id, int entryCount, List<Entry> entries, User owner) {
-		this.id = id;
-		this.entryCount = entryCount;
-		this.entries = entries;
-		this.owner = owner;
+	public LocalDateTime getLastModification() {
+		return lastModification;
+	}
+
+
+	public void setLastModification(LocalDateTime lastModification) {
+		this.lastModification = lastModification;
 	}
 
 	public String getDescription() {

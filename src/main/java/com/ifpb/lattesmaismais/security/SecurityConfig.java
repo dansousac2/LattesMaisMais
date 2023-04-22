@@ -63,6 +63,10 @@ public class SecurityConfig {
 				auth.requestMatchers(HttpMethod.POST, "/api/login").permitAll();
 				auth.requestMatchers("/api/logout").permitAll();
 				auth.requestMatchers(HttpMethod.POST, "/api/login/verifytoken").permitAll();
+				//TODO remove below
+				auth.requestMatchers("/api/curriculum").permitAll();
+				auth.requestMatchers("/api/fileupload").permitAll();
+				auth.requestMatchers("/api/uploadcurriculumxml").permitAll();
 				auth.anyRequest().authenticated();
 			})
 			.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);

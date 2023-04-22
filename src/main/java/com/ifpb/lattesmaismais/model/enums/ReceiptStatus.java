@@ -1,6 +1,6 @@
 package com.ifpb.lattesmaismais.model.enums;
 
-public enum EntryStatus {
+public enum ReceiptStatus {
 
 	WITHOUT_RECEIPT,
 	WAITING_VALIDATION,

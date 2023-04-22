@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-import com.ifpb.lattesmaismais.model.enums.EntryStatus;
+import com.ifpb.lattesmaismais.model.enums.ReceiptStatus;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -34,22 +34,22 @@ public class Entry implements Serializable {
 	@Column(name = "ENTRY_NAME", nullable = false, length = 400)
 	private String name;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(
 			name = "ENTRY_RECEIPTS",
 			joinColumns = @JoinColumn(name = "ENTRY_ID"),
 			inverseJoinColumns = @JoinColumn(name = "RECEIPT_ID")
 	)
 	private List<Receipt> receipts;
-	
+	//TODO remover status da entrada e alterar front para lógica de gerar ícone para a entrada
 	@Column(name = "STATUS_SNTRY", nullable = false)
-	private EntryStatus status;
+	private ReceiptStatus status;
 	
 	public Entry() {
 		
 	}
 
-	public Entry(Integer id, String group, String name, List<Receipt> receipts, EntryStatus status) {
+	public Entry(Integer id, String group, String name, List<Receipt> receipts, ReceiptStatus status) {
 		super();
 		this.id = id;
 		this.group = group;
@@ -58,11 +58,11 @@ public class Entry implements Serializable {
 		this.status = status;
 	}
 
-	public EntryStatus getStatus() {
+	public ReceiptStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(EntryStatus status) {
+	public void setStatus(ReceiptStatus status) {
 		this.status = status;
 	}
 
@@ -100,7 +100,7 @@ public class Entry implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(name, receipts);
+		return Objects.hash(group, id, name, receipts, status);
 	}
 
 	@Override
@@ -112,7 +112,8 @@ public class Entry implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Entry other = (Entry) obj;
-		return Objects.equals(name, other.name) && Objects.equals(receipts, other.receipts);
+		return Objects.equals(group, other.group) && Objects.equals(id, other.id) && Objects.equals(name, other.name)
+				&& Objects.equals(receipts, other.receipts) && status == other.status;
 	}
-	
+
 }

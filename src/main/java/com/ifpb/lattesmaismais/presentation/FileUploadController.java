@@ -52,7 +52,9 @@ public class FileUploadController {
 
 			uploadService.uploadCurriculum(file, hashUserId);
 			
-			return new ResponseEntity(cXmlParseService.xmlToCurriculum(userId), HttpStatus.CREATED);
+			Integer curriculumId = cXmlParseService.xmlToCurriculum(userId);
+			
+			return new ResponseEntity(curriculumId, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
