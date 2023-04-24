@@ -9,11 +9,9 @@ import com.ifpb.lattesmaismais.model.entity.User;
 public class PasswordEncoderService extends BCryptPasswordEncoder {
 
 	public void encryptPassword(User user) {
-		System.out.println("Antets de encriptar: " + user.getId());
 		if(user.getId() == null) {
 			String passEncrypted = encode(user.getPassword());
 			user.setPassword(passEncrypted);
-			System.out.println(user.getPassword());
 		}
 		
 	}
