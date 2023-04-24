@@ -80,4 +80,15 @@ public class GenericsCurriculumService {
 		return curriculumStatus;
 	}
 
+	public CurriculumStatus generateStatusCurriculumOnly(List<Entry> entries) {
+		for(Entry entry : entries) {
+			for(Receipt rec : entry.getReceipts()) {
+				if(rec.getStatus() != ReceiptStatus.CHECKED_BY_VALIDATOR) {
+					return CurriculumStatus.UNCHECKED;
+				}
+			}
+		}
+		return CurriculumStatus.CHECKED;
+	}
+
 }

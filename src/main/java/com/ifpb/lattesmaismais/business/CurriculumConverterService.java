@@ -36,19 +36,23 @@ public class CurriculumConverterService {
 		
 	}
 
-	public Curriculum dtoBackToCurriculum(@Valid CurriculumDtoBack dto, User owner, GenericsCurriculumService genCS) {
+	public Curriculum dtoBackToCurriculum(@Valid CurriculumDtoBack dto, User owner, GenericsCurriculumService genCS, boolean maintainIds) {
 		try {
 			Curriculum entity = new Curriculum();
-			entity.setVersion(genCS.createVersionName());
 			entity.setDescription(dto.getDescription());
 			entity.setEntryCount(dto.getEntryCount());
-			entity.setLastModification(LocalDateTime.now());
-			entity.setOwner(owner);
-			
 			entity.setEntries(dto.getEntryList());
-			CurriculumStatus status = genCS.organizeEntriesReceiptsAndStatus(entity.getEntries());
+			entity.setOwner(owner);
+			CurriculumStatus status;
+			if(maintainIds) {
+				entity.setId(dto.getId());
+				status = genCS.generateStatusCurriculumOnly(entity.getEntries());
+			}else {
+				status = genCS.organizeEntriesReceiptsAndStatus(entity.getEntries());
+			}
 			entity.setStatus(status);
-			
+			entity.setVersion(genCS.createVersionName());
+			entity.setLastModification(LocalDateTime.now());
 			
 			return entity;
 			

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,8 +51,27 @@ public class CurriculumController {
 		try {
 			// lança exceção em caso de incompatiblidade de informações
 			User owner = genCurriculumService.verifyCurriculumDto(dto, this.service);
+			// remove os ids das entidades Curriculum, Entry e Receipt
+			Curriculum entity = converterService.dtoBackToCurriculum(dto, owner, this.genCurriculumService, false);
 			
-			Curriculum entity = converterService.dtoBackToCurriculum(dto, owner, this.genCurriculumService);
+			entity = service.save(entity);
+			
+			CurriculumDto dtoToReturn = converterService.curriculumToDto(entity, this.genCurriculumService);
+			
+			return new ResponseEntity(dtoToReturn, HttpStatus.CREATED);
+			
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	@PutMapping("/update")
+	public ResponseEntity update(@RequestBody @Valid CurriculumDtoBack dto) {
+		try {
+			// lança exceção em caso de incompatiblidade de informações
+			User owner = genCurriculumService.verifyCurriculumDto(dto, this.service);
+			
+			Curriculum entity = converterService.dtoBackToCurriculum(dto, owner, this.genCurriculumService, true);
 			
 			entity = service.save(entity);
 			

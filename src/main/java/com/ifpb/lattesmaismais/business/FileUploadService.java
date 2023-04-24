@@ -32,7 +32,7 @@ public class FileUploadService {
 	private ReceiptConverterService converterService;
 
 
-	public void uploadFile(MultipartFile file, String hashUserId, String commentary, String url) throws IllegalStateException, IOException, EncryptionException, FileConversionException, FileWithoutNameException {
+	public Integer uploadFile(MultipartFile file, String hashUserId, String commentary, String url) throws IllegalStateException, IOException, EncryptionException, FileConversionException, FileWithoutNameException {
 
 		createDiretory(hashUserId);
 
@@ -49,6 +49,7 @@ public class FileUploadService {
 		String nameOnDB = entity.getId() + entity.getExtension();
 		fileConverterService.writeFile(path  + "\\" + nameOnDB, encryptedData);
 		
+		return entity.getId();
 	}
 
 	public void uploadCurriculum(MultipartFile file, String hashUserId) throws IOException, FileConversionException {
