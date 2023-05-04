@@ -1,7 +1,11 @@
 package com.ifpb.lattesmaismais.business;
 
 import com.ifpb.lattesmaismais.model.entity.Receipt;
+import com.ifpb.lattesmaismais.presentation.dto.ReceiptDtoLink;
 import com.ifpb.lattesmaismais.presentation.exception.FileWithoutNameException;
+
+import jakarta.validation.Valid;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,4 +29,13 @@ public class ReceiptConverterService {
 
         return entity;
     }
+
+	public Receipt dtoToReceiptWithUrl(@Valid ReceiptDtoLink dto) {
+		// status setado no construtor
+		Receipt entity = new Receipt();
+		entity.setCommentary(dto.getCommentary());
+		entity.setUrl(dto.getUrl());
+		
+		return entity;
+	}
 }
