@@ -52,6 +52,20 @@ public class FileUploadService {
 		return entity.getId();
 	}
 
+	public void uploadOnlyFiles(MultipartFile file, String hashUserId, String nameOnDB) throws IOException, EncryptionException, FileConversionException {
+	
+		createDiretory(hashUserId);
+
+		// Convertendo file para array
+		byte[] fileData = file.getBytes();
+
+		// Criptografar dados e gerar novo file para upload
+		byte[] encryptedData = fileEncryptionService.encryptData(fileData);
+		
+		// "nameOnDB" é formado por "id" + "extension" da primeira Receipt a referenciar o arquivo
+		fileConverterService.writeFile(path  + "\\" + nameOnDB, encryptedData);
+	}
+
 	public void uploadCurriculum(MultipartFile file, String hashUserId) throws IOException, FileConversionException {
 		
 		createDiretory(hashUserId);

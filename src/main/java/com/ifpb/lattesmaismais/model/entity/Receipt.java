@@ -40,10 +40,25 @@ public class Receipt implements Serializable {
     
     @Column(name = "RECEIPT_STATUS")
     private ReceiptStatus status;
+    // usado em algumas possíveis situações para comparar com arquivo no frontend
+    @Column(name = "RECEIPT_MODIFICATION_REF")
+    private String lastModified;
 
     public Receipt() {
     	this.status = ReceiptStatus.WAITING_VALIDATION;
     }
+
+	public String getLastModified() {
+		return lastModified;
+	}
+
+	public void setLastModified(String lastModified) {
+		this.lastModified = lastModified;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 
 	public ReceiptStatus getStatus() {
 		return status;

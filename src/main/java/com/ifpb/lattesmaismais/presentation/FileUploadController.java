@@ -15,6 +15,8 @@ import com.ifpb.lattesmaismais.business.FileUploadService;
 import com.ifpb.lattesmaismais.business.HashService;
 import com.ifpb.lattesmaismais.presentation.dto.FileUploadDto;
 
+import jakarta.validation.Valid;
+
 @RestController
 public class FileUploadController {
 
@@ -31,14 +33,29 @@ public class FileUploadController {
 	private CurriculumConverterService curriculumConverterService;
 
 	@PostMapping("api/fileupload")
-	public ResponseEntity uploadFile(@RequestParam MultipartFile file, FileUploadDto dto) {
+	public ResponseEntity uploadFile(@RequestParam MultipartFile file,@Valid FileUploadDto dto) {
 		try {
 			// Criando hash:
-			String hashUserId = hashService.hashingSHA256(dto.getUserId());
+			String hashUserId = hashService.hashingSHA256(String.valueOf(dto.getUserId()));
 
 			Integer receiptId = uploadService.uploadFile(file, hashUserId, dto.getUserCommentary(), dto.getUrl());
 
 			return new ResponseEntity(receiptId, HttpStatus.CREATED);
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+
+	@PostMapping("api/onlyuploadfile")
+	public ResponseEntity onlyUploadFile(@RequestParam MultipartFile file,@Valid FileUploadDto dto) {
+		try {
+			// Criando hash:
+			String hashUserId = hashService.hashingSHA256(String.valueOf(dto.getUserId()));
+			
+			// enviando arquivos para pasta do usuário sem criar novas classes no DB
+			uploadService.uploadOnlyFiles(file, hashUserId, dto.getNameOnDB());
+			
+			return new ResponseEntity(null, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -59,7 +76,7 @@ public class FileUploadController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
-
+	
 	@GetMapping("api/readfile")
 	public ResponseEntity readFile(@RequestParam String fileName, String userId) {
 		try {
