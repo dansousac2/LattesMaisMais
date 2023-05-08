@@ -90,15 +90,15 @@ class FileUploadServiceTest {
     @Order(1)
     public void testUploadFileOk() {
         try {
-            when(converterService.fileToEntity(any(MultipartFile.class))).thenReturn(receipt);
+            when(converterService.fileToEntity(any(MultipartFile.class), anyString(), anyString())).thenReturn(receipt);
             when(receiptService.save(any(Receipt.class))).thenReturn(receipt);
             when(encryptionService.encryptData(any())).thenReturn(multipartFile.getBytes());
             doCallRealMethod().when(fileConverterService).writeFile(any(), any());
             doCallRealMethod().when(uploadService).createDiretory(anyString());
 
-            assertDoesNotThrow(() -> uploadService.uploadFile(multipartFile, "teste"));
+            assertDoesNotThrow(() -> uploadService.uploadFile(multipartFile, "teste", "Sem comentários", "https://www.teste.com/"));
 
-            verify(converterService).fileToEntity(any(MultipartFile.class));
+            verify(converterService).fileToEntity(any(MultipartFile.class), anyString(), anyString());
             verify(receiptService).save(any(Receipt.class));
             verify(encryptionService).encryptData(any());
             verify(fileConverterService).writeFile(any(), any());
@@ -113,7 +113,7 @@ class FileUploadServiceTest {
     @Order(2)
     public void testUploadFileWithoutNameException() {
         try {
-            when(converterService.fileToEntity(any(MultipartFile.class))).thenThrow(FileWithoutNameException.class);
+            when(converterService.fileToEntity(any(MultipartFile.class), anyString(), anyString())).thenThrow(FileWithoutNameException.class);
             when(receiptService.save(any(Receipt.class))).thenReturn(receipt);
             when(encryptionService.encryptData(any())).thenReturn(multipartFile.getBytes());
             doCallRealMethod().when(fileConverterService).writeFile(any(), any());
@@ -122,11 +122,11 @@ class FileUploadServiceTest {
 
             MultipartFile multipartFileFail = new MockMultipartFile("teste", "", "", setupFileConverter.readFile(pathReadFile));
 
-            assertThrows(FileWithoutNameException.class, () -> uploadService.uploadFile(multipartFileFail, "teste"));
+            assertThrows(FileWithoutNameException.class, () -> uploadService.uploadFile(multipartFileFail, "teste", "Sem comentários", "https://www.teste.com/"));
 
-            verify(converterService).fileToEntity(any(MultipartFile.class));
+            verify(encryptionService, times(1)).encryptData(any());
+            verify(converterService).fileToEntity(any(MultipartFile.class), anyString(), anyString());
             verify(receiptService, times(0)).save(any(Receipt.class));
-            verify(encryptionService, times(0)).encryptData(any());
             verify(fileConverterService, times(0)).writeFile(any(), any());
         } catch (Exception e) {
             fail();
@@ -138,17 +138,17 @@ class FileUploadServiceTest {
     @Order(3)
     public void testUploadFileEncryptionException() {
         try {
-            when(converterService.fileToEntity(any(MultipartFile.class))).thenReturn(receipt);
+            when(converterService.fileToEntity(any(MultipartFile.class), anyString(), anyString())).thenReturn(receipt);
             when(receiptService.save(any(Receipt.class))).thenReturn(receipt);
             when(encryptionService.encryptData(any())).thenThrow(EncryptionException.class);
             doCallRealMethod().when(fileConverterService).writeFile(any(), any());
             doCallRealMethod().when(uploadService).createDiretory(anyString());
 
-            assertThrows(EncryptionException.class, () -> uploadService.uploadFile(multipartFile, "teste"));
+            assertThrows(EncryptionException.class, () -> uploadService.uploadFile(multipartFile, "teste", "Sem comentários", "https://www.teste.com/"));
 
-            verify(converterService).fileToEntity(any(MultipartFile.class));
-            verify(receiptService).save(any(Receipt.class));
             verify(encryptionService).encryptData(any());
+            verify(converterService, times(0)).fileToEntity(any(MultipartFile.class), anyString(), anyString());
+            verify(receiptService, times(0)).save(any(Receipt.class));
             verify(fileConverterService, times(0)).writeFile(any(), any());
 
         } catch (Exception e) {
@@ -160,13 +160,13 @@ class FileUploadServiceTest {
     @Order(4)
     public void testUploadFileConversionException() {
         try {
-            when(converterService.fileToEntity(any(MultipartFile.class))).thenReturn(receipt);
+            when(converterService.fileToEntity(any(MultipartFile.class), anyString(), anyString())).thenReturn(receipt);
             when(receiptService.save(any(Receipt.class))).thenReturn(receipt);
             when(encryptionService.encryptData(any())).thenReturn(multipartFile.getBytes());
             doThrow(FileConversionException.class).when(fileConverterService).writeFile(any(), any());
             doCallRealMethod().when(uploadService).createDiretory(anyString());
 
-            assertThrows(FileConversionException.class, () -> uploadService.uploadFile(multipartFile, "teste"));
+            assertThrows(FileConversionException.class, () -> uploadService.uploadFile(multipartFile, "teste", "Sem comentários", "https://www.teste.com/"));
 
         } catch (Exception e) {
             fail();

@@ -6,6 +6,7 @@ import com.ifpb.lattesmaismais.model.enums.CurriculumStatus;
 import com.ifpb.lattesmaismais.presentation.dto.CurriculumDto;
 import org.junit.jupiter.api.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,6 +16,8 @@ class CurriculumConverterServiceTest {
     private static CurriculumConverterService converterService;
 
     private static Curriculum entity;
+
+    private static GenericsCurriculumService genericsCurriculumService;
 
     @BeforeAll
     public static void setUp() {
@@ -29,12 +32,17 @@ class CurriculumConverterServiceTest {
         entity.setEntries(new ArrayList<>());
         entity.setEntryCount(0);
         entity.setOwner(owner);
+        entity.setDescription("Versão sem comentários");
+        entity.setLastModification(LocalDateTime.now());
         entity.setStatus(CurriculumStatus.UNCHECKED);
+        entity.setVersion("V_20230508");
+
+        genericsCurriculumService = new GenericsCurriculumService();
     }
 
     @Test
     public void testConvertEntityToDto() {
-        CurriculumDto dto = converterService.curriculumToDto(entity);
+        CurriculumDto dto = converterService.curriculumToDto(entity, genericsCurriculumService);
 
         assertAll(
                 () -> assertEquals(dto.getId(), entity.getId()),
@@ -48,7 +56,7 @@ class CurriculumConverterServiceTest {
 
     @Test
     public void testConvertEntityToDtoException() {
-        Throwable exception = assertThrows(IllegalArgumentException.class, () -> converterService.curriculumToDto(null));
-        assertTrue(exception.getMessage().startsWith("Erro na conversão Curr -> Dto / Pode ser que algum dos Atributos seja nulo:"));
+        Throwable exception = assertThrows(IllegalArgumentException.class, () -> converterService.curriculumToDto(null, null));
+        assertTrue(exception.getMessage().startsWith("Erro na conversão Curr -> Dto / Pode ser que algum dos Atributos seja nulo!"));
     }
 }

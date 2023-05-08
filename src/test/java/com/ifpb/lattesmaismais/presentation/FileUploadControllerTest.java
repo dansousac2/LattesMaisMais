@@ -4,6 +4,7 @@ import com.ifpb.lattesmaismais.business.*;
 import com.ifpb.lattesmaismais.model.entity.Curriculum;
 import com.ifpb.lattesmaismais.model.entity.User;
 import com.ifpb.lattesmaismais.model.enums.CurriculumStatus;
+import com.ifpb.lattesmaismais.presentation.dto.FileUploadDto;
 import com.ifpb.lattesmaismais.presentation.exception.FileConversionException;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -57,6 +58,8 @@ class FileUploadControllerTest {
 
     private static Curriculum curriculum;
 
+    private static FileUploadDto fileUploadDto;
+
     @BeforeAll
     public static void setUp() {
         try {
@@ -77,6 +80,11 @@ class FileUploadControllerTest {
             curriculum.setOwner(owner);
             curriculum.setStatus(CurriculumStatus.UNCHECKED);
 
+            fileUploadDto = new FileUploadDto();
+            fileUploadDto.setUserId(owner.getId());
+            fileUploadDto.setUrl("https://www.teste.com");
+            fileUploadDto.setUserCommentary("Sem comentários");
+            fileUploadDto.setNameOnDB("teste.jpg");
         } catch (Exception e) {
             fail();
         }
@@ -95,15 +103,15 @@ class FileUploadControllerTest {
     public void testUploadFileOk() {
         try {
             when(hashService.hashingSHA256(anyString())).thenCallRealMethod();
-            doNothing().when(uploadService).uploadFile(any(), any());
+            doReturn(1).when(uploadService).uploadFile(any(), any(), any(), any());
 
-            assertDoesNotThrow(() -> uploadController.uploadFile(multipartFile, "teste"));
+            assertDoesNotThrow(() -> uploadController.uploadFile(multipartFile, fileUploadDto));
 
-            ResponseEntity response = uploadController.uploadFile(multipartFile, "teste");
+            ResponseEntity response = uploadController.uploadFile(multipartFile, fileUploadDto);
             assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
             verify(hashService, times(2)).hashingSHA256(anyString());
-            verify(uploadService, times(2)).uploadFile(any(), any());
+            verify(uploadService, times(2)).uploadFile(any(), any(), any(), any());
         } catch (Exception e) {
             fail();
         }
@@ -112,14 +120,14 @@ class FileUploadControllerTest {
     @Test
     public void testUploadFileException() {
         try {
-            doThrow(FileConversionException.class).when(uploadService).uploadFile(any(), any());
+            doThrow(FileConversionException.class).when(uploadService).uploadFile(any(), any(), any(), any());
             when(hashService.hashingSHA256(anyString())).thenCallRealMethod();
 
-            ResponseEntity response = uploadController.uploadFile(multipartFile, "teste");
+            ResponseEntity response = uploadController.uploadFile(multipartFile, fileUploadDto);
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
             verify(hashService).hashingSHA256(anyString());
-            verify(uploadService).uploadFile(any(), any());
+            verify(uploadService).uploadFile(any(), any(), any(), any());
 
         } catch (Exception e) {
             fail();
@@ -152,7 +160,7 @@ class FileUploadControllerTest {
             when(hashService.hashingSHA256(anyString())).thenCallRealMethod();
             doThrow(FileConversionException.class).when(uploadService).uploadCurriculum(any(), any());
             when(curriculumXmlParseService.xmlToCurriculum(any())).thenReturn(1);
-            doCallRealMethod().when(curriculumConverterService).curriculumToDto(any(Curriculum.class));
+            doCallRealMethod().when(curriculumConverterService).curriculumToDto(any(Curriculum.class), any());
 
             ResponseEntity response = uploadController.uploadCurriculum(multipartFile, "1");
             assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -160,7 +168,7 @@ class FileUploadControllerTest {
             verify(hashService).hashingSHA256(anyString());
             verify(uploadService).uploadCurriculum(any(), any());
             verify(curriculumXmlParseService, times(0)).xmlToCurriculum(any());
-            verify(curriculumConverterService, times(0)).curriculumToDto(any(Curriculum.class));
+            verify(curriculumConverterService, times(0)).curriculumToDto(any(Curriculum.class), any());
         } catch (Exception e) {
             fail();
         }
