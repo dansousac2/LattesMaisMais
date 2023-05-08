@@ -5,6 +5,7 @@ import com.ifpb.lattesmaismais.model.entity.Curriculum;
 import com.ifpb.lattesmaismais.model.entity.User;
 import com.ifpb.lattesmaismais.model.enums.CurriculumStatus;
 import com.ifpb.lattesmaismais.presentation.dto.FileUploadDto;
+import com.ifpb.lattesmaismais.presentation.dto.FileUploadDtoTest;
 import com.ifpb.lattesmaismais.presentation.exception.FileConversionException;
 
 import org.junit.jupiter.api.BeforeAll;
