@@ -1,6 +1,8 @@
 package com.ifpb.lattesmaismais.business;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,5 +44,15 @@ public class UserConverterService {
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Erro durante conversão / DtoBack --> User : Dto ou atributo de Dto nulo!");
 		}
+	}
+
+	public List<UserDtoFront> userListToUserListDto(List<User> userList) {
+		List<UserDtoFront> list = new ArrayList<>();
+		
+		userList.forEach(entity -> {
+			list.add(userToDtoFront(entity));
+		});
+		
+		return list;
 	}
 }

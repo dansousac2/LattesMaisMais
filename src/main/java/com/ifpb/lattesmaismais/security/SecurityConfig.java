@@ -68,6 +68,7 @@ public class SecurityConfig {
 				auth.requestMatchers("/api/fileupload").permitAll();
 				auth.requestMatchers("/api/onlyuploadfile").permitAll();
 				auth.requestMatchers("/api/receipt").permitAll();
+				auth.requestMatchers("/api/user/byrole/**").permitAll();
 //				auth.requestMatchers("/api/uploadcurriculumxml").permitAll();
 				auth.anyRequest().authenticated();
 			})

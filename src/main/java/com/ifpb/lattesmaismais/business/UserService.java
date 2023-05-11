@@ -1,6 +1,9 @@
 package com.ifpb.lattesmaismais.business;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -46,5 +49,9 @@ public class UserService implements UserDetailsService {
 		} catch (Exception e) {
 			throw new UsernameNotFoundException(e.getMessage());
 		}
+	}
+
+	public List<User> findByRolesName(String name) {
+		return repository.findByRolesNameIgnoreCase(name);
 	}
 }

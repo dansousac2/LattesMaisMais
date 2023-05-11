@@ -14,7 +14,7 @@ public class UserDtoFront {
 	
 	@Email(message = "O email deve ser válido!")
 	private String email;
-	//TODO criar atributo token
+	
 	public Integer getId() {
 		return id;
 	}

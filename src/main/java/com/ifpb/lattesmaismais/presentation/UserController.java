@@ -1,9 +1,12 @@
 package com.ifpb.lattesmaismais.presentation;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +40,7 @@ public class UserController {
 			UserDtoFront dto = userConverter.userToDtoFront(entity);
 			
 			return ResponseEntity.ok().body(dto);
+			
 		} catch (ObjectNotFoundException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -55,6 +59,25 @@ public class UserController {
 			UserDtoFront dtoToReturn = userConverter.userToDtoFront(user);
 			
 			return new ResponseEntity(dtoToReturn, HttpStatus.CREATED);
+			
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	@GetMapping("/byrole/{name}")
+	public ResponseEntity findByRolesName(@PathVariable String name) {
+		try {
+			if(name.isBlank()) {
+				throw new IllegalArgumentException("Nome do papel de usuário não pode ser nulo!");
+			}
+			
+			List<User> userList = service.findByRolesName(name);
+			
+			List<UserDtoFront> userListDto = userConverter.userListToUserListDto(userList);
+			
+			return ResponseEntity.ok(userListDto);
+			
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
