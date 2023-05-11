@@ -38,7 +38,7 @@ class ReceiptConverterServiceTest {
     @Order(1)
     public void testFileToEntityOk() {
         try {
-            Receipt entity = converterService.fileToEntity(multipartFile);
+            Receipt entity = converterService.fileToEntity(multipartFile, "Sem comentários", "https://www.teste.com/");
 
             assertAll(
                 () -> assertEquals(entity.getName(), multipartFile.getName()),
@@ -60,7 +60,7 @@ class ReceiptConverterServiceTest {
 
         MultipartFile multipartFileFail = new MockMultipartFile("teste", "", "", fileData);
 
-        Throwable exception = assertThrows(FileWithoutNameException.class, () -> converterService.fileToEntity(multipartFileFail));
+        Throwable exception = assertThrows(FileWithoutNameException.class, () -> converterService.fileToEntity(multipartFileFail, "Sem comentários", "https://www.teste.com/"));
         assertEquals("O arquivo enviado não possui nome!", exception.getMessage());
     }
 }

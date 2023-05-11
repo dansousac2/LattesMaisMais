@@ -38,6 +38,9 @@ class CurriculumXmlParseServiceTest {
     @Mock
     private CurriculumService curriculumService;
 
+    @Mock
+    private GenericsCurriculumService genericsCurriculumService;
+
     @InjectMocks
     @Spy
     private CurriculumXmlParseService parseService;
@@ -95,6 +98,8 @@ class CurriculumXmlParseServiceTest {
         ReflectionTestUtils.setField(parseService, "userService", userService);
         ReflectionTestUtils.setField(parseService, "curriculumService", curriculumService);
         ReflectionTestUtils.setField(parseService, "pathXmlCurriculum", path);
+        ReflectionTestUtils.setField(parseService, "genCurriculumService", genericsCurriculumService);
+
     }
 
     @Test
@@ -103,6 +108,7 @@ class CurriculumXmlParseServiceTest {
             doCallRealMethod().when(hashService).hashingSHA256(any());
             when(userService.findById(any())).thenReturn(owner);
             when(curriculumService.save(any())).thenReturn(entity);
+            when(genericsCurriculumService.createVersionName()).thenCallRealMethod();
 
             assertDoesNotThrow(() -> parseService.xmlToCurriculum(String.valueOf(owner.getId())));
         } catch (Exception e) {
