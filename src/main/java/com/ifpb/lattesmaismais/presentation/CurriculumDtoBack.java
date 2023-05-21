@@ -78,4 +78,5 @@ public class CurriculumDtoBack {
 		this.entryList = entryList;
 	}
 
+
 }
