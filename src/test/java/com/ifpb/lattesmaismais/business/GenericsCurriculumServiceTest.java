@@ -2,15 +2,14 @@ package com.ifpb.lattesmaismais.business;
 
 import com.ifpb.lattesmaismais.model.entity.Curriculum;
 import com.ifpb.lattesmaismais.model.entity.Entry;
+import com.ifpb.lattesmaismais.model.entity.Receipt;
 import com.ifpb.lattesmaismais.model.entity.User;
 import com.ifpb.lattesmaismais.model.enums.CurriculumStatus;
+import com.ifpb.lattesmaismais.model.enums.ReceiptStatus;
 import com.ifpb.lattesmaismais.model.repository.CurriculumRepository;
 import com.ifpb.lattesmaismais.presentation.CurriculumDtoBack;
 import com.ifpb.lattesmaismais.presentation.exception.ObjectNotFoundException;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -19,6 +18,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +27,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class GenericsCurriculumServiceTest {
 
     @Mock
@@ -43,6 +44,8 @@ class GenericsCurriculumServiceTest {
     private static User userOk;
 
     private static List<Entry> entriesList;
+    private static Entry entry1;
+    private static Entry entry2;
 
     @BeforeAll
     static void setUp() {
@@ -78,12 +81,31 @@ class GenericsCurriculumServiceTest {
         curriculumInvalid.setLastModification(LocalDateTime.now());
 
         entriesList = new ArrayList<>();
-        Entry entry1 = new Entry();
+
+        entry1 = new Entry();
         entry1.setId(1);
         entry1.setName("Licenciatura em Letras");
-//        entry1.setGroup();
-        Entry entry2 = new Entry();
+        entry1.setGroup("Graduação");
+        entry1.setStatus(ReceiptStatus.CHECKED_BY_VALIDATOR);
 
+        Receipt receipt1 = new Receipt();
+        receipt1.setId(1);
+        receipt1.setName("certificado");
+        receipt1.setExtension(".pdf");
+        receipt1.setStatus(ReceiptStatus.CHECKED_BY_VALIDATOR);
+
+        List<Receipt> receipts = new ArrayList<>();
+        receipts.add(receipt1);
+        entry1.setReceipts(receipts);
+
+        entry2 = new Entry();
+        entry2.setId(2);
+        entry2.setName("Licenciatura em Matemática");
+        entry2.setGroup("Graduação");
+        entry2.setStatus(ReceiptStatus.WITHOUT_RECEIPT);
+
+        List<Receipt> receipts2 = new ArrayList<>();
+        entry2.setReceipts(receipts2);
     }
 
     @BeforeEach
@@ -140,6 +162,57 @@ class GenericsCurriculumServiceTest {
         assertEquals(exception.getMessage(), "Currículo não pertencente ao usuário logado!");
     }
 
+    @Test
+    @Order(5)
+    void testVerifyCurriculumDtoObjectNotFoundException() {
+        when(repository.existsById(anyInt())).thenReturn(false);
 
+        Throwable exception = assertThrows(ObjectNotFoundException.class, () -> genericsCurriculumService.verifyCurriculumDto(curriculumDto, service));
 
+        assertEquals(exception.getMessage(), "Currículo com id 1 não encontrado!");
+    }
+
+    @Test
+    @Order(6)
+    void testOrganizeEntriesReceiptsAndStatusChecked() {
+        List<Entry> entries = new ArrayList<>();
+        // Passando uma entry válida com receipt e status CHECKED_BY_VALIDATOR
+        entries.add(entry1);
+
+        CurriculumStatus status = genericsCurriculumService.organizeEntriesReceiptsAndStatus(entries);
+        assertEquals(CurriculumStatus.CHECKED, status);
+    }
+
+    @Test
+    @Order(7)
+    void testOrganizeEntriesReceiptsAndStatusUnchecked() {
+        List<Entry> entries = new ArrayList<>();
+        // Passando uma entry válida sem receipts
+        entries.add(entry2);
+
+        CurriculumStatus status = genericsCurriculumService.organizeEntriesReceiptsAndStatus(entries);
+        assertEquals(CurriculumStatus.UNCHECKED, status);
+    }
+
+    @Test
+    @Order(8)
+    void testGenerateStatusCurriculumOnlyChecked() {
+        List<Entry> entries = new ArrayList<>();
+        // Passando uma entry válida com receipt e status CHECKED_BY_VALIDATOR
+        entries.add(entry1);
+
+        CurriculumStatus status = genericsCurriculumService.generateStatusCurriculumOnly(entries);
+        assertEquals(CurriculumStatus.CHECKED, status);
+    }
+
+    @Test
+    @Order(9)
+    void testGenerateStatusCurriculumOnlyUnchecked() {
+        List<Entry> entries = new ArrayList<>();
+        // Passando uma entry válida sem receipts
+        entries.add(entry2);
+
+        CurriculumStatus status = genericsCurriculumService.generateStatusCurriculumOnly(entries);
+        assertEquals(CurriculumStatus.UNCHECKED, status);
+    }
 }
