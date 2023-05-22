@@ -1,5 +1,6 @@
 package com.ifpb.lattesmaismais.site;
 
+import com.ifpb.lattesmaismais.business.GenericsCurriculumService;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -43,20 +44,25 @@ public class CurriculumCRUDFrontTests {
         Thread.sleep(2000);
 
         WebElement labelPassword = getElementById("lab05");
-        labelPassword.sendKeys("123456");
+        labelPassword.sendKeys("12345678");
 
         Thread.sleep(2000);
 
         WebElement buttonLogin = getElementByXPath("//*[@id=\"root\"]/div/div/div[2]/button");
         clickElement(buttonLogin);
 
-//        assertEquals("http://localhost:3000/home/", driver.getCurrentUrl());
+        Thread.sleep(2000);
+
+        Alert alt = driver.switchTo().alert();
+        alt.accept();
+
+        assertEquals("http://localhost:3000/home", driver.getCurrentUrl());
     }
 
     @Test
     @Order(2)
     public void importCurriculum() throws InterruptedException {
-        driver.get("http://localhost:3000/home/");
+        driver.get("http://localhost:3000/home");
 
         WebElement buttonImport = getElementByXPath("//*[@id=\"root\"]/div/div/div[3]/button");
         clickElement(buttonImport);
@@ -69,18 +75,24 @@ public class CurriculumCRUDFrontTests {
         WebElement selectXML = getElementByXPath("//*[@id=\"root\"]/div/div/div[3]/input");
         selectXML.sendKeys(System.getProperty("user.dir") + "\\src\\test\\java\\com\\ifpb\\lattesmaismais\\util\\teste.xml");
 
+        Thread.sleep(4000);
+
+        WebElement buttonConfirm = getElementByXPath("//*[@id=\"root\"]/div/div/div[4]/div/div/button[1]");
+        clickElement(buttonConfirm);
+
         Thread.sleep(2000);
     }
 
     @Test
     @Order(3)
-    public void listEntries() {
-        driver.get("http://localhost:3000/updateVersions/2");
+    public void listEntries() throws InterruptedException {
+        driver.get("http://localhost:3000/updateVersions/1");
 
-        assertEquals(getElementById("nameCurriculumOwner").getText(), "Keilla");
+        Thread.sleep(1000);
         assertEquals(getElementById("countEntry").getText(), "(Entradas identificadas: 45)");
-        assertEquals(getElementById("versionCurriculum").getText(), "V_17042023_033147");
+        assertEquals(getElementById("versionCurriculum").getText(), "V_22052023_021040");
         assertEquals(getElementById("descriptionCurriculum").getText(), "Primeira versão criada");
+        assertEquals(getElementById("nameCurriculumOwner").getText(), "Teste");
     }
 
     @AfterAll
