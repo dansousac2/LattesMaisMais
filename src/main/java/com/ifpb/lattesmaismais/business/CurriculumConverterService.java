@@ -42,9 +42,13 @@ public class CurriculumConverterService {
 	public List<CurriculumDto> curriculumToDto(List<Curriculum> entityList, GenericsCurriculumService genCS) {
 		List<CurriculumDto> dtoList = new ArrayList<>();
 
-		for (Curriculum curriculum: entityList) {
-			CurriculumDto dto = curriculumToDto(curriculum, genCS);
-			dtoList.add(dto);
+		try {
+			for (Curriculum curriculum: entityList) {
+				CurriculumDto dto = curriculumToDto(curriculum, genCS);
+				dtoList.add(dto);
+			}
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Erro na conversão Curr -> Dto / Pode ser que algum dos Atributos seja nulo!");
 		}
 
 		return dtoList;
