@@ -6,7 +6,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CurriculumCRUDFrontTests {
@@ -95,6 +95,117 @@ public class CurriculumCRUDFrontTests {
         assertEquals(getElementById("nameCurriculumOwner").getText(), "Teste");
     }
 
+    @Test
+    @Order(4)
+    public void addingAndRemovingReceipts() throws InterruptedException {
+        driver.get("http://localhost:3000/updateVersions/1");
+
+        Thread.sleep(1000);
+        // Clicando na primeira entrada do currículo
+        WebElement entry = getElementById("81");
+        clickElement(entry);
+
+        Thread.sleep(2000);
+        Alert alt = driver.switchTo().alert();
+        alt.accept();
+
+        // Confirmando presença de icon "sem comprovantes"
+        assertEquals("http://localhost:3000/static/media/WithoutProof.84fc0f66c1fa6e0cc4b3a4d6ba81d729.svg", getElementById("icon81").getAttribute("src"));
+
+        WebElement addValidatorAuthentication = getElementById("butonAuthValidator");
+        clickElement(addValidatorAuthentication);
+
+        Thread.sleep(1000);
+        WebElement getReceiptArchive = getElementById("buttonSendFisicalReceipt");
+        clickElement(getReceiptArchive);
+
+        WebElement selectArchive = getElementByXPath("//*[@id=\"root\"]/div/div/div[6]/div/div[1]/input[2]");
+        selectArchive.sendKeys(System.getProperty("user.dir") + "\\src\\test\\java\\com\\ifpb\\lattesmaismais\\util\\teste.jpg");
+
+        Thread.sleep(2000);
+
+        WebElement addCommentary = getElementByClass("Input-commentary");
+        addCommentary.sendKeys("Comprovante de atuação");
+
+        Thread.sleep(1000);
+        WebElement addReceiptArchive = getElementById("buttonAddFisicalReceipt");
+        clickElement(addReceiptArchive);
+
+        Thread.sleep(2000);
+        assertAll(
+                () -> assertEquals("teste", getElementById("nameRecnewundefined").getText()),
+                () -> assertEquals(".jpg", getElementById("extRecnewundefined").getText()),
+                () -> assertEquals("Comprovante de atuação", getElementById("commRecnewundefined").getText()),
+                // Confirmando alteração do icon para "aguardando validação"
+                () -> assertEquals("http://localhost:3000/static/media/Waiting.256efcc25c115d72468487505c96e7bc.svg", getElementById("icon812").getAttribute("src"))
+        );
+
+        // Removendo comprovante adicionado
+        WebElement buttonRemoveReceipt = getElementById("btRecnewundefined");
+        clickElement(buttonRemoveReceipt);
+
+        Thread.sleep(2000);
+        alt = driver.switchTo().alert();
+        alt.accept();
+
+        // Confirmando troca de icon de "aguardando validação" para "sem comprovantes"
+        assertThrows(NoSuchElementException.class, () -> getElementById("icon812").getAttribute("src"));
+        assertEquals("http://localhost:3000/static/media/WithoutProof.84fc0f66c1fa6e0cc4b3a4d6ba81d729.svg", getElementById("icon81").getAttribute("src"));
+    }
+
+    @Test
+    @Order(5)
+    public void addingAndRemovingEletronicAuthentication() throws InterruptedException {
+        driver.get("http://localhost:3000/updateVersions/1");
+
+        Thread.sleep(1000);
+        // Clicando na primeira entrada do currículo
+        WebElement entry = getElementById("81");
+        clickElement(entry);
+
+        Thread.sleep(2000);
+        Alert alt = driver.switchTo().alert();
+        alt.accept();
+
+        // Confirmando presença de icon "sem comprovantes"
+        assertEquals("http://localhost:3000/static/media/WithoutProof.84fc0f66c1fa6e0cc4b3a4d6ba81d729.svg", getElementById("icon81").getAttribute("src"));
+
+        WebElement addEletronicAuthentication = getElementById("buttonAuthEletronic");
+        clickElement(addEletronicAuthentication);
+
+        Thread.sleep(1000);
+        WebElement addLink = getElementByClass("Paragraph-field");
+        addLink.sendKeys("www.teste.com/teste.pdf");
+
+        Thread.sleep(2000);
+
+        WebElement addCommentary = getElementByClass("Commentary");
+        addCommentary.sendKeys("Comprovante eletrônico");
+
+        Thread.sleep(1000);
+        WebElement addReceipt = getElementById("buttonAddReceiptLink");
+        clickElement(addReceipt);
+
+        Thread.sleep(2000);
+        assertAll(
+                () -> assertEquals("Comprovante eletrônico", getElementById("commRecnewundefined").getText()),
+                () -> assertEquals("http://localhost:3000/updateVersions/www.teste.com/teste.pdf", getElementByXPath("//*[@id=\"root\"]/div/div/div[7]/div/div/a").getAttribute("href")),
+                // Confirmando alteração do icon para "aguardando validação"
+                () -> assertEquals("http://localhost:3000/static/media/Waiting.256efcc25c115d72468487505c96e7bc.svg", getElementById("icon812").getAttribute("src"))
+        );
+
+        // Removendo comprovante adicionado
+        WebElement buttonRemoveReceipt = getElementById("btRecnewundefined");
+        clickElement(buttonRemoveReceipt);
+
+        Thread.sleep(2000);
+        alt = driver.switchTo().alert();
+        alt.accept();
+
+        // Confirmando troca de icon de "aguardando validação" para "sem comprovantes"
+        assertThrows(NoSuchElementException.class, () -> getElementById("icon812").getAttribute("src"));
+        assertEquals("http://localhost:3000/static/media/WithoutProof.84fc0f66c1fa6e0cc4b3a4d6ba81d729.svg", getElementById("icon81").getAttribute("src"));
+    }
     @AfterAll
     static void tearDown() throws InterruptedException {
         Thread.sleep(2000);
