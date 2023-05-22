@@ -43,7 +43,7 @@ public class SolicitedScheduling implements Serializable {
 	private SchedulingStatus status;
 
 	public SolicitedScheduling() {
-		
+		this.status = SchedulingStatus.OPEN;
 	}
 
 	public Integer getId() {
