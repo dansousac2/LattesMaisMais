@@ -1,6 +1,9 @@
 package com.ifpb.lattesmaismais.business;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -36,6 +39,21 @@ public class CurriculumConverterService {
 		
 	}
 
+	public List<CurriculumDto> curriculumToDto(List<Curriculum> entityList, GenericsCurriculumService genCS) {
+		List<CurriculumDto> dtoList = new ArrayList<>();
+
+		try {
+			for (Curriculum curriculum: entityList) {
+				CurriculumDto dto = curriculumToDto(curriculum, genCS);
+				dtoList.add(dto);
+			}
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Erro na conversão Curr -> Dto / Pode ser que algum dos Atributos seja nulo!");
+		}
+
+		return dtoList;
+	}
+
 	public Curriculum dtoBackToCurriculum(@Valid CurriculumDtoBack dto, User owner, GenericsCurriculumService genCS, boolean maintainIds) {
 		try {
 			Curriculum entity = new Curriculum();
@@ -52,7 +70,7 @@ public class CurriculumConverterService {
 			}
 			entity.setStatus(status);
 			entity.setVersion(genCS.createVersionName());
-			entity.setLastModification(LocalDateTime.now());
+			entity.setLastModification(LocalDateTime.parse(dto.getLastModification(), DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
 			
 			return entity;
 			
@@ -60,6 +78,4 @@ public class CurriculumConverterService {
 			throw new IllegalArgumentException("Erro na conversão Dto -> Curr / Pode ser que algum dos Atributos seja nulo!");
 		}
 	}
-
-	
 }

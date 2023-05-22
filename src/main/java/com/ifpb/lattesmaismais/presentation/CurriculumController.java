@@ -20,6 +20,8 @@ import com.ifpb.lattesmaismais.presentation.dto.CurriculumDto;
 
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/curriculum")
 public class CurriculumController {
@@ -32,7 +34,16 @@ public class CurriculumController {
 	
 	@Autowired
 	private GenericsCurriculumService genCurriculumService;
-	
+
+	@GetMapping
+	public ResponseEntity findAll() {
+		List<Curriculum> entityList = service.findAll();
+
+		List<CurriculumDto> dtoList = converterService.curriculumToDto(entityList, this.genCurriculumService);
+
+		return ResponseEntity.ok().body(dtoList);
+	}
+
 	@GetMapping("/{id}")
 	public ResponseEntity findById(@PathVariable Integer id) {
 		try {
