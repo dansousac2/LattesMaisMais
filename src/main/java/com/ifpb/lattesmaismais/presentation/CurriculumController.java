@@ -43,6 +43,20 @@ public class CurriculumController {
 
 		return ResponseEntity.ok().body(dtoList);
 	}
+	
+	@GetMapping("/findall/{userId}")
+	public ResponseEntity findAllByUserId(@PathVariable Integer userId) {
+		try {
+			List<Curriculum> entityList = service.findAllByUserId(userId);
+			
+			List<CurriculumDto> dtoList = converterService.curriculumToDto(entityList, this.genCurriculumService);
+			
+			return ResponseEntity.ok().body(dtoList);	
+			
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity findById(@PathVariable Integer id) {

@@ -27,8 +27,19 @@ public class CurriculumDtoBack {
 	@Min(value = 1, message = "Contador de entradas de currículo deve ser no mínimo 1")
 	private int entryCount;
 	
+	@NotBlank(message = "Versão de currículo não pode ser nula")
+	private String version;
+	
 	@Size(min = 1, message = "Lista de entradas deve conter ao menos 1 entrada!")
 	private List<Entry> entryList;
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
 
 	public Integer getId() {
 		return id;

@@ -13,29 +13,37 @@ import java.util.List;
 public class CurriculumService {
 	
 	@Autowired
-	private CurriculumRepository curriculumRepository;
+	private CurriculumRepository repository;
 
 	public List<Curriculum> findAll() {
-		return curriculumRepository.findAll();
+		return repository.findAll();
 	}
 
 	public Curriculum findById(Integer id) throws ObjectNotFoundException {
-		if (!curriculumRepository.existsById(id)) {
+		if (!repository.existsById(id)) {
 			throw new ObjectNotFoundException(String.format("Currículo com id %d não encontrado!", id));
 		}
 
-		return curriculumRepository.findById(id).get();
+		return repository.findById(id).get();
 	}
 	
 	public Curriculum save(Curriculum curriculum) {
-		return curriculumRepository.save(curriculum);
+		return repository.save(curriculum);
 	}
 	
 	public void deleteById(Integer id) throws ObjectNotFoundException {
-		if (!curriculumRepository.existsById(id)) {
+		if (!repository.existsById(id)) {
 			throw new ObjectNotFoundException(String.format("Currículo com id %d não encontrado!", id));
 		}
 
-		curriculumRepository.deleteById(id);
+		repository.deleteById(id);
+	}
+
+	public List<Curriculum> findAllByUserId(Integer userId) {
+		if(userId == null || userId <= 0) {
+			throw new IllegalArgumentException("Id de usuário não pode ser nulo!");
+		}
+		
+		return repository.findAllByOwnerId(userId);
 	}
 }

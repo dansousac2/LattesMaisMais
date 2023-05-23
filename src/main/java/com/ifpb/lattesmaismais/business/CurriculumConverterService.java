@@ -65,12 +65,15 @@ public class CurriculumConverterService {
 			if(maintainIds) {
 				entity.setId(dto.getId());
 				status = genCS.generateStatusCurriculumOnly(entity.getEntries());
+				
+				entity.setVersion(dto.getVersion());
 			}else {
 				status = genCS.organizeEntriesReceiptsAndStatus(entity.getEntries());
+				
+				entity.setVersion(genCS.createVersionName());
 			}
+			entity.setLastModification(LocalDateTime.now());
 			entity.setStatus(status);
-			entity.setVersion(genCS.createVersionName());
-			entity.setLastModification(LocalDateTime.parse(dto.getLastModification(), DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
 			
 			return entity;
 			
