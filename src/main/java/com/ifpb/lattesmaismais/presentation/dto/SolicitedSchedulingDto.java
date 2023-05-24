@@ -2,27 +2,32 @@ package com.ifpb.lattesmaismais.presentation.dto;
 
 import java.util.Objects;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+
 public class SolicitedSchedulingDto {
 	
 	private Integer id;
 
+	@NotBlank(message = "Data não pode ser nula")
 	private String date;
 	
+	@NotBlank(message = "Horário não pode ser nulo")
 	private String time;
 	
+	@NotBlank(message = "Endereço não pode ser nulo")
 	private String address;
 	
+	@NotBlank(message = "Versão de currículo não pode ser nula")
 	private String version;
 	
+	@Positive(message = "Id do validador deve ser positivo")
 	private Integer validatorId;
 	
+	@Positive(message = "Id do solicitante deve ser positivo")
 	private Integer requesterId;
 	
 	private String status;
-
-	public SolicitedSchedulingDto() {
-		
-	}
 
 	public Integer getId() {
 		return id;
