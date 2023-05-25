@@ -15,6 +15,16 @@ public class UserDtoFront {
 	@Email(message = "O email deve ser válido!")
 	private String email;
 	
+	private String validatorAddress;
+	
+	public String getValidatorAddress() {
+		return validatorAddress;
+	}
+
+	public void setValidatorAddress(String validatorsAddress) {
+		this.validatorAddress = validatorsAddress;
+	}
+
 	public Integer getId() {
 		return id;
 	}

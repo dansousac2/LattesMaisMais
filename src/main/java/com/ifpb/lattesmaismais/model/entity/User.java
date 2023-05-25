@@ -42,6 +42,9 @@ public class User implements UserDetails {
 	@Column(name = "ACCOUNT_STATUS")
 	private AccountStatus status;
 	
+	@Column(name = "VALIDATOR_ADDRESS")
+	private String validatorAddress;
+	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "USER_ROLES",
@@ -52,6 +55,14 @@ public class User implements UserDetails {
 	
 	public User() {
 		
+	}
+
+	public String getValidatorAddress() {
+		return validatorAddress;
+	}
+
+	public void setValidatorAddress(String validatorsAddress) {
+		this.validatorAddress = validatorsAddress;
 	}
 
 	public AccountStatus getStatus() {

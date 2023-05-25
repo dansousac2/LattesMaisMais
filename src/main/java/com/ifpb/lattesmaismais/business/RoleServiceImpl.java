@@ -19,11 +19,11 @@ public class RoleServiceImpl implements RoleService {
 	public void createDefaultValues() {
 		
 		for(AVALIABLE_ROLES role : AVALIABLE_ROLES.values()) {
-			Role roleInDb = findByName(role.name());
+			Role roleInDb = findByName("ROLE_" + role.name());
 			
 			if(roleInDb == null) {
 				Role newRole = new Role();
-				newRole.setName(role.name());
+				newRole.setName("ROLE_" + role.name());
 				repository.save(newRole);
 			}
 		}
@@ -31,13 +31,14 @@ public class RoleServiceImpl implements RoleService {
 
 	@Override
 	public Role findDefault() {
-		return findByName(AVALIABLE_ROLES.USER.name());
+		return findByName("ROLE_" + AVALIABLE_ROLES.USER.name());
 	}
 
 	@Override
 	public Role findByName(String name) {
 		Optional<Role> roleOp = repository.findByName(name);
-		return roleOp.isPresent() ? roleOp.get() : null;
+		
+		return roleOp.orElse(null);
 	}
 
 	

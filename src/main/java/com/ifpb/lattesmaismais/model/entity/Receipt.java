@@ -1,15 +1,20 @@
 package com.ifpb.lattesmaismais.model.entity;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 import com.ifpb.lattesmaismais.model.enums.ReceiptStatus;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Table(name = "RECEIPTS")
@@ -40,6 +45,15 @@ public class Receipt implements Serializable {
     
     @Column(name = "RECEIPT_STATUS")
     private ReceiptStatus status;
+    
+    @OneToMany(cascade = CascadeType.REMOVE)
+    @JoinTable(
+			name = "RECEIPT_VALIDATORCOMMENT",
+			joinColumns = @JoinColumn(name = "RECEIPT_ID"),
+			inverseJoinColumns = @JoinColumn(name = "COMMENT_ID")
+	)
+    private List<ValidatorCommentary> validatorCommentary;
+    
     // usado em algumas possíveis situações para comparar com arquivo no frontend
     @Column(name = "RECEIPT_MODIFICATION_REF")
     private String lastModified;
@@ -47,6 +61,14 @@ public class Receipt implements Serializable {
     public Receipt() {
     	this.status = ReceiptStatus.WAITING_VALIDATION;
     }
+
+	public List<ValidatorCommentary> getValidatorCommentary() {
+		return validatorCommentary;
+	}
+
+	public void setValidatorCommentary(List<ValidatorCommentary> validatorCommentary) {
+		this.validatorCommentary = validatorCommentary;
+	}
 
 	public String getLastModified() {
 		return lastModified;

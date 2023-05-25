@@ -24,6 +24,7 @@ public class UserConverterService {
 			dto.setEmail(entity.getEmail());
 			dto.setId(entity.getId());
 			dto.setName(entity.getName());
+			dto.setValidatorAddress(entity.getValidatorAddress());
 
 			return dto;
 		} catch (Exception e) {
