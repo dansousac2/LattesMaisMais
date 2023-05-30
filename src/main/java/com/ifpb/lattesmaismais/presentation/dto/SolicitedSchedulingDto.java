@@ -28,6 +28,16 @@ public class SolicitedSchedulingDto {
 	private Integer requesterId;
 	
 	private String status;
+	
+	private String returnedValidatorMessage;
+	
+	public String getReturnedValidatorMessage() {
+		return returnedValidatorMessage;
+	}
+
+	public void setReturnedValidatorMessage(String returnedValidatorMessage) {
+		this.returnedValidatorMessage = returnedValidatorMessage;
+	}
 
 	public Integer getId() {
 		return id;

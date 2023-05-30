@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +19,7 @@ import com.ifpb.lattesmaismais.business.SolicitedSchedulingConverterService;
 import com.ifpb.lattesmaismais.business.SolicitedSchedulingService;
 import com.ifpb.lattesmaismais.model.entity.SolicitedScheduling;
 import com.ifpb.lattesmaismais.presentation.dto.SolicitedSchedulingDto;
+import com.ifpb.lattesmaismais.presentation.dto.SolicitedSchedulingDtoValidator;
 
 import jakarta.validation.Valid;
 
@@ -69,7 +71,7 @@ public class SolicitedSchedulingController {
 		}
 	}
 	
-	// exemplo: findallbyuserid?id=1?isvalidator=true
+	// exemplo: findallbyuserid?id=1&isvalidator=true
 	@GetMapping("/findallbyuserid")
 	public ResponseEntity findAllByUserId(@RequestParam Integer id, @RequestParam(required = false) boolean isValidator) {
 		try {
@@ -118,6 +120,24 @@ public class SolicitedSchedulingController {
 			dto = converter.schedulingToDto(entity);
 
 			return new ResponseEntity(dto, HttpStatus.CREATED);
+			
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	@PutMapping
+	public ResponseEntity update(@RequestBody @Valid SolicitedSchedulingDtoValidator dto) {
+		try {
+			SolicitedScheduling entity = service.findById(dto.getId());
+			
+			entity = converter.updateSchedulingSolicitation(dto, entity);
+			
+			entity = service.save(entity);
+			
+			SolicitedSchedulingDto dtoToFront = converter.schedulingToDto(entity);
+			
+			return ResponseEntity.ok(dtoToFront);
 			
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

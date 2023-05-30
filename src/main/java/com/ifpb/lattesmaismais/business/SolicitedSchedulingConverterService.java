@@ -11,7 +11,11 @@ import org.springframework.stereotype.Service;
 import com.ifpb.lattesmaismais.model.entity.SolicitedScheduling;
 import com.ifpb.lattesmaismais.model.enums.SchedulingStatus;
 import com.ifpb.lattesmaismais.presentation.exception.ObjectNotFoundException;
+
+import jakarta.validation.Valid;
+
 import com.ifpb.lattesmaismais.presentation.dto.SolicitedSchedulingDto;
+import com.ifpb.lattesmaismais.presentation.dto.SolicitedSchedulingDtoValidator;
 
 @Service
 public class SolicitedSchedulingConverterService {
@@ -50,6 +54,7 @@ public class SolicitedSchedulingConverterService {
 			dto.setVersion(entity.getVersion());
 			dto.setRequesterId(entity.getRequester().getId());
 			dto.setValidatorId(entity.getValidator().getId());
+			dto.setReturnedValidatorMessage(entity.getReturnedValidatorMessage());
 
 			return dto;
 		}
@@ -82,6 +87,17 @@ public class SolicitedSchedulingConverterService {
 			entity.setTime(LocalTime.parse(time));
 		}
 
+		return entity;
+	}
+
+	public SolicitedScheduling updateSchedulingSolicitation(@Valid SolicitedSchedulingDtoValidator dto, SolicitedScheduling entity) {
+		
+		entity.setStatus(SchedulingStatus.valueOf(dto.getStatus()));
+		
+		if(dto.getReturnedValidatorMessage() != null && !dto.getReturnedValidatorMessage().isBlank()) {
+			entity.setReturnedValidatorMessage(dto.getReturnedValidatorMessage());
+		}
+		
 		return entity;
 	}
 

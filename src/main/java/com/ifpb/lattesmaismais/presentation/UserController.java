@@ -46,6 +46,19 @@ public class UserController {
 		}
 	}
 	
+	@GetMapping("/{id}")
+	public ResponseEntity findByUserId(@PathVariable Integer id) {
+		try {
+			User entity = service.findById(id);
+			UserDtoFront dto = userConverter.userToDtoFront(entity);
+			
+			return ResponseEntity.ok().body(dto);
+			
+		} catch (ObjectNotFoundException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
 	@PostMapping
 	public ResponseEntity save(@RequestBody @Valid UserDtoBack dto) {
 		try {

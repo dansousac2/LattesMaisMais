@@ -41,9 +41,20 @@ public class SolicitedScheduling implements Serializable {
 	
 	@Column(name = "SCHEDULING_STATUS", nullable = false)
 	private SchedulingStatus status;
+	
+	@Column(name = "SCHEDULING_VALIDATOR_MESSAGE")
+	private String returnedValidatorMessage;
 
 	public SolicitedScheduling() {
 		this.status = SchedulingStatus.OPEN;
+	}
+
+	public String getReturnedValidatorMessage() {
+		return returnedValidatorMessage;
+	}
+
+	public void setReturnedValidatorMessage(String returnedValidatorMessage) {
+		this.returnedValidatorMessage = returnedValidatorMessage;
 	}
 
 	public Integer getId() {
