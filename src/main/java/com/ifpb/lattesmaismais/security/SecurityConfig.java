@@ -63,6 +63,7 @@ public class SecurityConfig {
 				auth.requestMatchers(HttpMethod.POST, "/api/login/verifytoken").permitAll();
 				
 				auth.requestMatchers("/api/validatorcommentary").hasRole(AVALIABLE_ROLES.VALIDATOR.name());
+				auth.requestMatchers("/api/curriculum/ownerandversion").hasRole(AVALIABLE_ROLES.VALIDATOR.name());
 				
 				auth.anyRequest().authenticated();
 			})

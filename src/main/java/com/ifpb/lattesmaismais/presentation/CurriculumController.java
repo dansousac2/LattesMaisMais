@@ -1,5 +1,7 @@
 package com.ifpb.lattesmaismais.presentation;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ifpb.lattesmaismais.business.CurriculumConverterService;
@@ -18,10 +21,9 @@ import com.ifpb.lattesmaismais.business.GenericsCurriculumService;
 import com.ifpb.lattesmaismais.model.entity.Curriculum;
 import com.ifpb.lattesmaismais.model.entity.User;
 import com.ifpb.lattesmaismais.presentation.dto.CurriculumDto;
+import com.ifpb.lattesmaismais.presentation.exception.DuplicatedCurriculumException;
 
 import jakarta.validation.Valid;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("api/curriculum")
@@ -64,6 +66,27 @@ public class CurriculumController {
 		try {
 			Curriculum entity = service.findById(id);
 			CurriculumDto dto = converterService.curriculumToDto(entity, this.genCurriculumService);
+			
+			return ResponseEntity.ok(dto);
+			
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	@GetMapping("/ownerandversion")
+	public ResponseEntity findByOwnerAndVersion(@RequestParam Integer ownerId, @RequestParam String version) {
+		try {
+			if(ownerId == null || ownerId < 1 || version == null || version.isBlank()) {
+				throw new IllegalArgumentException("Id de proprietário ou nome da versão inválida");
+			}
+			
+			List<Curriculum> entityList = service.findByOwnerIdAndVersion(ownerId, version);
+			if(entityList.size() > 1) {
+				throw new DuplicatedCurriculumException(String.format("Foi encontrado mais de um currículo com id de proprietário %d e versão %s", ownerId, version));
+			}
+			
+			CurriculumDto dto = converterService.curriculumToDto(entityList.get(0), genCurriculumService);
 			
 			return ResponseEntity.ok(dto);
 			

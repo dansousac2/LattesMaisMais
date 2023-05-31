@@ -46,4 +46,9 @@ public class CurriculumService {
 		
 		return repository.findAllByOwnerId(userId);
 	}
+
+	public List<Curriculum> findByOwnerIdAndVersion(Integer ownerId, String version) {
+		
+		return repository.findByOwnerIdAndVersionAllIgnoreCase(ownerId, version);
+	}
 }

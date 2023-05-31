@@ -10,4 +10,6 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Integer>
 
 	List<Curriculum> findAllByOwnerId(Integer userId);
 
+	List<Curriculum> findByOwnerIdAndVersionAllIgnoreCase(Integer ownerId, String version);
+
 }

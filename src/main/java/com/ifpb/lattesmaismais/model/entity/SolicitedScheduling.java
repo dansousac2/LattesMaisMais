@@ -28,9 +28,9 @@ public class SolicitedScheduling implements Serializable {
 	@Column(name = "SCHEDULING_ADDRESS", nullable = false)
 	private String address;
 	
-	@Column(name = "SCHEDULING_VERSION", nullable = false, unique = true)
+	@Column(name = "SCHEDULING_VERSION", nullable = false)
 	private String version;
-	//TODO talvez substituir por um hashMap com ID e NOME, este e requester
+	
 	@ManyToOne
 	@JoinColumn(name = "VALIDATOR_ID")
 	private User validator;
