@@ -1,10 +1,15 @@
 package com.ifpb.lattesmaismais.business;
 
 import com.ifpb.lattesmaismais.model.entity.Receipt;
+import com.ifpb.lattesmaismais.model.entity.ValidatorCommentary;
+import com.ifpb.lattesmaismais.model.enums.ReceiptStatus;
 import com.ifpb.lattesmaismais.presentation.dto.ReceiptDtoLink;
+import com.ifpb.lattesmaismais.presentation.dto.ReceiptDtoValidator;
 import com.ifpb.lattesmaismais.presentation.exception.FileWithoutNameException;
 
 import jakarta.validation.Valid;
+
+import java.util.Arrays;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,4 +43,17 @@ public class ReceiptConverterService {
 		
 		return entity;
 	}
+
+	public void updateReceiptWithDtoValidator(Receipt entity, @Valid String status, ValidatorCommentary comment) {
+
+		entity.setStatus(ReceiptStatus.valueOf(status));
+		
+		if(entity.getValidatorCommentary() == null) {
+			entity.setValidatorCommentary(Arrays.asList(comment));
+		} else {
+			entity.getValidatorCommentary().add(comment);
+		}
+		
+	}
+
 }

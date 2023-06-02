@@ -64,6 +64,7 @@ public class SecurityConfig {
 				
 				auth.requestMatchers("/api/validatorcommentary").hasRole(AVALIABLE_ROLES.VALIDATOR.name());
 				auth.requestMatchers("/api/curriculum/ownerandversion").hasRole(AVALIABLE_ROLES.VALIDATOR.name());
+				auth.requestMatchers("/api/receipt/validator").hasRole(AVALIABLE_ROLES.VALIDATOR.name());
 				
 				auth.anyRequest().authenticated();
 			})
