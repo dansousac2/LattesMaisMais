@@ -47,7 +47,10 @@ public class ReceiptController {
 	@PutMapping("/validator")
 	public ResponseEntity update(@RequestBody @Valid ReceiptDtoValidator dto) {
 		try {
-			ValidatorCommentary comment = commentService.findById(dto.getCommentaryId());
+			ValidatorCommentary comment = null;
+			if(dto.getCommentaryId() != null) {
+				comment = commentService.findById(dto.getCommentaryId());
+			}
 			
 			Receipt receipt = service.findById(dto.getId());
 			

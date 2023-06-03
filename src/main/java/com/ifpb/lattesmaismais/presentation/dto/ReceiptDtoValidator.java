@@ -11,7 +11,6 @@ public class ReceiptDtoValidator {
 	@NotBlank(message = "Status do comprovante não deve ser nulo")
 	private String status;
 	
-	@Positive(message = "Id de comentário de comprovante deve ser positivo")
 	private Integer commentaryId;
 	
 	public Integer getId() {

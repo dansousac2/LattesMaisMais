@@ -48,10 +48,12 @@ public class ReceiptConverterService {
 
 		entity.setStatus(ReceiptStatus.valueOf(status));
 		
-		if(entity.getValidatorCommentary() == null) {
-			entity.setValidatorCommentary(Arrays.asList(comment));
-		} else {
-			entity.getValidatorCommentary().add(comment);
+		if(comment != null) {
+			if(entity.getValidatorCommentary() == null) {
+				entity.setValidatorCommentary(Arrays.asList(comment));
+			} else {
+				entity.getValidatorCommentary().add(comment);
+			}
 		}
 		
 	}
