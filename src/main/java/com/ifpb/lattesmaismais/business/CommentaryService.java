@@ -17,5 +17,8 @@ public class CommentaryService {
 		return repository.save(entity);
 	}
 
+	public ValidatorCommentary findById(Integer id) {
+		return repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Comentário não encontrado para id: " + id));
+	}
 	
 }
