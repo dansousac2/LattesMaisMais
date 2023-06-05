@@ -1,10 +1,14 @@
 package com.ifpb.lattesmaismais.site;
 
-import com.ifpb.lattesmaismais.business.GenericsCurriculumService;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -89,8 +93,11 @@ public class CurriculumCRUDFrontTests {
         driver.get("http://localhost:3000/updateVersions/1");
 
         Thread.sleep(1000);
+
+        String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyyyy_HHmm"));
+
         assertEquals(getElementById("countEntry").getText(), "(Entradas identificadas: 45)");
-        assertEquals(getElementById("versionCurriculum").getText(), "V_22052023_021040");
+        assertTrue(getElementById("versionCurriculum").getText().startsWith("V_" + dateTime));
         assertEquals(getElementById("descriptionCurriculum").getText(), "Primeira versão criada");
         assertEquals(getElementById("nameCurriculumOwner").getText(), "Teste");
     }
@@ -100,13 +107,26 @@ public class CurriculumCRUDFrontTests {
     public void addingAndRemovingReceipts() throws InterruptedException {
         driver.get("http://localhost:3000/updateVersions/1");
 
+        WebElement newVersion = getElementById("buttonNewVersion");
+        newVersion.click();
+
+        WebElement commentaryVersion = getElementByClass("Commentary");
+        commentaryVersion.sendKeys("Versão com comprovante físico");
+
+        WebElement saveNewVersion = getElementById("buttonSaveNewVersion");
+        saveNewVersion.click();
+
+        Thread.sleep(2000);
+        Alert alt = driver.switchTo().alert();
+        alt.accept();
+
         Thread.sleep(1000);
         // Clicando na primeira entrada do currículo
         WebElement entry = getElementById("81");
         clickElement(entry);
 
         Thread.sleep(2000);
-        Alert alt = driver.switchTo().alert();
+        alt = driver.switchTo().alert();
         alt.accept();
 
         // Confirmando presença de icon "sem comprovantes"
@@ -140,8 +160,12 @@ public class CurriculumCRUDFrontTests {
                 () -> assertEquals("http://localhost:3000/static/media/Waiting.256efcc25c115d72468487505c96e7bc.svg", getElementById("icon812").getAttribute("src"))
         );
 
+        // Salvando versão com comprovante físico
+        WebElement saveVersion = getElementById("buttonUpdate");
+        saveVersion.click();
+
         // Removendo comprovante adicionado
-        WebElement buttonRemoveReceipt = getElementById("btRecnewundefined");
+        WebElement buttonRemoveReceipt = getElementByXPath("//*[@id=\"btRecnewundefined\"]");
         clickElement(buttonRemoveReceipt);
 
         Thread.sleep(2000);
@@ -151,6 +175,19 @@ public class CurriculumCRUDFrontTests {
         // Confirmando troca de icon de "aguardando validação" para "sem comprovantes"
         assertThrows(NoSuchElementException.class, () -> getElementById("icon812").getAttribute("src"));
         assertEquals("http://localhost:3000/static/media/WithoutProof.84fc0f66c1fa6e0cc4b3a4d6ba81d729.svg", getElementById("icon81").getAttribute("src"));
+
+        // Confirmando se versão foi realmente salva:
+        driver.get("http://localhost:3000/shedulingvalidation");
+
+        Thread.sleep(2000);
+        String tableBody = getElementByTagName("TBODY").getText();
+
+        String date = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")).toString();
+
+        assertAll("Verificando se versão salva está na listagem de versões",
+                () -> assertTrue(tableBody.contains(date)),
+                () -> assertTrue(tableBody.contains("Versão com comprovante físico"))
+        );
     }
 
     @Test
@@ -158,17 +195,30 @@ public class CurriculumCRUDFrontTests {
     public void addingAndRemovingEletronicAuthentication() throws InterruptedException {
         driver.get("http://localhost:3000/updateVersions/1");
 
-        Thread.sleep(1000);
-        // Clicando na primeira entrada do currículo
-        WebElement entry = getElementById("81");
-        clickElement(entry);
+        WebElement newVersion = getElementById("buttonNewVersion");
+        newVersion.click();
+
+        WebElement commentaryVersion = getElementByClass("Commentary");
+        commentaryVersion.sendKeys("Versão com comprovante eletrônico");
+
+        WebElement saveNewVersion = getElementById("buttonSaveNewVersion");
+        saveNewVersion.click();
 
         Thread.sleep(2000);
         Alert alt = driver.switchTo().alert();
         alt.accept();
 
+        Thread.sleep(1000);
+        // Clicando na primeira entrada do currículo
+        WebElement entry = getElementById("91");
+        clickElement(entry);
+
+        Thread.sleep(2000);
+        alt = driver.switchTo().alert();
+        alt.accept();
+
         // Confirmando presença de icon "sem comprovantes"
-        assertEquals("http://localhost:3000/static/media/WithoutProof.84fc0f66c1fa6e0cc4b3a4d6ba81d729.svg", getElementById("icon81").getAttribute("src"));
+        assertEquals("http://localhost:3000/static/media/WithoutProof.84fc0f66c1fa6e0cc4b3a4d6ba81d729.svg", getElementById("icon91").getAttribute("src"));
 
         WebElement addEletronicAuthentication = getElementById("buttonAuthEletronic");
         clickElement(addEletronicAuthentication);
@@ -189,9 +239,9 @@ public class CurriculumCRUDFrontTests {
         Thread.sleep(2000);
         assertAll(
                 () -> assertEquals("Comprovante eletrônico", getElementById("commRecnewundefined").getText()),
-                () -> assertEquals("http://localhost:3000/updateVersions/www.teste.com/teste.pdf", getElementByXPath("//*[@id=\"root\"]/div/div/div[7]/div/div/a").getAttribute("href")),
+                () -> assertEquals("http://localhost:3000/updateversions/www.teste.com/teste.pdf", getElementByXPath("//*[@id=\"root\"]/div/div/div[7]/div/div/a").getAttribute("href")),
                 // Confirmando alteração do icon para "aguardando validação"
-                () -> assertEquals("http://localhost:3000/static/media/Waiting.256efcc25c115d72468487505c96e7bc.svg", getElementById("icon812").getAttribute("src"))
+                () -> assertEquals("http://localhost:3000/static/media/Waiting.256efcc25c115d72468487505c96e7bc.svg", getElementById("icon912").getAttribute("src"))
         );
 
         // Removendo comprovante adicionado
@@ -203,8 +253,21 @@ public class CurriculumCRUDFrontTests {
         alt.accept();
 
         // Confirmando troca de icon de "aguardando validação" para "sem comprovantes"
-        assertThrows(NoSuchElementException.class, () -> getElementById("icon812").getAttribute("src"));
-        assertEquals("http://localhost:3000/static/media/WithoutProof.84fc0f66c1fa6e0cc4b3a4d6ba81d729.svg", getElementById("icon81").getAttribute("src"));
+        assertThrows(NoSuchElementException.class, () -> getElementById("icon912").getAttribute("src"));
+        assertEquals("http://localhost:3000/static/media/WithoutProof.84fc0f66c1fa6e0cc4b3a4d6ba81d729.svg", getElementById("icon91").getAttribute("src"));
+
+        // Confirmando se versão foi realmente salva:
+        driver.get("http://localhost:3000/shedulingvalidation");
+
+        Thread.sleep(2000);
+        String tableBody = getElementByTagName("TBODY").getText();
+
+        String date = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")).toString();
+
+        assertAll("Verificando se versão salva está na listagem de versões",
+                () -> assertTrue(tableBody.contains(date)),
+                () -> assertTrue(tableBody.contains("Versão com comprovante eletrônico"))
+        );
     }
     @AfterAll
     static void tearDown() throws InterruptedException {
