@@ -127,7 +127,7 @@ public class CurriculumDtoBackTest {
         dtoBack.setDescription(description);
         violations = validator.validateProperty(dtoBack, "description");
 
-        assertAll("Testando nome de usuário",
+        assertAll("Testando descrição",
                 () -> assertEquals(1, violations.size(), "Valor não permitido encontrado: " + description),
                 () -> assertEquals("Descrição de currículo não deve ser nula!", violations.stream().findFirst().get().getMessage())
         );
@@ -192,4 +192,26 @@ public class CurriculumDtoBackTest {
                 })
         );
     }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"V_10052023_183000", "V_02062023_200000", "V_27052023_154500"})
+    void testVersionValid(String version) {
+        dtoBack.setVersion(version);
+        violations = validator.validateProperty(dtoBack, "version");
+
+        assertEquals(0, violations.size(), "Valor não permitido: " + version);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", "       ", "\n  ", " \n\n ", "\n \n"})
+    void testVersionInvalid(String version) {
+        dtoBack.setVersion(version);
+        violations = validator.validateProperty(dtoBack, "version");
+
+        assertAll("Testando nome de usuário",
+                () -> assertEquals(1, violations.size(), "Valor não permitido encontrado: " + version),
+                () -> assertEquals("Versão de currículo não pode ser nula", violations.stream().findFirst().get().getMessage())
+        );
+    }
+
 }
