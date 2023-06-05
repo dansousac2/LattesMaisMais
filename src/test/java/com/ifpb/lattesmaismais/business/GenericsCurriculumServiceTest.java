@@ -111,7 +111,7 @@ class GenericsCurriculumServiceTest {
     void beforeEach() {
         MockitoAnnotations.openMocks(this);
 
-        ReflectionTestUtils.setField(service, "curriculumRepository", repository);
+        ReflectionTestUtils.setField(service, "repository", repository);
     }
 
     @Test

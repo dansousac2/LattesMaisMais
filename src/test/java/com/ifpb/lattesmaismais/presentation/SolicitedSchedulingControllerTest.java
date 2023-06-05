@@ -80,9 +80,9 @@ public class SolicitedSchedulingControllerTest {
     public void beforeEach() {
         MockitoAnnotations.openMocks(this);
         ReflectionTestUtils.setField(service, "schedulingRepository", repository);
-        ReflectionTestUtils.setField(controller, "schedulingService", service);
+        ReflectionTestUtils.setField(controller, "service", service);
         ReflectionTestUtils.setField(converterService, "userService", userService);
-        ReflectionTestUtils.setField(controller, "schedulingConverter", converterService);
+        ReflectionTestUtils.setField(controller, "converter", converterService);
     }
 
     @Test

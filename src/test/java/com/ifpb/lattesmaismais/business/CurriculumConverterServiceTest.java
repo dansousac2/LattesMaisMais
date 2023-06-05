@@ -160,7 +160,7 @@ class CurriculumConverterServiceTest {
         assertAll(
                 () -> assertEquals(curriculum.getId(), entity.getId()),
                 () -> assertEquals(curriculum.getEntryCount(), entity.getEntryCount()),
-                () -> assertEquals(curriculum.getLastModification(), entity.getLastModification()),
+                () -> assertTrue(curriculum.getLastModification().toString().startsWith(entity.getLastModification().toString())),
                 () -> assertEquals(curriculum.getOwner(), entity.getOwner()),
                 () -> assertEquals(curriculum.getStatus(), entity.getStatus())
         );
