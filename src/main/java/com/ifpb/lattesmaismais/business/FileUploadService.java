@@ -3,11 +3,17 @@ package com.ifpb.lattesmaismais.business;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import com.ifpb.lattesmaismais.model.entity.Receipt;
 import com.ifpb.lattesmaismais.presentation.exception.*;
+
+import org.junit.platform.engine.support.descriptor.ClasspathResourceSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -73,8 +79,8 @@ public class FileUploadService {
 		fileConverterService.writeFile(path  + "\\curriculum.xml", xml);
 	}
 
-	public void readFile(String fileName, String userID) throws FileNotFoundException, FileConversionException, DecryptionException {
-		String path = directoryFile + "\\" + userID;
+	public String readFile(String fileName, String hashUserID) throws FileConversionException, DecryptionException, IOException {
+		String path = directoryFile + "\\" + hashUserID;
 
 		if(!new File(path + "\\" + fileName).exists()) {
 			throw new FileNotFoundException();
@@ -86,14 +92,28 @@ public class FileUploadService {
 		// Descriptografando dados:
 		byte[] decryptedData = fileEncryptionService.decryptData(encryptedData);
 
-		// Criando novo diretório de teste pra salvar:
-		String newPath = path + "_decrypted";
-
-		if(!new File(newPath).exists()) {
-			new File(newPath).mkdir();
+		// diretório do projeto Mavem na máquina + diretório do "servidor"
+		// diretório do servidor (aqui simulado com Http-server, ref = https://www.youtube.com/watch?v=59OG7vg4nYI)
+		// o servidor virtual DEVE ser iniciado na pasta "server" do caminho abaixo (contexto desta aplicação)
+		// usar o comando sem parênteses: (http-server -p 8082) -> este comando habilita esta porta para uso do "servidor"
+		String serverPath = System.getProperty("user.dir") + "\\src\\main\\resources\\server\\dr";
+		
+		// cria pasta de usuário
+		File userFolder = new File(serverPath + "\\" + hashUserID);
+		if(!userFolder.exists()) {
+			userFolder.mkdir();
 		}
-
-		fileConverterService.writeFile(newPath + "\\" + fileName, decryptedData);
+		
+		// cria pasta temporária para o arquivo que será criado (uma pasta para cada arquivo)
+		Path tempDirectory = Files.createTempDirectory(Paths.get(userFolder.getPath()), "rec_");
+		
+		String completePathOfFile = tempDirectory + "\\" + fileName;
+				
+		fileConverterService.writeFile(completePathOfFile, decryptedData);
+		
+		
+		// retorna o caminho a ser usado para acessar o arquivo via Http-server
+		return completePathOfFile.substring(completePathOfFile.indexOf("\\dr"));
 	}
 
 	// Deixei o método público para utilizar nos testes
