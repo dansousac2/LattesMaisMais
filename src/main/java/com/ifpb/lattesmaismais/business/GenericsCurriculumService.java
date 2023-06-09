@@ -13,6 +13,7 @@ import com.ifpb.lattesmaismais.model.entity.User;
 import com.ifpb.lattesmaismais.model.enums.CurriculumStatus;
 import com.ifpb.lattesmaismais.model.enums.ReceiptStatus;
 import com.ifpb.lattesmaismais.presentation.CurriculumDtoBack;
+import com.ifpb.lattesmaismais.presentation.exception.CurriculumOwnerExcepion;
 import com.ifpb.lattesmaismais.presentation.exception.ObjectNotFoundException;
 
 import jakarta.validation.Valid;
@@ -26,14 +27,14 @@ public class GenericsCurriculumService {
 		return "V_" + ldtString;
 	}
 
-	public User verifyCurriculumDto(@Valid CurriculumDtoBack dto, CurriculumService service) throws ObjectNotFoundException {
+	public User verifyCurriculumDto(@Valid CurriculumDtoBack dto, CurriculumService service) throws ObjectNotFoundException, CurriculumOwnerExcepion {
 		Curriculum curriculum = service.findById(dto.getId());
 		//TODO adicionar mais condições de validação do currículo(?)
 		boolean difOwnerId = curriculum.getOwner().getId() != dto.getOwnerId();
 		boolean difModificationDate = !dateTimeToString(curriculum.getLastModification()).equals(dto.getLastModification());
 		
 		if(difOwnerId || difModificationDate) {
-			throw new IllegalArgumentException("Currículo não pertencente ao usuário logado!");
+			throw new CurriculumOwnerExcepion("Currículo não pertencente ao usuário logado!");
 		}
 		
 		return curriculum.getOwner();
@@ -93,5 +94,18 @@ public class GenericsCurriculumService {
 		}
 		return CurriculumStatus.CHECKED;
 	}
+
+	public Curriculum verifyCurriculumOwnerAndGetCurriculum(Integer curriculumId, Integer ownerId,
+			CurriculumService curriculumService) throws CurriculumOwnerExcepion, ObjectNotFoundException {
+		
+		Curriculum curriculum = curriculumService.findById(curriculumId);
+		
+		if(curriculum.getOwner().getId() != ownerId) {
+			throw new CurriculumOwnerExcepion(String.format("Currículo de id %s não perence ao usuário de id %s", curriculumId, ownerId));
+		}
+		
+		return curriculum;
+	}
+	
 
 }

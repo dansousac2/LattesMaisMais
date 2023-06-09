@@ -82,9 +82,9 @@ public class FileUploadController {
 		try {
 			String hashUserId = hashService.hashingSHA256(userId);
 
-			String filePathInHttpServer = uploadService.readFile(fileName, hashUserId);
+			String filePathInFolder = uploadService.readFile(fileName, hashUserId);
 
-			return ResponseEntity.ok(filePathInHttpServer);
+			return ResponseEntity.ok(filePathInFolder);
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
