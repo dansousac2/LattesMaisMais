@@ -62,7 +62,7 @@ public class GenericsCurriculumService {
 			if(!e.getReceipts().isEmpty()) {
 				for(Receipt r : e.getReceipts()) {
 					if(r.getHeritage() == null && r.getUrl() == null) {
-						r.setHeritage(r.getId() + "." + r.getExtension());
+						r.setHeritage(r.getId() + r.getExtension());
 					}
 					
 					r.setId(null);

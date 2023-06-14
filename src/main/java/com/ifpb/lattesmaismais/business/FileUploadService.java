@@ -83,7 +83,7 @@ public class FileUploadService {
 		String path = directoryFile + "\\" + hashUserID;
 
 		if(!new File(path + "\\" + fileName).exists()) {
-			throw new FileNotFoundException();
+			throw new FileNotFoundException("Arquivo não encontrado");
 		}
 
 		// Lendo os dados criptografados:

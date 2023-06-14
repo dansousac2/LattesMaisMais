@@ -2,10 +2,13 @@ package com.ifpb.lattesmaismais.presentation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ifpb.lattesmaismais.business.CurriculumService;
+import com.ifpb.lattesmaismais.business.ExportService;
 import com.ifpb.lattesmaismais.business.GenericsCurriculumService;
 import com.ifpb.lattesmaismais.model.entity.Curriculum;
 
@@ -17,16 +20,20 @@ public class ExportController {
 	private CurriculumService curriculumService;
 	
 	@Autowired
+	private ExportService service;
+	
+	@Autowired
 	private GenericsCurriculumService genCS;
 	
-	public ResponseEntity export(Integer curriculumId, Integer ownerId) {
+	@GetMapping
+	public ResponseEntity export(@RequestParam Integer curriculumId, @RequestParam Integer ownerId) {
 		try {
 			Curriculum curriculum = genCS.verifyCurriculumOwnerAndGetCurriculum(curriculumId, ownerId, curriculumService);
 			
-			//TODO gerar pdf e retornar para na requisição
+			String pathCurriculumPdf = service.generatePdf(curriculum, ownerId);
 			
+			return ResponseEntity.ok(pathCurriculumPdf);
 			
-			return null;
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
