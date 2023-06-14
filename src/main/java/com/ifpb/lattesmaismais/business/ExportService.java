@@ -198,6 +198,10 @@ public class ExportService {
 		document.close();
 		writer.close();
 		
+		// torna o arquivo criado temporário
+		File file = new File(outputPath);
+		file.deleteOnExit();
+		
 		return outputPath;
 	}
 
