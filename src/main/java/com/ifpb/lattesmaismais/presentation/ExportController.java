@@ -28,6 +28,10 @@ public class ExportController {
 	@GetMapping
 	public ResponseEntity export(@RequestParam Integer curriculumId, @RequestParam Integer ownerId) {
 		try {
+			if(curriculumId == null || ownerId == null) {
+				throw new IllegalArgumentException("Dados fornecidos inválidos para exportação de currículo");
+			}
+			
 			Curriculum curriculum = genCS.verifyCurriculumOwnerAndGetCurriculum(curriculumId, ownerId, curriculumService);
 			
 			String pathCurriculumPdf = service.generatePdf(curriculum, ownerId);
