@@ -31,4 +31,4 @@ build/
 
 ### VS Code ###
 .vscode/
-src/main/resources/server/dr/**
+#src/main/resources/server/dr/**
