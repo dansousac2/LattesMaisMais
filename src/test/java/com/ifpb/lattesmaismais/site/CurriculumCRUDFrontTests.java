@@ -57,9 +57,6 @@ public class CurriculumCRUDFrontTests {
 
         Thread.sleep(2000);
 
-        Alert alt = driver.switchTo().alert();
-        alt.accept();
-
         assertEquals("http://localhost:3000/home", driver.getCurrentUrl());
     }
 
@@ -71,7 +68,7 @@ public class CurriculumCRUDFrontTests {
         WebElement buttonImport = getElementByXPath("//*[@id=\"root\"]/div/div/div[3]/button");
         clickElement(buttonImport);
 
-        Thread.sleep(2000);
+        Thread.sleep(4000);
 
 //        driver.switchTo()
 //                .activeElement().sendKeys(System.getProperty("user.dir") + "\\src\\test\\java\\com\\ifpb\\lattesmaismais\\util\\teste.xml");
@@ -117,17 +114,12 @@ public class CurriculumCRUDFrontTests {
         saveNewVersion.click();
 
         Thread.sleep(2000);
-        Alert alt = driver.switchTo().alert();
-        alt.accept();
 
-        Thread.sleep(1000);
         // Clicando na primeira entrada do currículo
         WebElement entry = getElementById("81");
         clickElement(entry);
 
         Thread.sleep(2000);
-        alt = driver.switchTo().alert();
-        alt.accept();
 
         // Confirmando presença de icon "sem comprovantes"
         assertEquals("http://localhost:3000/static/media/WithoutProof.84fc0f66c1fa6e0cc4b3a4d6ba81d729.svg", getElementById("icon81").getAttribute("src"));
@@ -153,9 +145,9 @@ public class CurriculumCRUDFrontTests {
 
         Thread.sleep(2000);
         assertAll(
-                () -> assertEquals("teste", getElementById("nameRecnewundefined").getText()),
-                () -> assertEquals(".jpg", getElementById("extRecnewundefined").getText()),
-                () -> assertEquals("Comprovante de atuação", getElementById("commRecnewundefined").getText()),
+                () -> assertEquals("teste", getElementByXPath("//*[@id=\"root\"]/div/div/div[7]/div/div/a").getText()),
+                () -> assertEquals(".jpg", getElementById("extRecnew1").getText()),
+                () -> assertEquals("\"Comprovante de atuação\"", getElementById("commRecnew1").getText()),
                 // Confirmando alteração do icon para "aguardando validação"
                 () -> assertEquals("http://localhost:3000/static/media/Waiting.256efcc25c115d72468487505c96e7bc.svg", getElementById("icon812").getAttribute("src"))
         );
@@ -165,12 +157,10 @@ public class CurriculumCRUDFrontTests {
         saveVersion.click();
 
         // Removendo comprovante adicionado
-        WebElement buttonRemoveReceipt = getElementByXPath("//*[@id=\"btRecnewundefined\"]");
+        WebElement buttonRemoveReceipt = getElementByXPath("//*[@id=\"btRecnew1\"]");
         clickElement(buttonRemoveReceipt);
 
         Thread.sleep(2000);
-        alt = driver.switchTo().alert();
-        alt.accept();
 
         // Confirmando troca de icon de "aguardando validação" para "sem comprovantes"
         assertThrows(NoSuchElementException.class, () -> getElementById("icon812").getAttribute("src"));
@@ -205,17 +195,12 @@ public class CurriculumCRUDFrontTests {
         saveNewVersion.click();
 
         Thread.sleep(2000);
-        Alert alt = driver.switchTo().alert();
-        alt.accept();
 
-        Thread.sleep(1000);
         // Clicando na primeira entrada do currículo
         WebElement entry = getElementById("91");
         clickElement(entry);
 
         Thread.sleep(2000);
-        alt = driver.switchTo().alert();
-        alt.accept();
 
         // Confirmando presença de icon "sem comprovantes"
         assertEquals("http://localhost:3000/static/media/WithoutProof.84fc0f66c1fa6e0cc4b3a4d6ba81d729.svg", getElementById("icon91").getAttribute("src"));
@@ -238,19 +223,17 @@ public class CurriculumCRUDFrontTests {
 
         Thread.sleep(2000);
         assertAll(
-                () -> assertEquals("Comprovante eletrônico", getElementById("commRecnewundefined").getText()),
+                () -> assertEquals("Comprovante eletrônico", getElementById("commRecnew1").getText()),
                 () -> assertEquals("http://localhost:3000/updateversions/www.teste.com/teste.pdf", getElementByXPath("//*[@id=\"root\"]/div/div/div[7]/div/div/a").getAttribute("href")),
                 // Confirmando alteração do icon para "aguardando validação"
                 () -> assertEquals("http://localhost:3000/static/media/Waiting.256efcc25c115d72468487505c96e7bc.svg", getElementById("icon912").getAttribute("src"))
         );
 
         // Removendo comprovante adicionado
-        WebElement buttonRemoveReceipt = getElementById("btRecnewundefined");
+        WebElement buttonRemoveReceipt = getElementById("btRecnew1");
         clickElement(buttonRemoveReceipt);
 
         Thread.sleep(2000);
-        alt = driver.switchTo().alert();
-        alt.accept();
 
         // Confirmando troca de icon de "aguardando validação" para "sem comprovantes"
         assertThrows(NoSuchElementException.class, () -> getElementById("icon912").getAttribute("src"));
