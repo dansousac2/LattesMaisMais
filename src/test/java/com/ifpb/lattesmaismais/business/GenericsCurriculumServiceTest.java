@@ -8,6 +8,7 @@ import com.ifpb.lattesmaismais.model.enums.CurriculumStatus;
 import com.ifpb.lattesmaismais.model.enums.ReceiptStatus;
 import com.ifpb.lattesmaismais.model.repository.CurriculumRepository;
 import com.ifpb.lattesmaismais.presentation.CurriculumDtoBack;
+import com.ifpb.lattesmaismais.presentation.exception.CurriculumOwnerExcepion;
 import com.ifpb.lattesmaismais.presentation.exception.ObjectNotFoundException;
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
@@ -15,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.lang.reflect.Executable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -152,11 +154,11 @@ class GenericsCurriculumServiceTest {
 
     @Test
     @Order(4)
-    void testVerifyCurriculumDtoIllegalArgumentException() {
+    void testVerifyCurriculumDtoCurriculumOwnerException() {
         when(repository.existsById(anyInt())).thenReturn(true);
         when(repository.findById(anyInt())).thenReturn(Optional.of(curriculumInvalid));
 
-        Throwable exception = assertThrows(IllegalArgumentException.class, () -> genericsCurriculumService.verifyCurriculumDto(curriculumDto, service));
+        Throwable exception = assertThrows(CurriculumOwnerExcepion.class, () -> genericsCurriculumService.verifyCurriculumDto(curriculumDto, service));
 
         assertEquals(exception.getMessage(), "Currículo não pertencente ao usuário logado!");
     }
@@ -214,4 +216,35 @@ class GenericsCurriculumServiceTest {
         CurriculumStatus status = genericsCurriculumService.generateStatusCurriculumOnly(entries);
         assertEquals(CurriculumStatus.UNCHECKED, status);
     }
+
+    @Test
+    @Order(10)
+    void testVerifyCurriculumOwnerAndGetCurriculumOk() {
+        try {
+            when(repository.existsById(anyInt())).thenReturn(true);
+            when(repository.findById(anyInt())).thenReturn(Optional.of(curriculumOk));
+
+            // Testando com id valido do proprietário
+            assertDoesNotThrow(() -> genericsCurriculumService.verifyCurriculumOwnerAndGetCurriculum(1, 2, service));
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    @Order(11)
+    void testVerifyCurriculumOwnerAndGetCurriculumCurriculumOwnerException() {
+        try {
+            when(repository.existsById(anyInt())).thenReturn(true);
+            when(repository.findById(anyInt())).thenReturn(Optional.of(curriculumOk));
+
+            // Testando com id inválido do proprietário
+            Throwable exception = assertThrows(CurriculumOwnerExcepion.class, () -> genericsCurriculumService.verifyCurriculumOwnerAndGetCurriculum(1, 3, service));
+            assertEquals("Currículo de id 1 não pertence ao usuário de id 3", exception.getMessage());
+
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
 }

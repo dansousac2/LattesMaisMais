@@ -101,7 +101,7 @@ public class GenericsCurriculumService {
 		Curriculum curriculum = curriculumService.findById(curriculumId);
 		
 		if(curriculum.getOwner().getId() != ownerId) {
-			throw new CurriculumOwnerExcepion(String.format("Currículo de id %s não perence ao usuário de id %s", curriculumId, ownerId));
+			throw new CurriculumOwnerExcepion(String.format("Currículo de id %s não pertence ao usuário de id %s", curriculumId, ownerId));
 		}
 		
 		return curriculum;

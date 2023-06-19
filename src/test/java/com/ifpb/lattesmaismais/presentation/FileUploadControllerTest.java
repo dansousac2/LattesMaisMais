@@ -200,7 +200,7 @@ class FileUploadControllerTest {
     public void testReadFileOk() {
         try {
             when(hashService.hashingSHA256(anyString())).thenCallRealMethod();
-            doNothing().when(uploadService).readFile(any(), any());
+            when(uploadService.readFile(any(), any())).thenReturn("teste//dr//");
 
             assertDoesNotThrow(() -> uploadController.readFile(multipartFile.getOriginalFilename(), "teste"));
 
@@ -210,6 +210,7 @@ class FileUploadControllerTest {
             verify(hashService, times(2)).hashingSHA256(anyString());
             verify(uploadService, times(2)).readFile(any(), any());
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             fail();
         }
     }
