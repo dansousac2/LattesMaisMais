@@ -56,6 +56,12 @@ class ExportCurriculumFrontTests {
 
         Thread.sleep(2000);
 
+        // Consultando versão do currículo atualizado:
+        driver.get("http://localhost:3000/updateversions/1");
+        Thread.sleep(2000);
+        String versionText = getElementById("versionCurriculum").getText();
+        Thread.sleep(2000);
+
         driver.get("http://localhost:3000/exportpdf");
 
         Thread.sleep(2000);
@@ -84,7 +90,7 @@ class ExportCurriculumFrontTests {
 
 
             assertTrue(pdfContent.contains("Teste"));
-            assertTrue(pdfContent.contains("V_19062023_032818"));
+            assertTrue(pdfContent.contains(versionText));
             assertTrue(pdfContent.contains(timeOfExportation));
         } catch (Exception e) {
             fail();
