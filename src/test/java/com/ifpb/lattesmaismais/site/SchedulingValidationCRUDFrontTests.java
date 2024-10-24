@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Disabled
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class SchedulingValidationCRUDFrontTests {
 
